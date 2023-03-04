@@ -1,0 +1,31 @@
+{
+  "name": "mybrary",
+  "version": "1.0.0",
+  "description": "��#\u0000 \u0000m\u0000y\u0000b\u0000r\u0000a\u0000r\u0000y\u0000\r\u0000 \u0000",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "devStart": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vedesh2000/mybrary.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vedesh2000/mybrary/issues"
+  },
+  "homepage": "https://github.com/vedesh2000/mybrary#readme",
+  "dependencies": {
+    "ejs": "^3.1.8",
+    "express": "^4.18.2",
+    "express-ejs-layouts": "^2.5.1",
+    "mongoose": "^7.0.0"
+  },
+  "devDependencies": {
+    "dotenv": "^16.0.3",
+    "nodemon": "^2.0.20"
+  }
+}
