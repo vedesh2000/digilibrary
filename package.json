@@ -25,6 +25,7 @@
     "express-ejs-layouts": "^2.5.1",
     "filepond-plugin-file-encode": "^2.1.10",
     "install": "^0.13.0",
+    "method-override": "^3.0.0",
     "mime": "^3.0.0",
     "mime-types": "^2.1.35",
     "mongoose": "^7.0.0",
