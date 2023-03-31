@@ -42,5 +42,8 @@ bookSchema.virtual('coverImagePath').get(function() {
         return `data:${this.coverImageType};charset=utf-8;base64,${this.coverImage.toString('base64')}`
     }
 })
-
+// bookSchema.pre('deleteMany' , {document: true}, function(next) {
+//     console.log("Deleted all Books")
+//     next()
+// })
 module.exports = mongoose.model('Book' , bookSchema)

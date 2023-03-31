@@ -88,9 +88,8 @@ routes.delete('/:id', async (req, res) => {
         await author.deleteOne()
         res.redirect('/authors')
     } catch (err) {
-        //console.log(err);
         if (author == null) {
-            res.redirect('/')
+            res.redirect('/books')
         }
         else {
             res.redirect(`/authors/${author.id}`)
