@@ -83,7 +83,7 @@ router.delete('/deleteAll', async (req, res)=>{
         if(book != null){
             res.render(`books/show`, {
                 book: book,
-                errorMessage: 'Could not remove Book'
+                errorMessage: 'Could not remove Books'
             })
         }else{
             res.redirect('/books')
