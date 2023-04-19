@@ -4,10 +4,16 @@ const authorSchema = mongoose.Schema({
     name: {
         type: String,
         required: true
+    },
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     }
 })
 
 authorSchema.pre('deleteOne', { document: true }, function(next)  {
+    // if(req.session.user != this.user) return
     Book.find({author: this.id})
     .then((books) => {
         // console.log(books.length)

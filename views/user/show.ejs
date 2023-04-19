@@ -1,0 +1,7 @@
+<h2 class="page-header"><%= user.username %></h2>
+<a href="/user/<%= user.id %>/edit">Edit</a>
+<br/>
+<a href="/user/<%= user.id %>/editPassword">Change Password</a>
+<%- include('../partials/deleteForm' , 
+                    {url: `/user/${user.id}` , buttonName: "Delete account"}) %>
+
