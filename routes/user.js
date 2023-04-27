@@ -44,21 +44,35 @@ routes.put('/editPassword/:id', isAuth, async (req, res) => {
 
   if (!user) {
     req.session.error = "Invalid User";
-    return res.redirect(`user/${userId}`);
-  }
+    res.redirect(`user/${userId}`);
+    return
+    }
 
   const isMatch = await bcrypt.compare(oldPassword, user.password);
 
   if (!isMatch) {
-    req.session.error = "Invalid Credentials";
+    error = "Invalid Credentials";
     res.render('user/editPassword', { user: user, errorMessage: error })
+    return
   }
 
-  const passMatch = (newPassword === confirmPassword);
+  let passMatch 
+  if(newPassword === confirmPassword){
+    passMatch = true;
+  } else{
+    passMatch = false;
+  }
 
   if (!passMatch) {
     error = "Passwords didn't match";
     res.render('user/editPassword', { user: user, errorMessage: error })
+    return
+  }
+
+  if(!checkPassword(newPassword)){
+    error = "Password Should contain 7 to 15 characters which contain at least one numeric digit and a special character";
+    res.render('user/editPassword', { user: user, errorMessage: error })
+    return
   }
   const hasdPsw = await bcrypt.hash(newPassword, 12);
   user.password = hasdPsw;
@@ -81,7 +95,6 @@ routes.put('/:id', isAuth, async (req, res) => {
         user = await User.findById(req.params.id)
         console.log(req.body);
         user.username = req.body.name
-        user.email = req.body.email
     } catch {
         if (user == null) {
             res.redirect('/')
@@ -110,13 +123,24 @@ routes.delete('/:id', isAuth, async (req, res) => {
         await user.deleteOne()
         res.redirect('/')
     } catch (err) {
+        console.log(err);
         if (user == null) {
             res.redirect('/files')
         }
         else {
-            res.redirect(`/user/${user.id}`)
+            // res.redirect(`/user/${user.id}`)
+            res.render('user/show', { user: user, errorMessage: "\nError Deleting User " + err })
         }
     }
 })
+
+function checkPassword(inputtxt){
+    var paswd=  /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{7,15}$/;
+    if(inputtxt.match(paswd)) 
+    { 
+    return true;
+    }
+    return false;
+  }
 
 module.exports = routes

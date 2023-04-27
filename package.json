@@ -30,11 +30,14 @@
     "express-ejs-layouts": "^2.5.1",
     "express-session": "^1.17.3",
     "filepond-plugin-file-encode": "^2.1.10",
+    "find-config": "^1.0.0",
     "install": "^0.13.0",
+    "jsonwebtoken": "^9.0.0",
     "method-override": "^3.0.0",
     "mime": "^3.0.0",
     "mime-types": "^2.1.35",
     "mongoose": "^7.0.0",
+    "nodemailer": "^6.9.1",
     "path": "^0.12.7"
   },
   "devDependencies": {

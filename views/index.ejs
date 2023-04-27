@@ -2,8 +2,13 @@
 <h2 class="page-header">Recently added by <%=user.username%></h2>
 
 <% books.forEach(book => {%>
-    <a href="/files/books/<%=book.id%>">
-        <img height = "150" width= "100" src = "<%= book.coverImagePath %>">
-    </a>
+    <div>
+        <a href="/files/books/<%=book.id%>">
+            <img height = "150" width= "100" src = "<%= book.coverImagePath %>">
+        </a>
+        <p>
+            <%= book.title %>
+        </p>
+    </div>
     <%})%>
 

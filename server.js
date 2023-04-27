@@ -1,7 +1,8 @@
 if (process.env.NODE_ENV !== 'production') {
-    require('dotenv').config()
+    require('dotenv').config({ path: require('find-config')('.env') })
 }
-const config = require("config");
+const expressLayouts = require("express-ejs-layouts")
+const methodOverride = require('method-override')
 const express = require("express");
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
@@ -26,20 +27,18 @@ app.use(
         }
     })
 );
-const expressLayouts = require("express-ejs-layouts")
+app.use(methodOverride('_method'))
 const authorsRouter = require('./routes/authors')
 const userRouter = require('./routes/user')
 const booksRouter = require('./routes/books')
 const welcomeRouter = require('./routes/welcome')
 const bodyParser = require('body-parser')
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: false }))
-const methodOverride = require('method-override')
 app.set('view engine', 'ejs')
 app.set('views', __dirname + '/views')
 app.use(expressLayouts)
 app.set('layout', 'layouts/layout')
 app.use('/', welcomeRouter)
-app.use(methodOverride('_method'))
 app.use(express.static(__dirname + '/public'));
 app.use('/files/authors', authorsRouter)
 app.use('/user',userRouter)

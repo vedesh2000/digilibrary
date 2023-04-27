@@ -41,22 +41,12 @@ routes.post('/', isAuth, async (req, res) => {
             // res.redirect(`User Created ${author.name}`)
             // res.redirect(`authors`);
             console.log("Author Created");
+            res.redirect(`/files/authors/${author.id}`)
         })
         .catch((err) => {
             //console.log(err);
             res.render('authors/new', { author: author, errorMessage: err })
         })
-    // const user = await User.updateOne(
-    //     { email: email },
-    //     { $push: {
-    //         authors: author
-    //     }
-    //     }).then(() => {
-    //         res.redirect(`authors`);
-    //     }).catch((err) => {
-    //         res.render('authors/new', { author: author, errorMessage: err })
-    //     })
-    // res.send(req.body.name)
 })
 routes.get('/:id', isAuth, async (req, res) => {
     try{
@@ -118,7 +108,6 @@ routes.put('/:id', isAuth, async (req, res) => {
         })
 })
 routes.delete('/:id', isAuth, async (req, res) => {
-    const email = req.session.email;
     let author
     let authorId
     try {
@@ -129,8 +118,11 @@ routes.delete('/:id', isAuth, async (req, res) => {
             return
         }
         authorId = author.id
-        await author.deleteOne()
-        // res.redirect('/authors')
+        await author.deleteOne().then(()=>{
+            res.redirect('/files/authors')
+        }).catch((err)=> {
+            console.log(err);
+        })
     } catch (err) {
         console.log(err);
         
@@ -138,20 +130,14 @@ routes.delete('/:id', isAuth, async (req, res) => {
             res.redirect('/files/authors')
         }
         else {
-            res.redirect(`/files/authors/${author.id}`)
+            const books = await Book.find({author: author.id}).exec()
+        res.render('authors/show' , {
+            author: author,
+            booksByAuthor: books,
+            errorMessage: err
+        })
         }
-        // return
     }
-    // const user = await User.updateOne(
-    //     { email: email },
-    //     { $pullAll: {
-    //         authors: [{_id: authorId}]
-    //     }
-    //     }).then(() => {
-    //         res.redirect('/files/authors')
-    //     }).catch((err) => {
-    //         res.render('authors/new', { author: author, errorMessage: err })
-    //     })
 })
 
 module.exports = routes
