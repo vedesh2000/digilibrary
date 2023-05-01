@@ -120,8 +120,18 @@ routes.delete('/:id', isAuth, async (req, res) => {
     let user
     try {
         user = await User.findById(req.params.id)
+        const username = user.username;
         await user.deleteOne()
-        res.redirect('/')
+        //clearing session
+        req.session.destroy((err) => {
+            if (err) {
+              console.log(err);
+              throw err;
+            }
+            console.log("username account deleted Successfully");
+            res.redirect("/");
+          });
+        
     } catch (err) {
         console.log(err);
         if (user == null) {

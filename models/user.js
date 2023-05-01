@@ -23,7 +23,12 @@ const userSchema = new Schema({
   },
   confirmationCode: { 
     type: String, 
-    unique: true }
+    unique: true 
+  },
+  createdAt: {
+    type: Date,
+    required: true
+}
 });
 
 userSchema.pre('deleteOne', { document: true }, function(next)  {

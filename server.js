@@ -10,7 +10,10 @@ const connectDB = require("./config/db");
 const mongoURI = process.env.DATABASE_URL;
 const app = express();
 connectDB();
-
+//Url decode
+const bodyParser = require('body-parser')
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: false }))
+//Starting session
 const store = new MongoDBStore({
     uri: mongoURI,
     collection: "mySessions",
@@ -23,17 +26,27 @@ app.use(
         store: store,
         cookie: {
             // Session expires after 100 min of inactivity.
-            expires: 6000000
+            expires: false
         }
     })
 );
+// Remember Me 
+app.use(function(req, res, next) {
+    if (req.method == 'POST' && req.url == '/login') {
+      if (req.body.rememberme) {
+        var hour = 3600000;
+        req.session.cookie.maxAge = 14 * 24 * hour; //2 weeks
+      } else {
+        req.session.cookie.expires = false;
+      }
+    }
+    next();
+  });
 app.use(methodOverride('_method'))
 const authorsRouter = require('./routes/authors')
 const userRouter = require('./routes/user')
 const booksRouter = require('./routes/books')
 const welcomeRouter = require('./routes/welcome')
-const bodyParser = require('body-parser')
-app.use(bodyParser.urlencoded({ limit: '10mb', extended: false }))
 app.set('view engine', 'ejs')
 app.set('views', __dirname + '/views')
 app.use(expressLayouts)
