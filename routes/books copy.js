@@ -1,10 +1,13 @@
 const express = require("express")
+const fs = require("fs")
+const path = require("path")
 const isAuth = require("../middleware/is-auth");
 const router = express.Router()
 const Book = require("../models/book")
-const  Author = require("../models/author")
+const Author = require("../models/author")
 const User = require("../models/user")
 const imageMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg']
+let imgPath = "/home/kvsvedesh/Public/myWorks/mybrary/mybrary/views/images/book.png"
 //all authors route
 router.get('/', isAuth, async (req,res)=>{
     const email = req.session.email;
@@ -17,13 +20,8 @@ router.get('/', isAuth, async (req,res)=>{
         query = query.lte('publishDate' , req.query.publishedBefore)
     if(req.query.publishedAfter != null && req.query.publishedAfter != '')
         query = query.gte('publishDate' , req.query.publishedAfter)
-    const sortBy = req.query.sortBy;
-    const sort = req.query.sort;
     try{
-        const sortOptions = {};
-        sortOptions[sortBy] = sort;
-        console.log(sortOptions);
-        const books = await query.sort(sortOptions).exec()
+        const books = await query.exec()
         res.render('books/index', {
             books : books,
             searchOptions: req.query
@@ -41,16 +39,12 @@ router.get('/:id',async(req,res)=>{
     try{
         const book = await Book.findById(req.params.id).populate('author').exec()
         const user = await User.findById(book.user)
-        book.lastOpenedAt = new Date();
-        await book.save()
         if(req.session.email != user.email) {
             res.redirect('/')
-            console.log("Invalid user accessed Book");
             return
         }
         res.render('books/show' , {book: book})
-    }catch(err){
-        console.log(err);
+    }catch{
         res.redirect('/')
     }
 });
@@ -80,12 +74,9 @@ router.put('/:id', isAuth,async (req, res)=>{
         }
         book.title = req.body.title
         book.author = req.body.author
-        book.type = req.body.type
         book.publishDate =  new Date(req.body.publishDate)
         book.pageCount =  req.body.pageCount
         book.description =  req.body.description
-        book.lastModifiedAt = new Date()
-        book.version += 1
         if(req.body.cover != null && req.body.cover !== ''){
             saveCover(book , req.body.cover)
         }
@@ -133,7 +124,7 @@ router.delete('/:id', isAuth,async (req, res)=>{
             return
         }
         await book.deleteOne()
-        res.redirect('/books')
+        res.redirect('/files/books')
     }
     catch(error){
         console.log(error)
@@ -143,33 +134,36 @@ router.delete('/:id', isAuth,async (req, res)=>{
                 errorMessage: 'Could not remove Book'
             })
         }else{
-            res.redirect('/books')
+            res.redirect('/files/books')
         }
     }
 })
 //new author route
 router.post('/', isAuth,async (req,res)=>{
     const email = req.session.email
-    //publish date check
-    let publishDate = new Date();
-    if(req.body.publishDate){
-        publishDate = req.body.publishDate
-    }
     const book = new Book({
         title: req.body.title,
         author:req.body.author,
-        type : req.body.type,
-        publishDate: publishDate,
+        publishDate: new Date(req.body.publishDate),
         pageCount: req.body.pageCount,
         description: req.body.description,
-        user: await User.findOne({email: email}),
-        lastModifiedAt: new Date(),
-        lastOpenedAt: new Date(),
-        createdAt : new Date(),
-        version : 1
+        user: await User.findOne({email: email})
     })
-    if(req.body.cover)
+    if(req.body.cover != null && req.body.cover !== ''){
         saveCover(book , req.body.cover)
+    }
+    else{
+        console.log("No cover image");
+        try{
+            fs.readFile(imgPath, (err, data) => {
+                if(err) throw err;
+                saveCover(book , data , false)
+                console.log(data);
+            })
+        }catch(err){
+            console.log(err);
+        }
+    }
     try{
         const newBook = await book.save()
         res.redirect(`books/${newBook.id}`)
@@ -209,12 +203,25 @@ async function renderFormPage(req, res, book, form, hasError = false){
         res.redirect('/books')
     }
 }
-function saveCover(book , coverEncoded){
+function saveCover(book , coverEncoded, flag = true){
     if(coverEncoded == null) return
-    const cover = JSON.parse(coverEncoded)
-    if(cover != null && imageMimeTypes.includes(cover.type)){
-        book.coverImage = new Buffer.from(cover.data, 'base64')
-        book.coverImageType = cover.type
+    if(!flag){
+        console.log("No cover to save");
+        // get image file extension name
+        const extensionName = path.extname(imgPath);
+        book.coverImageType = extensionName
+        // convert image file to base64-encoded string
+        const base64Image = Buffer.from(coverEncoded, 'binary').toString('base64');
+        book.coverImage = base64Image
+        // combine all strings
+        const base64ImageStr = `data:image/${extensionName.split('.').pop()};base64,${base64Image}`;
+    }
+    else{
+        const cover = JSON.parse(coverEncoded)
+        if(cover != null && imageMimeTypes.includes(cover.type)){
+            book.coverImage = new Buffer.from(cover.data, 'base64')
+            book.coverImageType = cover.type
+        }
     }
     
 }

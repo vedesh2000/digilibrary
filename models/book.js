@@ -1,6 +1,4 @@
 const mongoose = require('mongoose')
-const coverImageBasePath = 'uploads/bookCovers'
-const path = require('path')
 const bookSchema = mongoose.Schema({
     title: {
         type: String,
@@ -17,25 +15,12 @@ const bookSchema = mongoose.Schema({
         type: Number,
         required: true
     },
-    createdAt: {
-        type: Date,
-        required: true,
-        default: Date.now
-    },
     coverImage: {
         type: Buffer
     },
     coverImageType: {
         type: String
     },
-    // file: {
-    //     type: Buffer,
-    //     required: true
-    // },
-    // fileType: {
-    //     type: Buffer,
-    //     required: true
-    // },
     author: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
@@ -45,6 +30,28 @@ const bookSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
+    },
+    lastModifiedAt: {
+        type: Date,
+        required: true
+    },
+    lastOpenedAt: {
+        type: Date,
+        required: true
+    },
+    createdAt: {
+        type: Date,
+        required: true,
+        default: Date.now
+    },
+    version: {
+        type: Number,
+        required: true
+    },
+    type: {
+        type: String, 
+        enum: ['book', 'ebook'],
+        default: 'book'
     }
 })
 
@@ -53,8 +60,6 @@ bookSchema.virtual('coverImagePath').get(function() {
         return `data:${this.coverImageType};charset=utf-8;base64,${this.coverImage.toString('base64')}`
     }
 })
-// bookSchema.pre('deleteMany' , {document: true}, function(next) {
-//     console.log("Deleted all Books")
-//     next()
-// })
+
+
 module.exports = mongoose.model('Book' , bookSchema)

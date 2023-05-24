@@ -2,8 +2,6 @@ const express = require('express')
 const isAuth = require("../middleware/is-auth");
 const routes = express.Router();
 const bcrypt = require("bcryptjs");
-const Author = require('../models/author');
-const Book = require('../models/book');
 const User = require('../models/user');
 
 

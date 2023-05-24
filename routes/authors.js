@@ -9,15 +9,22 @@ routes.get('/', isAuth, async (req, res) => {
     const email = req.session.email
     const user = await User.findOne({email: email})
     let searchOptions = {user : user}
+    
+    const sortBy = req.query.sortBy;
+    const sort = req.query.sort;
     if (req.query.name != null && req.query.name != '') {
         searchOptions.name = new RegExp(req.query.name, 'i')
     }
     try {
-        const authors = await Author.find(searchOptions)
+        const sortOptions = {};
+        sortOptions[sortBy] = sort;
+        console.log(sortOptions);
+        const authors = await Author.find(searchOptions).sort(sortOptions).exec()
         res.render('authors/index',
             {
                 authors: authors,
-                searchOptions: req.query
+                searchOptions: req.query,
+                sortOptions: sortOptions
             })
     } catch(err) {
         console.log(err);
@@ -34,7 +41,11 @@ routes.post('/', isAuth, async (req, res) => {
     const author = new Author(
         { 
             name: req.body.name,
-            user: await User.findOne({email : email})
+            user: await User.findOne({email : email}),
+            createdAt: new Date(),
+            lastModifiedAt: new Date(),
+            lastOpenedAt: new Date(),
+            version: 1
         })
     author.save()
         .then(() => {
@@ -57,6 +68,9 @@ routes.get('/:id', isAuth, async (req, res) => {
             return
         }
         // const books = await Book.find({author: author.id}).limit(6).exec()
+        // Modifying last opened at
+        author.lastOpenedAt = new Date();
+        author.save();
         const books = await Book.find({author: author.id}).exec()
         res.render('authors/show' , {
             author: author,
@@ -91,6 +105,8 @@ routes.put('/:id', isAuth, async (req, res) => {
             return
         }
         author.name = req.body.name
+        author.lastModifiedAt = new Date();
+        author.version += 1;
     } catch {
         if (author == null) {
             res.redirect('/')

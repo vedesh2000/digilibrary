@@ -4,9 +4,20 @@
                     {url: `/files/authors/${author.id}` , buttonName: "Delete"}) %>
 <% if (booksByAuthor.length > 0){ %>    
     <h2>Books By Author</h2>
-    <% booksByAuthor.forEach(book => {%>
-        <a href="/files/books/<%=book.id%>">
-            <img height = "150" width= "100" src = "<%= book.coverImagePath %>">
-        </a>
+    <div class="cards-container">
+        <% booksByAuthor.forEach(book => {%>
+          <div class="card">
+            <a href="/files/books/<%=book.id%>">
+              <% if(book.coverImagePath) { %>
+                <img src="<%= book.coverImagePath %>">
+              <% } else { %>
+                <img src="/book.png">
+              <% } %>
+            </a>    
+            <div class="container" style="color: black;">
+              <h4><b><%=book.title %></b></h4> 
+            </div>
+          </div>
         <%})%>
+      </div>
 <% } %>

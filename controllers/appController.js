@@ -28,7 +28,6 @@ exports.login_get = (req, res) => {
 exports.login_post = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
-
   if (!user) {
     req.session.error = "Invalid User";
     return res.redirect("/login");
@@ -103,8 +102,16 @@ exports.register_post = async (req, res) => {
       const mailMsg = "Please confirm your email";
       const url = process.env.BASE_URL + "/api/auth/confirm/" + user.confirmationCode;
       mailStatus = await verifyEmail(process.env.USER_EMAIL, process.env.PASSWORD, url, user.username, user.email, subject, mailMsg);
-    }
-    console.log(username + " User Created successfully");
+      console.log(username + " User Created successfully");
+      const author = new Author(
+        { 
+          name: req.body.name,
+          user: await User.findOne({email : email}),
+          createdAt: new Date()
+        })
+        await author.save()
+      }
+    //Sending Mail
     if(mailStatus){
       req.session.msg = "User Created, and confirmation Email sent, Please confirm and try to Login";
       res.redirect("/login");
@@ -113,14 +120,6 @@ exports.register_post = async (req, res) => {
       req.session.error = "Sorry Unable to sent email now, Please try again";
       return res.redirect("/login");
     }
-    res.redirect("/")
-    if(user){
-      const subject = "Link to verify Email";
-      const mailMsg = "Please confirm your email";
-      const url = process.env.BASE_URL + "/api/auth/confirm/" + user.confirmationCode;
-      verifyEmail(process.env.USER_EMAIL, process.env.PASSWORD, url, user.username, user.email, subject, mailMsg);
-    }
-    
     req.session.msg = "User Created, and confirmation Email sent, Please confirm and try to Login";
     res.redirect("/login");
   }).catch((err) =>{
@@ -230,7 +229,7 @@ exports.dashboard_get = async (req, res) => {
   const user = await User.findOne({ email })
     let books
     try{
-        books = await Book.find({user: user}).sort({ createdAt : 'desc'}).limit(10).exec()
+        books = await Book.find({user: user}).sort({ lastOpenedAt : 'desc'}).limit(10).exec()
     }
     catch{
         books = []

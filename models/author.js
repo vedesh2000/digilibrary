@@ -9,6 +9,22 @@ const authorSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
+    },
+    createdAt: {
+        type: Date,
+        required: true
+    },
+    lastModifiedAt: {
+        type: Date,
+        required: true
+    },
+    lastOpenedAt: {
+        type: Date,
+        required: true
+    },
+    version: {
+        type: Number,
+        required: true
     }
 })
 

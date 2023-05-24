@@ -1,14 +1,19 @@
 <%- include('./partials/user' , {url: `${user.id}`}) %>
 <h2 class="page-header">Recently added by <%=user.username%></h2>
 
-<% books.forEach(book => {%>
-    <div>
+<div class="cards-container">
+    <% books.forEach(book => {%>
+      <div class="card">
         <a href="/files/books/<%=book.id%>">
-            <img height = "150" width= "100" src = "<%= book.coverImagePath %>">
-        </a>
-        <p>
-            <%= book.title %>
-        </p>
-    </div>
+          <% if(book.coverImagePath) { %>
+            <img src="<%= book.coverImagePath %>">
+          <% } else { %>
+            <img src="/book.png">
+          <% } %>
+        </a>    
+        <div class="container" style="color: black;">
+          <h4><b><%=book.title %></b></h4> 
+        </div>
+      </div>
     <%})%>
-
+  </div>

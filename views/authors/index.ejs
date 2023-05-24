@@ -6,6 +6,27 @@
       <input type="text" name="name" value="<%= searchOptions.name %>">
     </div>
   </div>
+  <div class="form-row">
+    <div class="form-item">
+      <label>Sort By</label>
+      <select name="sortBy">
+        <option selected label="Name" value="name">
+        <option label="Created At" value="createdAt">
+        <option label="Modified At" value="lastModifiedAt">
+        <option label="Opened At" value="lastOpenedAt">
+        <option label="Modifications" value="version">
+      </select>
+    </div>
+  </div>
+  <div class="form-row">
+    <label>Sort Type:</label>
+    <div class="form-item-no-grow">
+      <input type="radio" name="sort" value="asc" id="asc" checked> 
+      <label for="asc"><i class="fas fa-arrow-up"></i></label>
+      <input type="radio" name="sort" value="desc" id="desc">
+      <label for="desc"><i class="fas fa-arrow-down"></i></label>
+    </div>
+  </div>
   <div class="form-row form-row-end">
     <button class="btn btn-primary" type="submit">Search</button>
   </div>

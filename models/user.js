@@ -16,7 +16,8 @@ const userSchema = new Schema({
   password: {
     type: String,
     required: true,
-  },status: {
+  },
+  status: {
     type: String, 
     enum: ['Pending', 'Active'],
     default: 'Pending'
