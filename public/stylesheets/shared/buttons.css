@@ -53,3 +53,14 @@
   color: var(--color-btn-danger-text-dark);
   background-color: var(--color-btn-danger-background-dark);
 }
+
+.btn-group {
+  width: 75%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.btn-group a {
+  flex: 1 1 auto;
+}

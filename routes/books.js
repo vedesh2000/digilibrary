@@ -140,7 +140,7 @@ router.delete('/:id', isAuth, async (req, res) => {
             return
         }
         await book.deleteOne()
-        res.redirect('/books')
+        res.redirect('/files/books')
     }
     catch (error) {
         console.log(error)
@@ -150,7 +150,7 @@ router.delete('/:id', isAuth, async (req, res) => {
                 errorMessage: 'Could not remove Book'
             })
         } else {
-            res.redirect('/books')
+            res.redirect('/files/books')
         }
     }
 })

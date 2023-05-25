@@ -38,20 +38,30 @@ body {
 .error-message {
   color: hsl(var(--color-danger-hue), 100%, 50%);
 }
+
+.dashboard-details{
+  text-decoration: none;
+  color: var(--color-text-light);
+  font-weight: bold;
+  padding: 1rem;
+  font-size: 30px;
+}
+
 .cards-container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-around;
+  align-self: center;
 }
 .cards-container::after {
   content: "";
   flex: auto;
   justify-content: space-between;
-  width: 10em;
 }
 .card {
-  width: 12%;
-  margin-bottom: 20px;
+  overflow: hidden;
+  width: 180px;
+  height: 300px;
+  margin: 10px;
   text-align: left;
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
   transition: 0.3s;
@@ -66,7 +76,7 @@ body {
 .container {
   padding: 2px 16px;
 }
-img {
+.card img {
   width: 100%;
   height: 50%;
 }

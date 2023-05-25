@@ -1,12 +1,10 @@
 <h2 class="page-header"><%= book.title %></h2>
-<div class="card">
-    <a href="/files/books/<%=book.id%>">
-        <% if(book.coverImagePath) { %>
-        <img src="<%= book.coverImagePath %>">
-        <% } else { %>
-        <img src="/book.png">
-        <% } %>
-    </a>    
+<div>
+    <% if(book.coverImagePath) { %>
+    <img style="height: 300px; width: 200px;" src="<%= book.coverImagePath %>">
+    <% } else { %>
+    <img style="height: 300px; width: 200px; border-radius: 50px;" src="/book.png">
+    <% } %>  
 </div>
 <div>Author : <%=book.author.name %></div>
 <div>Publish Date : <%=book.publishDate.toDateString() %></div>
@@ -37,7 +35,9 @@
 <div>Last Opened At : : <%=book.lastOpenedAt.toDateString() %></div>
 <div>Created At : <%=book.createdAt.toDateString() %></div>
 <div>Modification Times : <%=book.version %></div>
-
-<a href="/files/books/<%= book.id%>/edit">Edit</a>
-<%- include('../partials/deleteForm' , {url: `/files/books/${book.id}` , buttonName: "Delete"}) %>
-<a href="/files/authors/<%= book.author.id%>/">View Author</a>
+<div class="btn-group">
+    <a class="btn btn-primary" href="/files/books/<%= book.id%>/edit">Edit</a>
+    <a class="btn btn-primary" href="/files/authors/<%= book.author.id%>/">View Author</a>
+    <br>
+    <%- include('../partials/deleteForm' , {url: `/files/books/${book.id}` , buttonName: "Delete"}) %>
+</div>

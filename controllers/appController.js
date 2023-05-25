@@ -26,7 +26,8 @@ exports.login_get = (req, res) => {
   res.render("welcome/login", { layout: false ,err: error, msg: msg});
 };
 exports.login_post = async (req, res) => {
-  const { email, password } = req.body;
+  const email = req.body.email.toLowerCase();
+  const password = req.body.password;
   const user = await User.findOne({ email });
   if (!user) {
     req.session.error = "Invalid User";
@@ -57,7 +58,8 @@ exports.register_get = (req, res) => {
   res.render("welcome/signup", { layout: false , err: error });
 };
 exports.register_post = async (req, res) => {
-  const { username, email, password, confirmpassword } = req.body;
+  const { username, password, confirmpassword } = req.body;
+  const email = req.body.email.toLowerCase();
   //Checking user existance
   let user = await User.findOne({ email });
 
@@ -155,7 +157,7 @@ exports.forgotPassword_get = async (req, res) => {
 };
 exports.forgotPassword_post = async (req, res) => {
   const user = await User.findOne({
-    email: req.body.email,
+    email: req.body.email.toLowerCase(),
   });
   let mailStatus;
   if (!user) {
