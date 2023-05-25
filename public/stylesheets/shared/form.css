@@ -48,6 +48,12 @@
   font-family: 'Gotham Rounded';
   outline: none;
 }
+.form-item input::placeholder,
+.form-item select::placeholder,
+.form-item textarea::placeholder {
+  color: var(--placeholder-color);
+}
+
 
 .form-item textarea {
   height: 100%;
@@ -75,4 +81,33 @@
 .filepond--drop-label {
   color: var(--color-text-light);
   font-size: inherit;
+}
+
+.center-form {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Adjust the values as needed */
+  padding: 50px;
+  align-items: center;
+  background-color: rgb(15, 123, 3);
+  border-radius: 15px;
+  opacity: 0.5;
+  overflow: hidden;
+}
+
+
+.center-form input[type="text"] {
+  width: 100%;
+  box-sizing: border-box;
+}
+.center-form input[type="checkbox"]{
+  width: 15px;
+}
+.inline-check-box {
+  display: flex;
+  align-items: center;
+}
+.inline-check-box label {
+  margin-right: 1px; /* Adjust the spacing between the label and checkbox as needed */
 }

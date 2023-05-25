@@ -1,44 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/stylesheets/main.css">
-    <link rel="stylesheet" href="/stylesheets/welcomePage.css">
     <title>Login</title>
-    <style>
-      .login-form {
-        width: 400px;
-        height: 400px;
-        padding: 20px;
-        margin: 1rem auto;
-        border-radius: 10px;
-        background: linear-gradient(to bottom, rgb(76, 33, 33), rgb(178, 212, 178));
-}
-      .input-group {
-        width: 100%;
-      }
-      .input-group label {
-        display: block;
-      }
-      .input-group input {
-        width: 100%;
-        background-color: antiquewhite;
-        border-radius: 10px;
-      }
-      button {
-        padding: 10px 17px;
-        margin-top: 1rem;
-        font-size: 1rem;
-        background: #f0afaf;
-        border: 1px solid #333;
-        cursor: pointer;
-      }
-      .scroll {
-    overflow: auto; 
-}
-    </style>
   </head>
+  
   <script>
     function myFunction() {
       var x = document.getElementById("myInput");
@@ -48,45 +17,57 @@
         x.type = "password";
       }
     }
-    </script>
-  <body class="scroll">
-      
-      <div class="login-form" >
-        
-        <h3>Login Page</h3>
-        <div style="color: red;">
-          <% if(err != null) {%>
-            <%= err%>
-        <% }%>
+  </script>
+
+  <body>
+    <div class="center-form">
+      <h3>Login Page</h3>
+      <div style="color: red;">
+        <% if(err !=null) {%>
+          <%= err%>
+            <% }%>
+      </div>
+      <div style="color: black;">
+        <% if(msg !=null) {%>
+          <%= msg%>
+            <% }%>
+      </div>
+      <form action="/login" method="POST">
+        <div class="form-row">
+          <div class="form-item">
+            <label for="email">Email:</label>
+            <input type="email" name="email" placeholder="Enter Email" required />
+          </div>
         </div>
-        <div style="color: black;">
-          <% if(msg != null) {%>
-            <%= msg%>
-        <% }%>
+        <div class="form-row">
+          <div class="form-item">
+            <label for="password">Password:</label>
+            <input type="password" name="password" id="myInput" placeholder="Enter Password" required />
+          </div>
         </div>
-        <form action="/login" method="POST">
-          <div class="input-group">
-          <label for="email">Email:</label>
-          <input type="email" name="email" placeholder="Enter Email" required/>
+        <div class="form-row">
+          <div class="inline-check-box">
+            <label for="showPassword">Show Password</label>
+            <input type="checkbox" id="showPassword" onclick="myFunction()">
+          </div>
         </div>
-        <div class="input-group">
-          <label for="password">Password:</label>
-          <input type="password" name="password" id="myInput" placeholder="Enter Password" required/>
+        <div class="form-row">
+          <div class="inline-check-box">
+            <label for="rememberme">Remember me</label>
+            <input type="checkbox" name="rememberme" id="rememberme">
+          </div>
         </div>
-        <input type="checkbox" onclick="myFunction()">Show Password
-        <br/>
-        <input type="checkbox" name="rememberme" >Remember Me
-        <br/>
-        <button class = "btn btn-primary" type="submit">Login</button>
+        <div class="form-row">
+          <div class="form-item">
+            <div class="btn-group">
+              <button class="btn btn-primary" type="submit">Login</button>
+              <a class="btn btn-primary" href="/signup">Signup</a>
+              <a class="btn btn-primary" href="/forgotPassword">Forgot Password</a>
+              <a class="btn btn-primary" href="/">Welcome Page</a>
+            </div>
+          </div>
+        </div>
       </form>
-      <br/>
-      <a class = "btn btn-primary" href="/signup">Signup</a>
-      <br/>
-      <br/>
-      <a class = "btn btn-primary" href="/forgotPassword">Forgot Password</a>
-      <br/>
-      <br/>
-      <a class = "btn btn-primary" href="/">welcomePage</a>
-  </div>
+    </div>
   </body>
-  </html>
+</html>
