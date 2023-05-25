@@ -5,7 +5,8 @@ const bookSchema = mongoose.Schema({
         required: true
     },
     description: {
-        type: String
+        type: String,
+        default: "This is a Great Book!"
     },
     publishDate: {
         type: Date,
@@ -52,6 +53,14 @@ const bookSchema = mongoose.Schema({
         type: String, 
         enum: ['book', 'ebook'],
         default: 'book'
+    },
+    driveLink: {
+        type: String
+    },
+    progress: {
+        type: String, 
+        enum: ['completed', 'inProgress', 'yetToStart'],
+        default: 'yetToStart'
     }
 })
 

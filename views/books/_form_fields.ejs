@@ -21,9 +21,53 @@
 <div class="form-row">
   <div class="form-item">
     <label>Document Type</label>
-    <select name="type">
-      <option selected label="book" value="book">
-      <option label="e-book" value="ebook">
+    <select name="type" id="docTypeSelect">
+      <% if (book.type==="book") { %>
+        <option selected label="Book" value="book">
+          <% } else { %>
+        <option label="Book" value="book">
+      <% } %>
+      <% if (book.type==="ebook") { %>
+        <option selected label="E-Book" value="ebook">
+          <% } else { %>
+        <option label="E-Book" value="ebook">
+      <% } %>
+    </select>
+  </div>
+</div>
+<div class="form-row">
+  <% if (book.type==="ebook") { %>
+    <div class="form-item">
+      <label for="driveLink">Drive Link (Optional)</label>
+      <input type="text" name="driveLink" value = "<%=book.driveLink%>" placeholder="It is highly recommended to a add drive link to avoid loosing of ebook">
+    </div>
+  <%} else {%>
+  <div class="form-item" id="driveUpload" style="display: none;">
+    <label for="driveLink">Drive Link (Optional)</label>
+    <br>
+    <input style="position: relative; width: 100%;" type="text" name="driveLink" placeholder="It is highly recommended to a add drive link to avoid loosing of ebook">
+  </div>
+  <%}%>
+</div>
+<div class="form-row">
+  <div class="form-item">
+    <label>Progress</label>
+    <select name="progress" required>
+        <% if (book.progress==="yetToStart") { %>
+          <option selected label="Yet To Start" value="yetToStart">
+            <% } else { %>
+          <option label="Yet To Start" value="yetToStart">
+        <% } %>
+        <% if (book.progress==="completed") { %>
+          <option selected label="Completed" value="completed">
+            <% } else { %>
+          <option label="Completed" value="completed">
+        <% } %>
+        <% if (book.progress==="inProgress") { %>
+          <option label="In Progress" value="inProgress"></option>
+            <% } else { %>
+          <option label="In Progress" value="inProgress"></option>
+        <% } %>
     </select>
   </div>
 </div>
@@ -47,3 +91,22 @@
     <input type="number" name="pageCount" min="1" value="<%= book.pageCount %>">
   </div>
 </div>
+<div class="form-row">
+  <div class="form-item">
+    <label>Description</label>
+    <textarea name="description"><%= book.description %></textarea>
+  </div>
+</div>
+
+<script>
+  var docType = document.getElementById("docTypeSelect");
+  var driveUpload = document.getElementById("driveUpload");
+
+  docType.addEventListener("change", function() {
+    if (docType.value === "ebook") {
+      driveUpload.style.display = "block";
+    } else {
+      driveUpload.style.display = "none";
+    }
+  });
+</script>

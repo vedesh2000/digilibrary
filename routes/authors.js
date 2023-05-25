@@ -18,7 +18,6 @@ routes.get('/', isAuth, async (req, res) => {
     try {
         const sortOptions = {};
         sortOptions[sortBy] = sort;
-        console.log(sortOptions);
         const authors = await Author.find(searchOptions).sort(sortOptions).exec()
         res.render('authors/index',
             {
@@ -125,7 +124,6 @@ routes.put('/:id', isAuth, async (req, res) => {
 })
 routes.delete('/:id', isAuth, async (req, res) => {
     let author
-    let authorId
     try {
         author = await Author.findById(req.params.id)
         const user = await User.findById(author.user)
@@ -133,11 +131,16 @@ routes.delete('/:id', isAuth, async (req, res) => {
             res.redirect('/')
             return
         }
-        authorId = author.id
         await author.deleteOne().then(()=>{
             res.redirect('/files/authors')
-        }).catch((err)=> {
+        }).catch(async (err)=> {
             console.log(err);
+            const books = await Book.find({author: author.id}).exec()
+            res.render('authors/show' , {
+                author: author,
+                booksByAuthor: books,
+                errorMessage: err
+            })
         })
     } catch (err) {
         console.log(err);
@@ -147,11 +150,11 @@ routes.delete('/:id', isAuth, async (req, res) => {
         }
         else {
             const books = await Book.find({author: author.id}).exec()
-        res.render('authors/show' , {
-            author: author,
-            booksByAuthor: books,
-            errorMessage: err
-        })
+            res.render('authors/show' , {
+                author: author,
+                booksByAuthor: books,
+                errorMessage: err
+            })
         }
     }
 })

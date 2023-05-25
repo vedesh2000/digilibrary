@@ -1,16 +1,46 @@
 <h2 class="page-header">Search Books</h2>
 <form action = "/files/books" method="GET">
-<div>
-    <label>Title</label>
-    <input type="text" name= "title" value="<%= searchOptions.title%>">
+  <div class="form-row">
+    <div class="form-item">
+      <label>Title</label>
+      <input type="text" name= "title" value="<%= searchOptions.title%>">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-item">
+      <label>Published After</label>
+      <input type="date" name= "publishedAfter" value="<%= searchOptions.publishedAfter%>">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-item">
+      <label>Published Before</label>
+      <input type="date" name= "publishedBefore" value="<%= searchOptions.publishedBefore%>">
+    </div>
+  </div>
+<div class="form-row">
+  <div class="form-item-no-grow">
+    <label>Book Progress:</label>
+    <input type="radio" name="progress" value="" checked>
+    <label>All</label>
+    <input type="radio" name="progress" value="inProgress"> 
+    <label>In Progress</label>
+    <input type="radio" name="progress" value="completed">
+    <label>Completed</label>
+    <input type="radio" name="progress" value="yetToStart">
+    <label>Yet to Start</label>
+  </div>
 </div>
-<div>
-    <label>Published After</label>
-    <input type="date" name= "publishedAfter" value="<%= searchOptions.publishedAfter%>">
-</div>
-<div>
-    <label>Published Before</label>
-    <input type="date" name= "publishedBefore" value="<%= searchOptions.publishedBefore%>">
+<div class="form-row">
+  <div class="form-item-no-grow">
+    <label>Book Type:</label>
+    <input type="radio" name="type" value="" checked>
+    <label>All</label>
+    <input type="radio" name="type" value="book"> 
+    <label>Book</label>
+    <input type="radio" name="type" value="ebook">
+    <label>E-Book</label>
+  </div>
 </div>
 <div class="form-row">
   <div class="form-item">
@@ -35,7 +65,9 @@
     <label for="desc"><i class="fas fa-arrow-down"></i></label>
   </div>
 </div>
-<button type="submit">Search</button>
+<div class="form-row form-row-end">
+  <button class="btn btn-primary" type="submit">Search</button>
+</div>
 </form>
 <div class="cards-container">
   <% books.forEach(book => {%>
