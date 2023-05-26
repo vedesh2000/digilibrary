@@ -47,7 +47,7 @@ exports.login_post = async (req, res) => {
 
   req.session.isAuth = true;
   req.session.email = user.email;
-  user.lastOpenedAt = new Date.now();
+  user.lastOpenedAt = Date.now();
   user.save().then(() => {
     res.redirect("/files");
   }).catch((err)=> {
@@ -92,11 +92,9 @@ exports.register_post = async (req, res) => {
   // Creating password hash
   const hasdPsw = await bcrypt.hash(password, 12);
   // Generating User token
-  const token = jwt.sign({email: emailmailStatus}, process.env.JWT_SECRET, {
+  const token = jwt.sign({email: email}, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN});
-
-
-  user = new User({
+    user = new User({
     username,
     email,
     password: hasdPsw,

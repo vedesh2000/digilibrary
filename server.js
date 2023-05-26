@@ -1,3 +1,4 @@
+console.log('NODE_ENV:', process.env.NODE_ENV);
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config({ path: require('find-config')('.env') })
 }
@@ -12,7 +13,7 @@ const app = express();
 connectDB();
 //Url decode
 const bodyParser = require('body-parser')
-app.use(bodyParser.urlencoded({ limit: '10mb', extended: false }))
+app.use(bodyParser.urlencoded({ limit: '5mb', extended: false }))
 //Starting session
 const store = new MongoDBStore({
     uri: mongoURI,
@@ -25,7 +26,6 @@ app.use(
         saveUninitialized: false,
         store: store,
         cookie: {
-            // Session expires after 100 min of inactivity.
             expires: false
         }
     })
@@ -41,7 +41,7 @@ app.use(function(req, res, next) {
       }
     }
     next();
-  });
+});
 app.use(methodOverride('_method'))
 const authorsRouter = require('./routes/authors')
 const userRouter = require('./routes/user')
