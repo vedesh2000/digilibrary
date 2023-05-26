@@ -29,7 +29,19 @@ const userSchema = new Schema({
   createdAt: {
     type: Date,
     required: true
-}
+  },
+  lastOpenedAt: {
+    type: Date,
+    required: true
+  },
+  plan: {
+    type: String, 
+    enum: ['Basic', 'Premium'],
+    default: 'Basic'
+  },
+  subscribedAt: {
+    type: Date
+  }
 });
 
 userSchema.pre('deleteOne', { document: true }, function(next)  {

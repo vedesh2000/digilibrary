@@ -1,9 +1,21 @@
 .author-row {
+  flex-wrap: wrap;
   display: flex;
+  padding: 5px;
   justify-content: space-between;
   margin-bottom: 1rem;
+  background-color: var(--color-background-light);
+  border: 5px;
+  border-radius: 5px;
+  width: 100%;
+  border: 1px solid #000000;
 }
 
+
 .author-name {
+  width: 75%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   font-size: 1.5rem;
 }

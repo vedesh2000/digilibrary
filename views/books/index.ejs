@@ -1,21 +1,21 @@
 <h2 class="page-header">Search Books</h2>
-<form action = "/files/books" method="GET">
+<form action = "/files/books" method="GET" id="myForm">
   <div class="form-row">
     <div class="form-item">
       <label>Title</label>
-      <input type="text" name= "title" value="<%= searchOptions.title%>">
+      <input type="text" name= "title" id="title" value="<%= searchOptions.title%>">
     </div>
   </div>
   <div class="form-row">
     <div class="form-item">
       <label>Published After</label>
-      <input type="date" name= "publishedAfter" value="<%= searchOptions.publishedAfter%>">
+      <input type="date" name= "publishedAfter" id="publishedAfter" value="<%= searchOptions.publishedAfter%>">
     </div>
   </div>
   <div class="form-row">
     <div class="form-item">
       <label>Published Before</label>
-      <input type="date" name= "publishedBefore" value="<%= searchOptions.publishedBefore%>">
+      <input type="date" name= "publishedBefore" id="publishedBefore" value="<%= searchOptions.publishedBefore%>">
     </div>
   </div>
 <div class="form-row">
@@ -65,7 +65,8 @@
     <label for="desc"><i class="fas fa-arrow-down"></i></label>
   </div>
 </div>
-<div class="form-row">
+<div class="form-row form-row-end">
+  <button type="button" class="btn btn-danger" onclick="resetForm()">Reset</button>
   <button class="btn btn-primary" type="submit">Search</button>
 </div>
 </form>
@@ -89,3 +90,12 @@
 <br/>
 <%- include('../partials/deleteForm' , {url : "books/deleteAll" , buttonName: "Delete All Books"}) %>
 <br/>
+
+<script>
+  function resetForm() {
+    document.getElementById("myForm").reset();
+    document.getElementById("title").value='';
+    document.getElementById("publishedAfter").value='';
+    document.getElementById("publishedBefore").value='';
+  }
+</script>

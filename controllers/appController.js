@@ -47,7 +47,14 @@ exports.login_post = async (req, res) => {
 
   req.session.isAuth = true;
   req.session.email = user.email;
-  res.redirect("/files");
+  user.lastOpenedAt = new Date.now();
+  user.save().then(() => {
+    res.redirect("/files");
+  }).catch((err)=> {
+    console.log(err);
+    req.session.error = "Unable to update the user opening in time, Please retry";
+    return res.redirect("/login");
+  })
 };
 exports.register_get = (req, res) => {
   if(req.session.isAuth){
@@ -85,7 +92,7 @@ exports.register_post = async (req, res) => {
   // Creating password hash
   const hasdPsw = await bcrypt.hash(password, 12);
   // Generating User token
-  const token = jwt.sign({email: email}, process.env.JWT_SECRET, {
+  const token = jwt.sign({email: emailmailStatus}, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN});
 
 
@@ -94,7 +101,8 @@ exports.register_post = async (req, res) => {
     email,
     password: hasdPsw,
     confirmationCode: token,
-    createdAt: Date.now()
+    createdAt: Date.now(),
+    lastOpenedAt: Date.now()
   });
   let mailStatus
   await user.save().then(async () => {
@@ -105,13 +113,6 @@ exports.register_post = async (req, res) => {
       const url = process.env.BASE_URL + "/api/auth/confirm/" + user.confirmationCode;
       mailStatus = await verifyEmail(process.env.USER_EMAIL, process.env.PASSWORD, url, user.username, user.email, subject, mailMsg);
       console.log(username + " User Created successfully");
-      const author = new Author(
-        { 
-          name: req.body.name,
-          user: await User.findOne({email : email}),
-          createdAt: new Date()
-        })
-        await author.save()
       }
     //Sending Mail
     if(mailStatus){

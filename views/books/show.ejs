@@ -1,43 +1,56 @@
-<h2 class="page-header"><%= book.title %></h2>
+<h2 class="page-header">
+    <%= book.title %>
+</h2>
 <div>
     <% if(book.coverImagePath) { %>
-    <img style="height: 300px; width: 200px;" src="<%= book.coverImagePath %>">
-    <% } else { %>
-    <img style="height: 300px; width: 200px; border-radius: 50px;" src="/book.png">
-    <% } %>  
+        <img style="height: 300px; width: 200px;" src="<%= book.coverImagePath %>">
+        <% } else { %>
+            <img style="height: 300px; width: 200px; border-radius: 50px;" src="/book.png">
+            <% } %>
 </div>
-<div>Author : <%=book.author.name %></div>
-<div>Publish Date : <%=book.publishDate.toDateString() %></div>
-<div>Page Count : <%=book.pageCount %></div>
-<div>Book Type :
-    <% if(book.type === "book") { %>
-         Book
-    <% } else { %>
-         E-Book
-        <%if(book.driveLink) {%>
-        <div>Drive Link :
-            <a href="<%=book.driveLink%>">Drive Link</a>
-        </div>
-        <% } %>
-    <%}%>
+<div class="dashboard-details">
+    <div>Author : <%=book.author.name %>
+    </div>
+    <br/>
+    <div>Publish Date : <%=book.publishDate.toDateString() %>
+    </div>
+    <div>Page Count : <%=book.pageCount %>
+    </div>
+    <div>Book Type :
+        <% if(book.type==="book" ) { %>
+            Book
+            <% } else { %>
+                E-Book
+                <%if(book.driveLink) {%>
+                    <div>Drive Link :
+                        <a href="<%=book.driveLink%>">Drive Link</a>
+                    </div>
+                    <% } %>
+                        <%}%>
+    </div>
+    <div>Book Progress :
+        <% if(book.progress==="inProgress" ) { %>
+            In Progress
+            <% } else if(book.progress==="completed" ) { %>
+                Completed
+                <% } else { %>
+                    Yet to Start
+                    <%}%>
+    </div>
+    <div>Last Modified At : <%=book.lastModifiedAt.toDateString() %>
+    </div>
+    <div>Last Opened At : : <%=book.lastOpenedAt.toDateString() %>
+    </div>
+    <div>Created At : <%=book.createdAt.toDateString() %>
+    </div>
+    <div>Modification Times : <%=book.version %>
+    </div>
+    <div>Description : <%=book.description %>
 </div>
-<div>Book Progress :
-    <% if(book.progress === "inProgress") { %>
-         In Progress
-    <% } else if(book.progress === "completed") { %>
-         Completed
-    <% } else { %>
-         Yet to Start
-    <%}%>
 </div>
-<div>Description : <%=book.description %></div>
-<div>Last Modified At : <%=book.lastModifiedAt.toDateString() %></div>
-<div>Last Opened At : : <%=book.lastOpenedAt.toDateString() %></div>
-<div>Created At : <%=book.createdAt.toDateString() %></div>
-<div>Modification Times : <%=book.version %></div>
 <div class="btn-group">
     <a class="btn btn-primary" href="/files/books/<%= book.id%>/edit">Edit</a>
     <a class="btn btn-primary" href="/files/authors/<%= book.author.id%>/">View Author</a>
     <br>
-    <%- include('../partials/deleteForm' , {url: `/files/books/${book.id}` , buttonName: "Delete"}) %>
+    <%- include('../partials/deleteForm' , {url: `/files/books/${book.id}` , buttonName: "Delete" }) %>
 </div>

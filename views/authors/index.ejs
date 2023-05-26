@@ -1,9 +1,9 @@
 <h2 class="page-header">Search Authors</h2>
-<form action="/files/authors" method="GET">
+<form action="/files/authors" method="GET" id="myForm">
   <div class="form-row">
     <div class="form-item">
       <label>Name</label>
-      <input type="text" name="name" value="<%= searchOptions.name %>">
+      <input type="text" id="name" name="name" value="<%= searchOptions.name %>">
     </div>
   </div>
   <div class="form-row">
@@ -28,6 +28,7 @@
     </div>
   </div>
   <div class="form-row form-row-end">
+    <button type="button" class="btn btn-danger" onclick="resetForm()">Reset</button>
     <button class="btn btn-primary" type="submit">Search</button>
   </div>
 </form>
@@ -39,7 +40,14 @@
       <a class="btn btn-primary" href="/files/authors/<%= author.id %>">View</a>
       <a class="btn btn-primary" href="/files/authors/<%= author.id %>/edit">Edit</a>
       <%- include('../partials/deleteForm',
-                  { url: `/files/authors/${author.id}` , buttonName : "Delete"}) %>
+      { url: `/files/authors/${author.id}` , buttonName : "Delete"}) %>
     </div>
   </div>
 <% }) %>
+
+<script>
+  function resetForm() {
+    document.getElementById("myForm").reset();
+    document.getElementById("name").value='';
+  }
+</script>
