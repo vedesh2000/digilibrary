@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer');
 
-const verifyEmail = async (user, pass, url, name, toMail, subject, mailMsg) => {
+const sendEmail = async (user, pass, url, name, toMail, subject, mailMsg) => {
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -9,7 +9,7 @@ const verifyEmail = async (user, pass, url, name, toMail, subject, mailMsg) => {
         }
     });
     const mailOptions = {
-        from: 'legendtonystark1@gmail.com',
+        from: user,
         to: toMail,
         subject: subject,
         html: `<h1>Email Confirmation</h1>
@@ -32,4 +32,4 @@ const verifyEmail = async (user, pass, url, name, toMail, subject, mailMsg) => {
     );
 }
 
-module.exports = verifyEmail;
+module.exports = sendEmail;

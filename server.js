@@ -1,6 +1,6 @@
 console.log('NODE_ENV:', process.env.NODE_ENV);
 if (process.env.NODE_ENV !== 'production') {
-    require('dotenv').config({ path: require('find-config')('.env') })
+  require('dotenv').config({ path: require('find-config')('.env') })
 }
 const expressLayouts = require("express-ejs-layouts")
 const methodOverride = require('method-override')
@@ -20,15 +20,17 @@ const store = new MongoDBStore({
     collection: "mySessions",
 });
 app.use(
-    session({
-        secret: "secret",
-        resave: false,
-        saveUninitialized: false,
-        store: store,
-        cookie: {
-            expires: false
-        }
-    })
+  session({
+    secret: "secret",
+    resave: false,
+    saveUninitialized: false,
+    store: store,
+    cookie: {
+        httpOnly: true,
+        // secure: true, // Set secure flag
+        expires: false
+    }
+  })
 );
 // Remember Me 
 app.use(function(req, res, next) {

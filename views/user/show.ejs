@@ -9,15 +9,15 @@
     E-Books : <%= eBooksLength %>
     <br>
     <label for="completedBooks">Completed Books: </label>
-    <progress id="completedBooks" value="<%=completedBooksLength%>" max="<%=totalBooksLength%>"></progress>
+    <progress id="completedBooks" name="completedBooks" value="<%=completedBooksLength%>" max="<%=totalBooksLength%>"></progress>
     <%=completedBooksLength%>/<%=totalBooksLength%>
     <br>
     <label for="inProgressBooks">Inprogress Books: </label>
-    <progress id="inProgressBooks" value="<%=inProgressBooksLength%>" max="<%=totalBooksLength%>"></progress>
+    <progress id="inProgressBooks" name="inProgressBooks" value="<%=inProgressBooksLength%>" max="<%=totalBooksLength%>"></progress>
     <%=inProgressBooksLength%>/<%=totalBooksLength%>
     <br>
     <label for="yetToStartBooks">Yet to Start Books: </label>
-    <progress id="yetToStartBooks" value="<%=yetToStartBooksLength%>" max="<%=totalBooksLength%>"></progress>
+    <progress id="yetToStartBooks" name="yetToStartBooks" value="<%=yetToStartBooksLength%>" max="<%=totalBooksLength%>"></progress>
     <%=yetToStartBooksLength%>/<%=totalBooksLength%>
 </div>
 

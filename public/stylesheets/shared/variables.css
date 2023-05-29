@@ -2,8 +2,8 @@
   --color-base-hue: 200;
   --color-danger-hue-offset: 180;
   --color-danger-hue: calc(var(--color-base-hue) - var(--color-danger-hue-offset));
-  --color-background-dark: hsl(var(--color-base-hue), 100%, 8%);
-  --color-background-light: hsl(var(--color-base-hue), 100%, 16%);
-  --color-text-light: hsl(var(--color-base-hue), 100%, 87%);
-  --placeholder-color: #e4e1e1; /* Replace with your desired color value */
+  --color-background-dark: hsl(var(--color-base-hue), 10%, 80%);
+  --color-background-light: hsl(var(--color-base-hue), 100%, 40%);
+  --color-text-light: hsl(var(--color-base-hue), 100%, 8%);
+  --placeholder-color: hsl(var(--color-base-hue), 100%, 8%);
 }

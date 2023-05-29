@@ -1,4 +1,15 @@
 <%- include('./partials/user' , {url: `${user.id}`}) %>
+<div class="form-row">
+  <div class="form-item-no-grow">
+    <label>Select Theme:</label>
+    <input type="radio" name="theme" value="light" checked>
+    <label>Light</label>
+    <input type="radio" name="theme" value="dark"> 
+    <label>Dark</label>
+    <input type="radio" name="theme" value="custom">
+    <label>Custom</label>
+  </div>
+</div>
 <h2 class="page-header">Recently added by <%=user.username%></h2>
 
 <div class="cards-container">

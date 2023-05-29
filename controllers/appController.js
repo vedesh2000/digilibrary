@@ -1,7 +1,7 @@
 const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 const Book = require("../models/book");
-const verifyEmail = require("./verifyEmail")
+const sendEmail = require("./sendEmail")
 const jwt = require('jsonwebtoken');
 
 function checkPassword(inputtxt){
@@ -69,10 +69,7 @@ exports.register_post = async (req, res) => {
   const email = req.body.email.toLowerCase();
   //Checking user existance
   let user = await User.findOne({ email });
-
   if (user) {
-    req.session.error = "User already exists use forgot password to login";
-    req.session.error = "User already exists";
     req.session.error = "User already exists use forgot password to login";
     return res.redirect("/signup");
   }
@@ -94,7 +91,8 @@ exports.register_post = async (req, res) => {
   // Generating User token
   const token = jwt.sign({email: email}, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN});
-    user = new User({
+  
+  user = new User({
     username,
     email,
     password: hasdPsw,
@@ -109,7 +107,7 @@ exports.register_post = async (req, res) => {
       const subject = "Link to verify Email";
       const mailMsg = "Please confirm your email";
       const url = process.env.BASE_URL + "/api/auth/confirm/" + user.confirmationCode;
-      mailStatus = await verifyEmail(process.env.USER_EMAIL, process.env.PASSWORD, url, user.username, user.email, subject, mailMsg);
+      mailStatus = await sendEmail(process.env.USER_EMAIL, process.env.PASSWORD, url, user.username, user.email, subject, mailMsg);
       console.log(username + " User Created successfully");
       }
     //Sending Mail
@@ -167,7 +165,7 @@ exports.forgotPassword_post = async (req, res) => {
     const subject = "Link to reset Password";
     const mailMsg = "Please reset Password";
     const url = process.env.BASE_URL + "/api/auth/resetPassword/" + user.confirmationCode;
-    mailStatus = await verifyEmail(process.env.USER_EMAIL, process.env.PASSWORD, url, user.username, user.email, subject, mailMsg);
+    mailStatus = await sendEmail(process.env.USER_EMAIL, process.env.PASSWORD, url, user.username, user.email, subject, mailMsg);
   }
   if(mailStatus){
   req.session.msg = "Password reset Link has been sent to registered email, Please check";
@@ -237,7 +235,6 @@ exports.dashboard_get = async (req, res) => {
     }
     // res.render('index' , {})
   res.render("index", { name: email , user: user, books : books});
-
 };
 exports.logout_post = (req, res) => {
   req.session.destroy((err) => {
