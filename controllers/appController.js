@@ -46,6 +46,10 @@ exports.login_post = async (req, res) => {
   }
 
   req.session.isAuth = true;
+  if (!req.cookies.theme) {
+    // Set the theme cookie to "light" if it's not already set
+    res.cookie("theme", "light");
+  }
   req.session.email = user.email;
   user.lastOpenedAt = Date.now();
   user.save().then(() => {
@@ -245,3 +249,18 @@ exports.logout_post = (req, res) => {
     res.redirect("/login");
   });
 };
+
+exports.toggle_theme = (req, res) => {
+  // Toggle the theme after clicking the button
+  const theme = req.cookies.theme === "light" ? "dark" : "light";
+  // Get the referring URL from the 'Referer' header
+  let referringUrl = req.headers.referer;
+  if (!referringUrl) {
+    referringUrl = "/files";
+  }
+  // Set the updated theme in the cookie
+  res.cookie("theme", theme);
+  res.redirect(referringUrl);
+};
+
+

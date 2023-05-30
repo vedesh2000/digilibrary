@@ -90,7 +90,7 @@
   transform: translate(-50%, -50%); /* Adjust the values as needed */
   padding: 50px;
   align-items: center;
-  background-color: rgb(15, 123, 3);
+  background-color: var(--color-background-light);
   border-radius: 15px;
   opacity: 0.75;
   overflow: hidden;

@@ -3,7 +3,23 @@
   --color-danger-hue-offset: 180;
   --color-danger-hue: calc(var(--color-base-hue) - var(--color-danger-hue-offset));
   --color-background-dark: hsl(var(--color-base-hue), 10%, 80%);
-  --color-background-light: hsl(var(--color-base-hue), 100%, 40%);
-  --color-text-light: hsl(var(--color-base-hue), 100%, 8%);
+  --color-background-light: hsl(var(--color-base-hue), 100%, 16%);
+  --color-text-light: hsl(var(--color-base-hue), 100%, 87%);
   --placeholder-color: hsl(var(--color-base-hue), 100%, 8%);
+
+  --light-color-base-hue: 200;
+  --light-color-danger-hue-offset: 180;
+  --light-color-danger-hue: calc(var(--light-color-base-hue) - var(--light-color-danger-hue-offset));
+  --light-color-background-dark: hsl(var(--light-color-base-hue), 10%, 80%);
+  --light-color-background-light: hsl(var(--light-color-base-hue), 100%, 40%);
+  --light-color-text-light: hsl(var(--light-color-base-hue), 100%, 8%);
+  --placeholder-color: hsl(var(--light-color-base-hue), 100%, 8%);
+
+  --dark-color-base-hue: 200;
+  --dark-color-danger-hue-offset: 180;
+  --dark-color-danger-hue: calc(var(--dark-color-base-hue) - var(--dark-color-danger-hue-offset));
+  --dark-color-background-dark: hsl(var(--dark-color-base-hue), 100%, 8%);
+  --dark-color-background-light: hsl(var(--dark-color-base-hue), 100%, 16%);
+  --dark-color-text-light: hsl(var(--dark-color-base-hue), 100%, 87%);
+  --placeholder-color: hsl(var(--dark-color-base-hue), 100%, 8%);
 }

@@ -6,6 +6,7 @@ const expressLayouts = require("express-ejs-layouts")
 const methodOverride = require('method-override')
 const express = require("express");
 const session = require("express-session");
+const cookieParser = require("cookie-parser");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const connectDB = require("./config/db");
 const mongoURI = process.env.DATABASE_URL;
@@ -21,7 +22,7 @@ const store = new MongoDBStore({
 });
 app.use(
   session({
-    secret: "secret",
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     store: store,
@@ -44,6 +45,7 @@ app.use(function(req, res, next) {
     }
     next();
 });
+app.use(cookieParser());
 app.use(methodOverride('_method'))
 const authorsRouter = require('./routes/authors')
 const userRouter = require('./routes/user')

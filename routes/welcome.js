@@ -26,4 +26,7 @@ app.get("/files", isAuth, appController.dashboard_get);
 //Logout User
 app.post("/logout", isAuth, appController.logout_post);
 
+//Logout User
+app.post("/toggleTheme", isAuth, appController.toggle_theme);
+
 module.exports = app;
