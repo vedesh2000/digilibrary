@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mybrary</title>
+    <title>DigiLibrary</title>
     <link href="https://unpkg.com/filepond/dist/filepond.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css">
     <link rel="stylesheet" href="/stylesheets/main.css">
@@ -28,8 +28,10 @@
     // Change the class of the body element based on the theme value
     if (theme === "light") {
       document.body.classList.add("light-theme");
+      document.documentElement.classList.add("light-theme");
     } else {
       document.body.classList.add("dark-theme");
+      document.documentElement.classList.add("dark-theme");
     }
 </script>
 </html>

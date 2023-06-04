@@ -26,12 +26,15 @@ router.get('/', isAuth, async (req, res) => {
     const sortBy = req.query.sortBy;
     const sort = req.query.sort;
     try {
-        const sortOptions = {};
+        let sortOptions = {};
         sortOptions[sortBy] = sort;
         const books = await query.sort(sortOptions).exec()
         res.render('books/index', {
             books: books,
-            searchOptions: req.query
+            searchOptions: req.query,
+            sortBy: sortBy,
+            sort: sort,
+            filterToggle: req.query.filterToggle
         })
     }
     catch {

@@ -1,6 +1,6 @@
-<label>Author Name</label>
 <div class="form-row">
     <div class="form-item">
-        <input type="text" name= "name" value="<%= author.name %>" required>
+        <label>Author Name</label>
+        <input type="text" name= "name" value="<%= author.name %>" required minlength="1" , maxlength="100" placeholder="1-100 charecters">
     </div>
 </div>

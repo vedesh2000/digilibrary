@@ -45,12 +45,30 @@
     </div>
     <div>Modification Times : <%=book.version %>
     </div>
-    <div>Description : <%=book.description %>
-</div>
-</div>
+        <label>Show Description</label>
+        <label class="switch">
+        <input type="checkbox" id="showDescToggle" name="showDescToggle" onchange="showDesc()">
+        <span class="slider round"></span>
+        </label></div>
+        </div>
+        <div style="display: none;" id="showDescDiv" class="description">
+            <%=book.description %>
+        </div>
+    </div>
 <div class="btn-group">
     <a class="btn btn-primary" href="/files/books/<%= book.id%>/edit">Edit</a>
     <a class="btn btn-primary" href="/files/authors/<%= book.author.id%>/">View Author</a>
     <br>
     <%- include('../partials/deleteForm' , {url: `/files/books/${book.id}` , buttonName: "Delete" }) %>
 </div>
+
+<script>
+    function showDesc(){
+    var showDescToggle = document.getElementById("showDescToggle");
+    var showDescDiv = document.getElementById("showDescDiv");
+    if (showDescToggle.checked)
+      showDescDiv.style.display = "block";
+    else
+      showDescDiv.style.display = "none";
+    }
+</script>

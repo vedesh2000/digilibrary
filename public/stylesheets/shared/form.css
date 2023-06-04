@@ -36,8 +36,9 @@
   margin-left: .25rem;
 }
 
-.form-item input, .form-item select, .form-item textarea {
+.form-item input, .form-item select {
   height: 2rem;
+  width: 100%;
   padding: .25rem .5rem;
   border-radius: .25rem;
   border: 1px solid var(--form-input-border-color);
@@ -47,6 +48,9 @@
   font-weight: normal;
   font-family: 'Gotham Rounded';
   outline: none;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 .form-item input::placeholder,
 .form-item select::placeholder,
@@ -56,8 +60,18 @@
 
 
 .form-item textarea {
-  height: 100%;
-  resize: none;
+  height: 10rem;
+  resize: vertical;
+  width: 100%;
+  padding: .25rem .5rem;
+  border-radius: .25rem;
+  border: 1px solid var(--form-input-border-color);
+  background-color: var(--form-input-background-color);
+  color: var(--color-text-light);
+  font-size: 1rem;
+  font-weight: normal;
+  font-family: 'Gotham Rounded';
+  outline: none;
 }
 
 .form-item select option {
