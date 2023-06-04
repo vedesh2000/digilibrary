@@ -1,12 +1,14 @@
 <header>
     <nav class="header-nav">
     <a class="header-title" href="/files">mybrary</a>
+    <div>
+        <form action="/toggleTheme" method="post">
+            <button type="submit" class="theme-toggle" id= "theme-button">
+                <i class = "fas"></i>
+            </button>
+        </form> 
+    </div>
     <ul>
-        <div>
-            <form action="/toggleTheme" method="post">
-                <button class = "btn btn-primary" type="submit">Change theme</button>
-            </form> 
-        </div>
         <li><a href="/files/authors">authors</a></li>
         <li><a href="/files/authors/new">add author</a></li>
         <li><a href="/files/books">books</a></li>
@@ -14,3 +16,30 @@
     </ul>
 </nav>
 </header>
+
+<script>
+    // Read the theme cookie value
+    var theme = document.cookie.replace(/(?:(?:^|.*;\s*)theme\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+    console.log(theme);
+    // Change the class of the body element based on the theme value
+    var iconElement = document.querySelector(".theme-toggle i");
+  
+  // Set the appropriate icon class based on the theme value
+  if (theme === "light") {
+    iconElement.classList.add("fa-moon");
+    iconElement.style.color = "gray-black";
+    iconElement.style.fontSize = "30px"
+
+  } else {
+    iconElement.classList.add("fa-sun");
+    iconElement.style.color = "yellow";
+    iconElement.style.fontSize = "30px"
+
+  }
+
+  var buttonElement = document.getElementById("theme-button");
+  buttonElement.style.border = "none";
+  buttonElement.style.background = "none";
+  buttonElement.style.padding = "0";
+  buttonElement.style.cursor = "pointer";
+</script>

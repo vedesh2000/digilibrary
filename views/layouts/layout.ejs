@@ -25,7 +25,6 @@
 <script>
     // Read the theme cookie value
     var theme = document.cookie.replace(/(?:(?:^|.*;\s*)theme\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-    console.log(theme);
     // Change the class of the body element based on the theme value
     if (theme === "light") {
       document.body.classList.add("light-theme");

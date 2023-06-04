@@ -8,6 +8,16 @@
   </div>
   <div class="form-row">
     <div class="form-item">
+      <label>Show Filters</label>
+      <label class="switch">
+        <input type="checkbox" id="filterToggle" onchange="showFilters()">
+        <span class="slider round"></span>
+      </label>
+    </div>
+  </div>
+  <div style="display: none;" id="filterDiv">  
+  <div class="form-row">
+    <div class="form-item">
       <label>Published After</label>
       <input type="date" name= "publishedAfter" id="publishedAfter" value="<%= searchOptions.publishedAfter%>">
     </div>
@@ -18,44 +28,45 @@
       <input type="date" name= "publishedBefore" id="publishedBefore" value="<%= searchOptions.publishedBefore%>">
     </div>
   </div>
-<div class="form-row">
-  <div class="form-item-no-grow">
-    <label>Book Progress:</label>
-    <input type="radio" name="progress" value="" checked>
-    <label>All</label>
-    <input type="radio" name="progress" value="inProgress"> 
-    <label>In Progress</label>
-    <input type="radio" name="progress" value="completed">
-    <label>Completed</label>
-    <input type="radio" name="progress" value="yetToStart">
-    <label>Yet to Start</label>
+  <div class="form-row">
+    <div class="form-item-no-grow">
+      <label>Book Progress:</label>
+      <input type="radio" name="progress" value="" checked>
+      <label>All</label>
+      <input type="radio" name="progress" value="inProgress"> 
+      <label>In Progress</label>
+      <input type="radio" name="progress" value="completed">
+      <label>Completed</label>
+      <input type="radio" name="progress" value="yetToStart">
+      <label>Yet to Start</label>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-item-no-grow">
+      <label>Book Type:</label>
+      <input type="radio" name="type" value="" checked>
+      <label>All</label>
+      <input type="radio" name="type" value="book"> 
+      <label>Book</label>
+      <input type="radio" name="type" value="ebook">
+      <label>E-Book</label>
+    </div>
   </div>
 </div>
-<div class="form-row">
-  <div class="form-item-no-grow">
-    <label>Book Type:</label>
-    <input type="radio" name="type" value="" checked>
-    <label>All</label>
-    <input type="radio" name="type" value="book"> 
-    <label>Book</label>
-    <input type="radio" name="type" value="ebook">
-    <label>E-Book</label>
+  <div class="form-row">
+    <div class="form-item">
+      <label>Sort By</label>
+      <select name="sortBy">
+        <option selected label="Title" value="title">
+        <option label="Created At" value="createdAt">
+        <option label="Publish Date" value="publishDate">
+        <option label="Page Count" value="pageCount">
+        <option label="Modified At" value="lastModifiedAt">
+        <option label="Opened At" value="lastOpenedAt">
+        <option label="Modifications" value="version">
+      </select>
+    </div>
   </div>
-</div>
-<div class="form-row">
-  <div class="form-item">
-    <label>Sort By</label>
-    <select name="sortBy">
-      <option selected label="Title" value="title">
-      <option label="Created At" value="createdAt">
-      <option label="Publish Date" value="publishDate">
-      <option label="Page Count" value="pageCount">
-      <option label="Modified At" value="lastModifiedAt">
-      <option label="Opened At" value="lastOpenedAt">
-      <option label="Modifications" value="version">
-    </select>
-  </div>
-</div>
 <div class="form-row">
   <label>Sort Type:</label>
   <div class="form-item-no-grow">
@@ -64,7 +75,7 @@
     <input type="radio" name="sort" value="desc" id="desc" >
     <label for="sort"><i class="fas fa-arrow-down"></i></label>
   </div>
-</div>
+  </div>
 <div class="form-row form-row-end">
   <button type="button" class="btn btn-danger" onclick="resetForm()">Reset</button>
   <button class="btn btn-primary" type="submit">Search</button>
@@ -93,9 +104,21 @@
 
 <script>
   function resetForm() {
-    document.getElementById("myForm").reset();
     document.getElementById("title").value='';
     document.getElementById("publishedAfter").value='';
     document.getElementById("publishedBefore").value='';
+    document.getElementById("type").value='';
+    document.getElementById("progress").value='';
   }
+var filterToggle = document.getElementById("filterToggle");
+var filterDiv = document.getElementById("filterDiv");
+
+function showFilters() {
+  if (filterToggle.checked) {
+    filterDiv.style.display = "block";
+  } else {
+    filterDiv.style.display = "none";
+  }
+}
+
 </script>
