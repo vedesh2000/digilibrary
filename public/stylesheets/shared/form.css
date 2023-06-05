@@ -75,7 +75,7 @@
 }
 
 .form-item select option {
-  background-color: black;
+  background-color: var(--color-background-dark);
 }
 
 .form-item input:focus, .form-item select:focus, .form-item textarea:focus {

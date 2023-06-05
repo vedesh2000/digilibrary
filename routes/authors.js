@@ -7,7 +7,7 @@ const Book = require('../models/book');
 //All authors
 routes.get('/', isAuth, async (req, res) => {
     const email = req.session.email
-    const user = await User.findOne({email: email})
+    const user = await User.findOne({email})
     let searchOptions = {user : user}
     const sortBy = req.query.sortBy;
     const sort = req.query.sort;
@@ -41,7 +41,7 @@ routes.post('/', isAuth, async (req, res) => {
     const author = new Author(
         { 
             name: req.body.name,
-            user: await User.findOne({email : email}),
+            user: await User.findOne({email}),
             createdAt: new Date(),
             lastModifiedAt: new Date(),
             lastOpenedAt: new Date(),

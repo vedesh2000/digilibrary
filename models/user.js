@@ -34,6 +34,10 @@ const userSchema = new Schema({
     type: Date,
     required: true
   },
+  recentSearches: {
+    type: [{ type: String }],
+    default: [],
+  },
   plan: {
     type: String, 
     enum: ['Basic', 'Premium'],

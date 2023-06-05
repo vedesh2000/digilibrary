@@ -12,39 +12,11 @@
   color: var(--color-text-light);
 }
 
-:root.light-theme {
-  font-family: 'Gotham Rounded';
-  font-size: 20px;
-  color: var(--light-color-background-light);
-}
-
-:root.dark-theme {
-  font-family: 'Gotham Rounded';
-  font-size: 20px;
-  color: var(--dark-color-background-light);
-}
-
 *, *::before, *::after {
   box-sizing: border-box;
 }
 body{
   background: linear-gradient(to right, var(--color-background-dark), var(--color-background-light));
-}
-body.light-theme{
-  background: linear-gradient(to right, var(--light-color-background-dark), var(--light-color-background-light));
-}
-body.dark-theme{
-  background: linear-gradient(to right, var(--dark-color-background-dark), var(--dark-color-background-light));
-}
-
-.container {
-  max-width: 1200px;
-  margin: auto;
-  margin-bottom: 3rem;
-}
-
-.inner-container {
-  margin: 0 2rem;
 }
 
 .page-header {
@@ -80,14 +52,14 @@ body.dark-theme{
   height: 300px;
   margin: 10px;
   text-align: left;
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  box-shadow: 0 4px 8px 0 var(--color-text-light);
   transition: 0.3s;
   background-color: var(--color-background-light);
   border-radius: 5px;
 }
 
 .card:hover {
-  box-shadow: 0 8px 16px 0 rgba(249, 247, 247, 0.943);
+  box-shadow: 0 8px 16px 0 var(--color-text-light);;
 }
 
 .container {
@@ -124,7 +96,7 @@ body.dark-theme{
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #ccc;
+  background-color: var(--color-background-light);
   -webkit-transition: .4s;
   transition: .4s;
 }
@@ -136,17 +108,17 @@ body.dark-theme{
   width: 26px;
   left: 4px;
   bottom: 4px;
-  background-color: white;
+  background-color: var(--color-text-light);
   -webkit-transition: .4s;
   transition: .4s;
 }
 
 input:checked + .slider {
-  background-color: #2196F3;
+  background-color: var(--color-background-light);
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
+  box-shadow: 0 0 1px var(--color-text-light);
 }
 
 input:checked + .slider:before {
@@ -165,9 +137,9 @@ input:checked + .slider:before {
 } 
 
 .description {
-background-color: #888;
+background-color: var(--color-background-dark);
 margin: 10px;
-border: #2196F3;
+border: var(--color-text-dark);
 padding: 10px;
 align-content: flex-start;
 border-radius: 10px;
@@ -176,12 +148,12 @@ border-style: double;
 /* Customize the scrollbar track */
 ::-webkit-scrollbar {
   width: 10px;
-  background-color: #f1f1f1;
+  background-color: var(--color-text-dark);
 }
 
 /* Customize the scrollbar thumb */
 ::-webkit-scrollbar-thumb {
-  background-color: #888;
+  background-color: var(--color-background-dark);
 }
 
 /* Customize the scrollbar thumb on hover */

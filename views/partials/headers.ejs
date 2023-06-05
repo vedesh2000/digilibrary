@@ -1,12 +1,13 @@
 <header>
     <nav class="header-nav">
-    <a class="header-title" href="/files">mybrary</a>
-    <div>
-        <form action="/toggleTheme" method="post">
-            <button type="submit" class="theme-toggle" id= "theme-button">
-                <i class = "fas"></i>
-            </button>
-        </form> 
+    <div class="form-row">
+      <a class="header-title" href="/files">Home</a>
+      <br>
+      <form action="/toggleTheme" method="post">
+          <button type="submit" class="theme-toggle" id="theme-button" style="margin-left: 30px; margin-top: 12px;">
+              <i class = "fas"></i>
+          </button>
+      </form> 
     </div>
     <ul>
         <li><a href="/files/authors">authors</a></li>
@@ -27,13 +28,13 @@
   // Set the appropriate icon class based on the theme value
   if (theme === "light") {
     iconElement.classList.add("fa-moon");
-    iconElement.style.color = "gray-black";
-    iconElement.style.fontSize = "30px"
+    iconElement.style.color = "white";
+    iconElement.style.fontSize = "50px"
 
   } else {
     iconElement.classList.add("fa-sun");
-    iconElement.style.color = "yellow";
-    iconElement.style.fontSize = "30px"
+    iconElement.style.color = "orange";
+    iconElement.style.fontSize = "50px"
 
   }
 

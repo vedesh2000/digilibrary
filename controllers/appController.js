@@ -46,6 +46,7 @@ exports.login_post = async (req, res) => {
   }
 
   req.session.isAuth = true;
+  
   if (!req.cookies.theme) {
     // Set the theme cookie to "light" if it's not already set
     res.cookie("theme", "light");
@@ -123,8 +124,6 @@ exports.register_post = async (req, res) => {
       req.session.error = "Sorry Unable to sent email now, Please try again";
       return res.redirect("/login");
     }
-    req.session.msg = "User Created, and confirmation Email sent, Please confirm and try to Login";
-    res.redirect("/login");
   }).catch((err) =>{
     console.log(err);
     req.session.error = "Error Saving User";
@@ -157,20 +156,19 @@ exports.forgotPassword_get = async (req, res) => {
   res.render("welcome/forgot", { layout: false ,err: error, msg: msg});
 };
 exports.forgotPassword_post = async (req, res) => {
-  const user = await User.findOne({
-    email: req.body.email.toLowerCase(),
-  });
-  let mailStatus;
+
+  const email = req.body.email.toLowerCase();
+  const user = await User.findOne({ email });
+  
   if (!user) {
     req.session.error = "Invalid User Email, Please Signup";
     return res.redirect("/signup");
   }
-  else{
-    const subject = "Link to reset Password";
-    const mailMsg = "Please reset Password";
-    const url = process.env.BASE_URL + "/api/auth/resetPassword/" + user.confirmationCode;
-    mailStatus = await sendEmail(process.env.USER_EMAIL, process.env.PASSWORD, url, user.username, user.email, subject, mailMsg);
-  }
+  let mailStatus;
+  const subject = "Link to reset Password";
+  const mailMsg = "Please reset Password";
+  const url = process.env.BASE_URL + "/api/auth/resetPassword/" + user.confirmationCode;
+  mailStatus = await sendEmail(process.env.USER_EMAIL, process.env.PASSWORD, url, user.username, user.email, subject, mailMsg);
   if(mailStatus){
   req.session.msg = "Password reset Link has been sent to registered email, Please check";
   res.redirect("/forgotPassword");
