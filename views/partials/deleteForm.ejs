@@ -1,0 +1,9 @@
+<form method="POST" action="<%= url %>?_method=DELETE" onsubmit="return confirmSubmit()">
+    <button class = "btn btn-danger" type="submit"><%= buttonName %></button>
+</form>
+
+<script>
+    function confirmSubmit() {
+      return confirm("Are you sure you want to <%= buttonName %>?");
+    }
+</script>

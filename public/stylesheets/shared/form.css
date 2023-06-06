@@ -1,0 +1,127 @@
+:root {
+  --form-label-font-size: 1.2rem;
+  --form-input-background-color: hsl(var(--color-base-hue), 100%, 31%);
+  --form-input-border-color: hsl(var(--color-base-hue), 100%, 50%);
+  --form-input-border-color-light: hsl(var(--color-base-hue), 100%, 80%);
+}
+
+.form-row {
+  display: flex;
+  margin-bottom: .5rem;
+}
+
+.form-item {
+  display: flex;
+  flex-direction: column;
+  margin-left: 2rem;
+  flex-grow: 1;
+  flex-basis: 0;
+}
+
+.form-item:first-child {
+  margin-left: 0;
+}
+
+.form-item-no-grow {
+  flex-grow: 0;
+}
+
+.form-row-end {
+  justify-content: flex-end;
+}
+
+.form-item > label {
+  font-size: var(--form-label-font-size);
+  margin-bottom: .25rem;
+  margin-left: .25rem;
+}
+
+.form-item input, .form-item select {
+  height: 2rem;
+  width: 100%;
+  padding: .25rem .5rem;
+  border-radius: .25rem;
+  border: 1px solid var(--form-input-border-color);
+  background-color: var(--form-input-background-color);
+  color: var(--color-text-light);
+  font-size: 1rem;
+  font-weight: normal;
+  font-family: 'Gotham Rounded';
+  outline: none;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.form-item input::placeholder,
+.form-item select::placeholder,
+.form-item textarea::placeholder {
+  color: var(--placeholder-color);
+}
+
+
+.form-item textarea {
+  height: 10rem;
+  resize: vertical;
+  width: 100%;
+  padding: .25rem .5rem;
+  border-radius: .25rem;
+  border: 1px solid var(--form-input-border-color);
+  background-color: var(--form-input-background-color);
+  color: var(--color-text-light);
+  font-size: 1rem;
+  font-weight: normal;
+  font-family: 'Gotham Rounded';
+  outline: none;
+}
+
+.form-item select option {
+  background-color: var(--color-background-dark);
+}
+
+.form-item input:focus, .form-item select:focus, .form-item textarea:focus {
+  border-color: var(--form-input-border-color-light);
+}
+
+.filepond--root {
+  font-family: 'Gotham Rounded';
+  margin-bottom: 0;
+}
+
+.filepond--panel-root {
+  background-color: var(--form-input-background-color);
+  border: 1px solid var(--form-input-border-color);
+}
+
+.filepond--drop-label {
+  color: var(--color-text-light);
+  font-size: inherit;
+}
+
+.center-form {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Adjust the values as needed */
+  padding: 50px;
+  align-items: center;
+  background-color: var(--color-background-light);
+  border-radius: 15px;
+  opacity: 0.75;
+  overflow: hidden;
+}
+
+
+.center-form input[type="text"] {
+  width: 100%;
+  box-sizing: border-box;
+}
+.center-form input[type="checkbox"]{
+  width: 15px;
+}
+.inline-check-box {
+  display: flex;
+  align-items: center;
+}
+.inline-check-box label {
+  margin-right: 1px; /* Adjust the spacing between the label and checkbox as needed */
+}

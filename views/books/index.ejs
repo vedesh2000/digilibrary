@@ -1,0 +1,235 @@
+<h2 class="page-header">Search Books</h2>
+<form action = "/files/books" method="GET" id="myForm">
+  <div class="form-row">
+    <div class="form-item">
+      <label>Title</label>
+      <input type="text" list="recentSearches" placeholder="Search Here" name="title" id="title" value="<%= searchOptions.title %>">
+      <datalist id="recentSearches">
+        <% recentSearches.forEach(searchTerm => { %>
+          <option value="<%= searchTerm %>"><%= searchTerm %></option>
+        <% }); %>
+      </datalist>
+    </div>
+  </div>
+  
+  <div class="form-row">
+    <div class="form-item">
+      <label>Sort By</label>
+      <select name="sortBy">
+        <% if(sortBy === undefined || sortBy === "title") {%>
+          <option selected label="Title" value="title" id="sortByTitle">
+        <%} else {%>
+          <option label="Title" value="title" id="sortByTitle">
+        <% } %>
+
+        <% if(sortBy === "createdAt") {%>
+          <option selected label="Created At" value="createdAt">
+        <%} else {%>
+          <option label="Created At" value="createdAt">
+        <% } %>
+
+        <% if(sortBy === "publishDate") {%>
+          <option label="Publish Date" value="publishDate" selected>
+        <%} else {%>
+          <option label="Publish Date" value="publishDate">
+        <% } %>
+
+        <% if(sortBy === "pageCount") {%>
+          <option label="Page Count" value="pageCount" selected>
+        <%} else {%>
+          <option label="Page Count" value="pageCount">
+        <% } %>
+
+        <% if(sortBy === 'lastModifiedAt') {%>
+          <option selected label="Modified At" value="lastModifiedAt">
+        <%} else {%>
+          <option label="Modified At" value="lastModifiedAt">
+        <% } %>
+
+        <% if(sortBy === 'lastOpenedAt') {%>
+          <option selected label="Opened At" value="lastOpenedAt">
+        <%} else {%>
+          <option label="Opened At" value="lastOpenedAt">
+        <% } %>
+
+        <% if(sortBy === 'version') {%>
+          <option selected label="Modifications" value="version">
+        <%} else {%>
+          <option label="Modifications" value="version">
+        <% } %>
+
+      </select>
+    </div>
+  </div>
+<div class="form-row">
+  <div class="form-item-no-grow">
+      <label>Sort Type:</label>
+      <% if(sort === undefined || sort === "asc") {%>
+        <input type="radio" name="sort" value="asc" id="asc" checked> 
+        <label for="asc"><i class="fas fa-arrow-up"></i></label>
+      <%} else {%>
+        <input type="radio" name="sort" value="asc" id="asc"> 
+        <label for="asc"><i class="fas fa-arrow-up"></i></label>
+      <%}%>
+      <% if(sort === "desc") {%>
+        <input type="radio" name="sort" value="desc" id="desc" checked>
+        <label for="desc"><i class="fas fa-arrow-down"></i></label>
+      <%} else {%>
+        <input type="radio" name="sort" value="desc" id="desc">
+        <label for="desc"><i class="fas fa-arrow-down"></i></label>
+      <%}%>
+    </div>
+</div>
+  <div class="form-row">
+    <div class="form-item">
+      <label>Apply Filters</label>
+      <% if(filterToggle === "on") {%>
+      <label class="switch">
+        <input type="checkbox" id="filterToggle" name="filterToggle" onchange="showFilters()" checked>
+        <span class="slider round"></span>
+      </label></div>
+    </div>
+    <div style="display: block;" id="filterDiv">
+      <% } else { %>
+        <label class="switch">
+          <input type="checkbox" id="filterToggle" onchange="showFilters()" name="filterToggle">
+          <span class="slider round"></span>
+        </label>
+      </div>
+    </div>
+    <div style="display: none;" id="filterDiv">
+      <% } %>
+      
+  <div class="form-row">
+    <div class="form-item">
+      <label>Published After</label>
+      <input type="date" name= "publishedAfter" id="publishedAfter" value="<%= searchOptions.publishedAfter%>">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-item">
+      <label>Published Before</label>
+      <input type="date" name= "publishedBefore" id="publishedBefore" value="<%= searchOptions.publishedBefore%>">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-item-no-grow">
+      <label>Book Progress:</label>
+      <% if(searchOptions.progress === undefined || searchOptions.progress === "") {%>
+        <input type="radio" name="progress" id="progressAll" value="" checked>
+        <label>All</label>
+      <% } else { %>
+        <input type="radio" name="progress" id="progressAll" value="">
+        <label>All</label>
+      <% } %>
+
+      <% if(searchOptions.progress === "inProgress") {%>
+        <input type="radio" name="progress" id="progressinProgress" value="inProgress" checked> 
+      <label>In Progress</label>
+      <% } else { %>
+        <input type="radio" name="progress" id="progressinProgress" value="inProgress"> 
+        <label>In Progress</label>
+      <% } %>
+
+      <% if(searchOptions.progress === "completed") {%>
+        <input type="radio" name="progress" id="progresscompleted" value="completed" checked>
+      <label>Completed</label>
+      <% } else { %>
+        <input type="radio" name="progress" id="progresscompleted" value="completed">
+        <label>Completed</label>
+      <% } %>
+
+      <% if(searchOptions.progress === "yetToStart") {%>
+        <input type="radio" name="progress" id="progressyetToStart" value="yetToStart" checked>
+        <label>Yet to Start</label>
+      <% } else { %>
+        <input type="radio" name="progress" id="progressyetToStart" value="yetToStart">
+        <label>Yet to Start</label>
+      <% } %>     
+    </div>
+  </div>
+  <div class="form-row">
+    <label>Book Type:</label>
+    <div class="form-item-no-grow">
+      <% if(searchOptions.task === undefined || searchOptions.task === "") {%>
+        <input type="radio" name="type" id="typeAll" value="" checked>
+        <label>All</label>
+      <% } else { %>
+        <input type="radio" name="type" id="typeAll" value="">
+        <label>All</label>
+      <% } %>
+
+      <% if(searchOptions.type === "book") {%>
+        <input type="radio" name="type" id="typeBook" value="book" checked> 
+        <label>Book</label>
+      <% } else { %>
+        <input type="radio" name="type" id="typeBook" value="book"> 
+        <label>Book</label>
+      <% } %>
+
+      <% if(searchOptions.type === "ebook") {%>
+        <input type="radio" name="type" id="typeEBook" value="ebook" checked>
+      <label>E-Book</label>
+      <% } else { %>
+        <input type="radio" name="type" id="typeEBook" value="ebook">
+        <label>E-Book</label>
+      <% } %>
+
+    </div>
+  </div>
+</div>
+
+<div class="form-row form-row-end">
+  <button type="submit" class="btn btn-danger" onclick="resetForm()">Reset</button>
+  <button class="btn btn-primary" type="submit">Search</button>
+</div>
+</form>
+<div class="cards-container">
+  <% books.forEach(book => {%>
+    <div class="card">
+      <a href="/files/books/<%=book.id%>">
+        <% if(book.coverImagePath) { %>
+          <img src="<%= book.coverImagePath %>">
+          <% } else { %>
+            <img src="/book.png">
+            <% } %>
+          </a>    
+          <div class="container" style="color: black;">
+            <h4><b><%=book.title %></b></h4> 
+          </div>
+        </div>
+        <%})%>
+      </div>
+      
+<br/>
+<%- include('../partials/deleteForm' , {url : "books/deleteAll" , buttonName: "Delete All Books"}) %>
+<br/>
+
+<script>
+  function resetForm() {
+    document.getElementById("title").value='';
+    document.getElementById("asc").checked = true;
+    document.getElementById("desc").checked = false;
+    document.getElementById("sortByTitle").selected = true;
+  }
+
+  function showFilters(){
+    var filterToggle = document.getElementById("filterToggle");
+    var filterDiv = document.getElementById("filterDiv");
+    if (filterToggle.checked)
+      filterDiv.style.display = "block";
+    else{
+      filterDiv.style.display = "none";
+      document.getElementById("publishedAfter").value='';
+      document.getElementById("publishedBefore").value='';
+      document.getElementById("typeAll").checked=true;
+      document.getElementById("typeBook").checked=false;
+      document.getElementById("typeEBook").checked=false;
+      document.getElementById("progressAll").checked=true;
+      document.getElementById("progressinProgress").checked=false;
+      document.getElementById("progressyetToStart").checked=false;
+      document.getElementById("progresscompleted").checked=false;
+      document.getElementById("myForm").submit();
+  }
+  }
+</script>

@@ -1,0 +1,92 @@
+<h2 class="page-header">Search Authors</h2>
+<form action="/files/authors" method="GET" id="myForm">
+  <div class="form-row">
+    <div class="form-item">
+      <label>Name</label>
+      <input type="text" id="name" name="name" value="<%= searchOptions %>" placeholder="Search Here">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-item">
+      <label>Sort By</label>
+      <select name="sortBy">
+        
+        <% if(sortBy === undefined || sortBy === "name") {%>
+          <option selected label="Name" value="name" id="sortByName">
+        <%} else {%>
+          <option label="Name" value="name" id="sortByName">
+        <% } %>
+
+        <% if(sortBy === "createdAt") {%>
+          <option selected label="Created At" value="createdAt">
+        <%} else {%>
+          <option label="Created At" value="createdAt">
+        <% } %>
+
+        <% if(sortBy === 'lastModifiedAt') {%>
+          <option selected label="Modified At" value="lastModifiedAt">
+        <%} else {%>
+          <option label="Modified At" value="lastModifiedAt">
+        <% } %>
+
+        <% if(sortBy === 'lastOpenedAt') {%>
+          <option selected label="Opened At" value="lastOpenedAt">
+        <%} else {%>
+          <option label="Opened At" value="lastOpenedAt">
+        <% } %>
+
+        <% if(sortBy === 'version') {%>
+          <option selected label="Modifications" value="version">
+        <%} else {%>
+          <option label="Modifications" value="version">
+        <% } %>
+
+      </select>
+    </div>
+  </div>
+  <div class="form-row">
+    <label>Sort Type:</label>
+    <div class="form-item-no-grow">
+      <% if(sort === undefined || sort === "asc") {%>
+        <input type="radio" name="sort" value="asc" id="asc" checked> 
+        <label for="asc"><i class="fas fa-arrow-up"></i></label>
+      <%} else {%>
+        <input type="radio" name="sort" value="asc" id="asc"> 
+        <label for="asc"><i class="fas fa-arrow-up"></i></label>
+      <%}%>
+      <% if(sort === "desc") {%>
+        <input type="radio" name="sort" value="desc" id="desc" checked>
+        <label for="desc"><i class="fas fa-arrow-down"></i></label>
+      <%} else {%>
+        <input type="radio" name="sort" value="desc" id="desc">
+        <label for="desc"><i class="fas fa-arrow-down"></i></label>
+      <%}%>
+    </div>
+  </div>
+  <div class="form-row form-row-end">
+    <button type="submit" class="btn btn-danger" onclick="resetForm()">Reset</button>
+    <button class="btn btn-primary" type="submit">Search</button>
+  </div>
+</form>
+<br>
+<% authors.forEach(author => { %>
+  <div class="author-row">
+    <div class="author-name"><%= author.name %></div>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="/files/authors/<%= author.id %>">View</a>
+      <a class="btn btn-primary" href="/files/authors/<%= author.id %>/edit">Edit</a>
+      <%- include('../partials/deleteForm',
+      { url: `/files/authors/${author.id}` , buttonName : "Delete"}) %>
+    </div>
+  </div>
+<% }) %>
+
+<script>
+  function resetForm() {
+  document.getElementById("asc").checked = true;
+  document.getElementById("desc").checked = false;
+  document.getElementById("sortByName").selected = true;
+  document.getElementById("name").value = '';
+}
+
+</script>
