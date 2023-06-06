@@ -1,4 +1,4 @@
-## DigiLibrary
+# DigiLibrary
 
 Welcome to DigiLibrary! DigiLibrary is a Fullstack web application that allows users to manage their library of books, track their reading progress, and perform various operations on books, authors, and users. It provides a user-friendly interface with advanced features such as email verification, password reset, remember me, dark mode/light mode, and more.
 
