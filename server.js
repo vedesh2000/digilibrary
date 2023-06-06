@@ -1,7 +1,6 @@
 console.log('NODE_ENV:', process.env.NODE_ENV);
-if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config({ path: require('find-config')('.env') })
-}
+
 const expressLayouts = require("express-ejs-layouts")
 const methodOverride = require('method-override')
 const express = require("express");
