@@ -22,15 +22,5 @@
     <%- include('../partials/errorMessage')%>
     <%- body %>
 </body>
-<script>
-    // Read the theme cookie value
-    var theme = document.cookie.replace(/(?:(?:^|.*;\s*)theme\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-    // Change the class of the body element based on the theme value
-    const html = document.querySelector('html');
-    if (theme === "light") {
-      html.classList.add("light-theme");
-    } else {
-      html.classList.add("dark-theme");
-    }
-</script>
+
 </html>

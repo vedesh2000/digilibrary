@@ -58,3 +58,13 @@
   grid-area: author;
   justify-self: stretch;
 }
+
+.book-image{
+  height: 15rem; 
+  width: 12rem;
+}
+.book-image:hover{
+  position: center;
+  height: 24rem; 
+  width: 18rem;
+}
