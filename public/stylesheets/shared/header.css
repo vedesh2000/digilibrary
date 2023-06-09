@@ -22,13 +22,17 @@
 
 .header-nav ul {
   display: flex;
+  flex-wrap: wrap;
   margin: 0;
   padding: 0;
 }
 
 .header-nav li {
   list-style: none;
+  display: flex;
+  flex-wrap: wrap;
 }
+
 
 .header-nav li a {
   text-decoration: none;
@@ -37,6 +41,12 @@
   padding: 0.75rem;
 }
 
+@media (max-width: 480px) {
+  .header-nav li a {
+    padding: 0.3rem;
+    font-size: 0.85rem;
+  }
+}
 .header-nav li a:hover, .header-title:hover {
   color: whitesmoke;
 }
@@ -45,4 +55,6 @@
   margin-left: 20px;
   margin-top: 10px;
 }
-
+.theme-toggle:hover {
+  color: black;
+}

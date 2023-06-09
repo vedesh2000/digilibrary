@@ -1,12 +1,12 @@
 <div class="form-row">
   <div class="form-item">
-    <label>Title</label>
+    <label class="required">Title</label>
     <input type="text" name="title" value="<%= book.title %>" minlength="1" maxlength="500" placeholder="1-500 charecters">
   </div>
 </div>
 <div class="form-row">
   <div class="form-item">
-    <label>Author</label>
+    <label class="required">Author</label>
     <select name="author">
       <% authors.forEach(author=> { %>
         <% if (author.id===book.author) { %>
@@ -87,8 +87,8 @@
 
 <div class="form-row">
   <div class="form-item">
-    <label>Page Count</label>
-    <input type="number" name="pageCount" id="pageCount" min="1" value="<%= book.pageCount %>">
+    <label class="required">Page Count</label>
+    <input type="number" name="pageCount" id="pageCount" min="1" value="<%= book.pageCount %>" required>
   </div>
 </div>
 

@@ -15,7 +15,10 @@
       <button type="button" onclick="toggleTheme()" class="theme-toggle" id="theme-button">
           <i class = "fas"></i>
       </button>
+      <div style="margin-left: 20px;" id="google_translate_element"></div>
     </div>
+    
+  
     <ul>
       <li><a href="/login">Login</a></li>
       <li><a href="/signup">Signup</a></li>
@@ -23,7 +26,13 @@
 </nav>
 </header>
   <body>
-    <script defer src="/javascripts/theme.js"></script>
+    <script defer src="/javascripts/toggle.js"></script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script type="text/javascript">
+    function googleTranslateElementInit() {
+    new google.translate.TranslateElement( 'google_translate_element');
+    }
+    </script>
     
     <div class="center-form" >
       <h3>Forgot Password Page</h3>

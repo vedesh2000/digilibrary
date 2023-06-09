@@ -150,6 +150,8 @@ border-radius: 10px;
 border-style: double;
 font-size: 0.75rem;
 }
+
+
 /* Customize the scrollbar track */
 ::-webkit-scrollbar {
   width: 10px;

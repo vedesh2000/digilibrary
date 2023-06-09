@@ -109,6 +109,11 @@
   overflow: hidden;
 }
 
+label.required::after {
+  content: "*";
+  color: red;
+}
+
 
 .center-form input[type="text"] {
   width: 100%;

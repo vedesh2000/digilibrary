@@ -12,12 +12,20 @@
 </head>
 
 <body>
+
     <script defer src="https://unpkg.com/filepond-plugin-file-encode/dist/filepond-plugin-file-encode.js"></script>
     <script defer src="https://unpkg.com/filepond/dist/filepond.js"></script>
     <script defer src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
     <script defer src="https://unpkg.com/filepond-plugin-image-resize/dist/filepond-plugin-image-resize.js"></script>
     <script defer src="/javascripts/fileUpload.js"></script>
-    <script defer src="/javascripts/theme.js"></script>
+    <script defer src="/javascripts/toggle.js"></script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script type="text/javascript">
+    function googleTranslateElementInit() {
+    new google.translate.TranslateElement( 'google_translate_element');
+    }
+    </script>
+
 
     <%- include('../partials/headers.ejs') %>
     <%- include('../partials/errorMessage')%>
