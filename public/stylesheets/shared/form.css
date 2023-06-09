@@ -98,15 +98,14 @@
 }
 
 .center-form {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%); /* Adjust the values as needed */
-  padding: 50px;
+  position: relative;
+  margin: 5%;
+  padding: 0.75rem;
   align-items: center;
   background-color: var(--color-background-light);
   border-radius: 15px;
   opacity: 0.75;
+  font-size: 0.75rem;
   overflow: hidden;
 }
 

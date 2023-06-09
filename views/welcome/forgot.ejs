@@ -3,10 +3,28 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/stylesheets/main.css">
     <title>Login</title>
+    <link rel="stylesheet" href="/stylesheets/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css">
   </head>
+  <header>
+    <nav class="header-nav">
+    <div class="form-row">
+      <a class="header-title" href="/"><i class="fas fa-home-user"></i></a>
+      <br>
+      <button type="button" onclick="toggleTheme()" class="theme-toggle" id="theme-button">
+          <i class = "fas"></i>
+      </button>
+    </div>
+    <ul>
+      <li><a href="/login">Login</a></li>
+      <li><a href="/signup">Signup</a></li>
+    </ul>
+</nav>
+</header>
   <body>
+    <script defer src="/javascripts/theme.js"></script>
+    
     <div class="center-form" >
       <h3>Forgot Password Page</h3>
       <div style="color: red;">
@@ -28,12 +46,7 @@
         </div>
         <div class="form-row">
           <div class="form-item">
-            <div class="btn-group">
-              <button class = "btn btn-primary" type="submit">Send Reset Link</button>
-              <a class = "btn btn-primary" href="/signup">Signup</a>
-              <a class = "btn btn-primary" href="/login">Login</a>
-              <a class = "btn btn-primary" href="/">Welcome Page</a>
-            </div>
+            <button class = "btn btn-primary" type="submit">Send Reset Link</button>
           </div>
         </div>
       </form>

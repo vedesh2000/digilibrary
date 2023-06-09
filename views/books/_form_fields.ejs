@@ -10,6 +10,7 @@
     <select name="author">
       <% authors.forEach(author=> { %>
         <% if (author.id===book.author) { %>
+          <% console.log("found"); %>
           <option class="author-row" selected label="<%= author.name %>" value="<%= author.id %>">
             <% } else { %>
           <option class="author-row" label="<%= author.name %>" value="<%= author.id %>">
@@ -20,7 +21,34 @@
 </div>
 <div class="form-row">
   <div class="form-item">
-    <label>Document Type</label>
+    <label>Book Language</label>
+    <select name="language" id="docLanguageSelect">
+      <% if (book.language==="english") { %>
+        <option selected label="English" value="english">
+          <% } else { %>
+        <option label="English" value="english">
+      <% } %>
+      <% if (book.language==="hindi") { %>
+        <option selected label="Hindi" value="hindi">
+          <% } else { %>
+        <option label="Hindi" value="hindi">
+      <% } %>
+      <% if (book.language==="telugu") { %>
+        <option selected label="Telugu" value="telugu">
+          <% } else { %>
+        <option label="Telugu" value="telugu">
+      <% } %>
+      <% if (book.language==="sanskrit") { %>
+        <option selected label="Sanskrit" value="sanskrit">
+          <% } else { %>
+        <option label="Sanskrit" value="sanskrit">
+      <% } %>
+    </select>
+  </div>
+</div>
+<div class="form-row">
+  <div class="form-item">
+    <label>Book Type</label>
     <select name="type" id="docTypeSelect">
       <% if (book.type==="book") { %>
         <option selected label="Book" value="book">
@@ -37,7 +65,7 @@
 </div>
 <div class="form-row">
   <% if (book.type==="ebook") { %>
-    <div class="form-item">
+    <div class="form-item" id="driveUpload">
       <label for="driveLink">Drive Link (Optional)</label>
       <input type="text" name="driveLink" value = "<%=book.driveLink%>" placeholder="It is highly recommended to a add drive link to avoid loosing of ebook">
     </div>
@@ -45,14 +73,29 @@
   <div class="form-item" id="driveUpload" style="display: none;">
     <label for="driveLink">Drive Link (Optional)</label>
     <br>
-    <input style="position: relative; width: 100%;" type="text" name="driveLink" placeholder="It is highly recommended to a add drive link to avoid loosing of ebook">
+    <input id="driveUploadInput" style="position: relative; width: 100%;" type="text" name="driveLink" placeholder="It is highly recommended to a add drive link to avoid loosing of ebook">
   </div>
   <%}%>
 </div>
 <div class="form-row">
   <div class="form-item">
+    <label>Publish Date</label>
+    <input type="date" name="publishDate"
+      value="<%= book.publishDate == null ? '' : book.publishDate.toISOString().split('T')[0] %>">
+  </div>
+</div>
+
+<div class="form-row">
+  <div class="form-item">
+    <label>Page Count</label>
+    <input type="number" name="pageCount" id="pageCount" min="1" value="<%= book.pageCount %>">
+  </div>
+</div>
+
+<div class="form-row">
+  <div class="form-item">
     <label>Progress</label>
-    <select name="progress" required>
+    <select name="progress" required id="progressSelect">
         <% if (book.progress==="yetToStart") { %>
           <option selected label="Yet To Start" value="yetToStart">
             <% } else { %>
@@ -64,39 +107,41 @@
           <option label="Completed" value="completed">
         <% } %>
         <% if (book.progress==="inProgress") { %>
-          <option label="In Progress" value="inProgress"></option>
+          <option selected label="In Progress" value="inProgress"></option>
             <% } else { %>
           <option label="In Progress" value="inProgress"></option>
         <% } %>
     </select>
   </div>
 </div>
+
+<div class="form-row">
+    <div class="form-item" id="pagesCompleted">
+      <label>Pages Completed</label>
+      <input type="number" name="pagesCompleted" id="pagesCompletedInput" min="0" value="<%= book.pagesCompleted %>">
+  </div>
+</div>
+
+<div class="form-row">
+  <div class="form-item">
+    <label>Chapters Count</label>
+    <input type="number" name="chaptersCount" min="1" value="<%= book.chaptersCount %>">
+  </div>
+</div>
 <div class="form-row">
   <div class="form-item form-item-no-grow">
-    <label>Cover</label>
+    <label>Cover (jpeg/png/gif/jpg)</label>
     <input type="file" name="cover" class="book-cover filepond">
   </div>
 </div>
 
 <div class="form-row">
   <div class="form-item">
-    <label>Publish Date</label>
-    <input type="date" name="publishDate"
-      value="<%= book.publishDate == null ? '' : book.publishDate.toISOString().split('T')[0] %>">
+    <label>Description (markdown supported up to 2000 characters)</label>
+    <textarea name="description" maxlength="2000"><%= book.description %></textarea>
   </div>
 </div>
-<div class="form-row">
-  <div class="form-item">
-    <label>Page Count</label>
-    <input type="number" name="pageCount" min="1" value="<%= book.pageCount %>">
-  </div>
-</div>
-<div class="form-row">
-  <div class="form-item">
-    <label>Description (upto 1500 charecters)</label>
-    <textarea name="description" maxlength="1500"><%= book.description %></textarea>
-  </div>
-</div>
+
 
 <script>
   var docType = document.getElementById("docTypeSelect");
@@ -107,6 +152,21 @@
       driveUpload.style.display = "block";
     } else {
       driveUpload.style.display = "none";
+    }
+  });
+
+  var progressSelect = document.getElementById("progressSelect");
+  var pagesCompletedInput = document.getElementById("pagesCompletedInput");
+  var pageCount = document.getElementById("pageCount");
+  var oldValue = pagesCompletedInput.value;
+
+  progressSelect.addEventListener("change", function() {
+    if (progressSelect.value === "inProgress") {
+      pagesCompletedInput.value = oldValue;
+    } else if (progressSelect.value === "yetToStart") {
+      pagesCompletedInput.value = 0;
+    }else if (progressSelect.value === "completed") {
+      pagesCompletedInput.value = pageCount.value;
     }
   });
 </script>

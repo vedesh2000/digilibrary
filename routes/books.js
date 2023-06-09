@@ -7,7 +7,7 @@ const Author = require("../models/author")
 const User = require("../models/user")
 const imageMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg']
 
-//all authors route
+//all Books route
 router.get('/', isAuth, async (req, res) => {
     const email = req.session.email;
     const user = await User.findOne({ email })
@@ -99,6 +99,10 @@ router.put('/:id', isAuth, async (req, res) => {
         book.driveLink = req.body.driveLink
         book.publishDate = new Date(req.body.publishDate)
         book.pageCount = req.body.pageCount
+        book.pagesCompleted = req.body.pagesCompleted
+        book.percentageCompleted = req.body.pagesCompleted/req.body.pageCount
+        book.language = req.body.language
+        book.chaptersCount = req.body.chaptersCount
         book.description = req.body.description
         book.lastModifiedAt = new Date()
         book.version += 1
@@ -169,16 +173,33 @@ router.post('/', isAuth, async (req, res) => {
     //publish date check
     let publishDate = new Date();
     let driveLink = ''
+    let pagesCompleted = 0;
+    let percentageCompleted = 0;
     if (req.body.publishDate) {
         publishDate = req.body.publishDate
     }
-    if(req.body.driveLink){
+    if(req.body.type === "ebook" && req.body.driveLink){
         driveLink = req.body.driveLink
     }
+    if(req.body.progress === "inProgress"){
+        pagesCompleted = req.body.pagesCompleted;
+        percentageCompleted = req.body.pagesCompleted/req.body.pageCount;
+    } else if(req.body.progress === "completed"){
+        pagesCompleted = req.body.pageCount;
+        percentageCompleted = 100;
+    } else {
+        pagesCompleted = 0;
+        percentageCompleted = 0;
+    }
+
     const book = new Book({
         title: req.body.title,
         author: req.body.author,
         type: req.body.type,
+        language: req.body.language,
+        pagesCompleted: pagesCompleted,
+        percentageCompleted: percentageCompleted,
+        chaptersCount: req.body.chaptersCount,
         driveLink: driveLink,
         progress: req.body.progress,
         publishDate: publishDate,
@@ -238,7 +259,6 @@ function saveCover(book, coverEncoded) {
         book.coverImage = new Buffer.from(cover.data, 'base64')
         book.coverImageType = cover.type
     }
-
 }
 module.exports = router
 

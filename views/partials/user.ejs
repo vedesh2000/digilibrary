@@ -1,6 +1,19 @@
-<div>
-    <form action="/logout" method="post">
-        <a class = "btn btn-primary" href="user/<%= url %>">profile</a>
-        <button class = "btn btn-danger" type="submit">logout</button>
-    </form> 
-</div>
+<div class="dropdown">
+    <button onclick="toggleDropdown()" class="profile-button header-title">
+      <i class="fas fa-user"></i>
+    </button>
+    <div id="dropdown-content" class="dropdown-content">
+      <a class="btn btn-primary dropdown-item" href="/user">Profile</a>
+      <form action="/logout" method="post">
+        <button class="btn btn-danger dropdown-item" type="submit">Logout</button>
+      </form>
+    </div>
+  </div>
+  
+  <script>
+    function toggleDropdown() {
+      var dropdownContent = document.getElementById("dropdown-content");
+      dropdownContent.classList.toggle("show");
+    }
+  </script>
+  

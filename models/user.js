@@ -45,6 +45,12 @@ const userSchema = new Schema({
   },
   subscribedAt: {
     type: Date
+  },
+  coverImage: {
+    type: Buffer
+  },
+  coverImageType: {
+      type: String
   }
 });
 
@@ -74,4 +80,11 @@ userSchema.pre('deleteOne', { document: true }, function(next)  {
           next(err)
   });
 })
+
+userSchema.virtual('coverImagePath').get(function() {
+  if(this.coverImage != null && this.coverImageType != null){
+      return `data:${this.coverImageType};charset=utf-8;base64,${this.coverImage.toString('base64')}`
+  }
+})
+
 module.exports = mongoose.model('User' , userSchema)

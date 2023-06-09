@@ -13,9 +13,19 @@
     </div>
     <div>Publish Date : <%=book.publishDate.toDateString() %>
     </div>
-    <br/>
-    <div>Page Count : <%=book.pageCount %>
+    <div>
+        <label>Show Description</label>
+        <label class="switch">
+        <input type="checkbox" id="showDescToggle" name="showDescToggle" onchange="showDesc()">
+        <span class="slider round"></span>
+        </label>
+        <div style="display: none;" id="showDescDiv" class="description">
+            <div>
+                <%- book.sanitizedDescription %>
+            </div>
+        </div>
     </div>
+    <br/>
     <div>Book Type :
         <% if(book.type==="book" ) { %>
             Book
@@ -28,9 +38,17 @@
                     <% } %>
                         <%}%>
     </div>
+    <div>Chapters Count : <%=book.chaptersCount %>
+    <br/>
+    <div>Page Count : <%=book.pageCount %>
+    <br/>
     <div>Progress :
         <% if(book.progress==="inProgress" ) { %>
             In Progress
+            <div>Pages Completed : <%=book.pagesCompleted %>
+            <br/>
+            <div>Percentage Completed : <%= Math.round(book.percentageCompleted * 100 * 100) / 100 %>%
+            </div>
             <% } else if(book.progress==="completed" ) { %>
                 Completed
                 <% } else { %>
@@ -52,16 +70,6 @@
             </div>
             <div>Modification Times : <%=book.version %>
             </div>
-        </div>
-    </div>
-    <div>
-        <label>Show Description</label>
-        <label class="switch">
-        <input type="checkbox" id="showDescToggle" name="showDescToggle" onchange="showDesc()">
-        <span class="slider round"></span>
-        </label>
-        <div style="display: none;" id="showDescDiv" class="description">
-            <%=book.description %>
         </div>
     </div>
     </div>

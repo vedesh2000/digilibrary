@@ -28,6 +28,12 @@
           <option label="Created At" value="createdAt">
         <% } %>
 
+        <% if(sortBy === 'percentageCompleted') {%>
+          <option selected label="Percentage Completed" value="percentageCompleted">
+        <%} else {%>
+          <option label="Percentage Completed" value="percentageCompleted">
+        <% } %>
+
         <% if(sortBy === "publishDate") {%>
           <option label="Publish Date" value="publishDate" selected>
         <%} else {%>
@@ -53,11 +59,12 @@
         <% } %>
 
         <% if(sortBy === 'version') {%>
-          <option selected label="Modifications" value="version">
+          <option selected label="Modification times" value="version">
         <%} else {%>
-          <option label="Modifications" value="version">
+          <option label="Modification times" value="version">
         <% } %>
 
+        
       </select>
     </div>
   </div>
@@ -194,7 +201,7 @@
             <img src="/book.png">
             <% } %>
           </a>    
-          <div class="container" style="color: black;">
+          <div class="container">
             <h4><b><%=book.title %></b></h4> 
           </div>
         </div>

@@ -1,4 +1,13 @@
 <h2 class="page-header">Hello <%= user.username %>!</h2>
+
+<div>
+    <% if(user.coverImagePath) { %>
+        <img class="book-image" style="border-radius: 50%;" src="<%= user.coverImagePath %>">
+        <% } else { %>
+            <img  class="book-image" style="border-radius: 50%;" src="/user.png">
+            <% } %>
+</div>
+
 <div class="dashboard-details">
     Total Authors : <%= authorsLength %>
     <br>
@@ -21,7 +30,7 @@
     <%=yetToStartBooksLength%>/<%=totalBooksLength%>
 </div>
 
-<div class="btn-group">
+<div class="btn-row">
     <a class="btn btn-primary" href="/user/<%= user.id %>/edit">Edit User</a>
     <a class="btn btn-primary" href="/user/<%= user.id %>/editPassword">Change Password</a>
 </div>

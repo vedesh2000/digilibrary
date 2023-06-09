@@ -5,11 +5,11 @@ const bcrypt = require("bcryptjs");
 const User = require('../models/user');
 const Book = require('../models/book')
 const Author = require('../models/author')
+const imageMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg']
 
-
-routes.get('/:id', isAuth, async (req, res) => {
+routes.get('/', isAuth, async (req, res) => {
     try {
-        const user = await User.findById(req.params.id);
+        const user = await User.findOne({email: req.session.email});
         const books = await Book.find({ user: user });
         const authors = await Author.find({ user: user });
         res.render('user/show', {
@@ -89,7 +89,7 @@ routes.put('/editPassword/:id', isAuth, async (req, res) => {
         .then(() => {
             console.log("User Password Updated successfully");
             res.redirect(`/user/${user.id}`)
-            console.log(user);
+            // console.log(user);
         })
         .catch((err) => {
             console.log(err);
@@ -102,8 +102,11 @@ routes.put('/:id', isAuth, async (req, res) => {
     try {
         //console.log(req.url);
         user = await User.findById(req.params.id)
-        console.log(req.body);
+        // console.log(req.body);
         user.username = req.body.name
+        if (req.body.cover != null && req.body.cover !== '') {
+            saveCover(user, req.body.cover)
+        }
     } catch {
         if (user == null) {
             res.redirect('/')
@@ -116,7 +119,7 @@ routes.put('/:id', isAuth, async (req, res) => {
         .then(() => {
             console.log("User Updated successfully");
             res.redirect(`/user/${user.id}`)
-            console.log(user);
+            // console.log(user);
         })
         .catch((err) => {
             console.log(err);
@@ -137,7 +140,7 @@ routes.delete('/:id', isAuth, async (req, res) => {
                 console.log(err);
                 throw err;
             }
-            console.log("username account deleted Successfully");
+            console.log(username + "account deleted Successfully");
             res.redirect("/");
         });
 
@@ -160,5 +163,12 @@ function checkPassword(inputtxt) {
     }
     return false;
 }
-
+function saveCover(user, coverEncoded) {
+    if (coverEncoded == null) return
+    const cover = JSON.parse(coverEncoded)
+    if (cover != null && imageMimeTypes.includes(cover.type)) {
+        user.coverImage = new Buffer.from(cover.data, 'base64')
+        user.coverImageType = cover.type
+    }
+}
 module.exports = routes

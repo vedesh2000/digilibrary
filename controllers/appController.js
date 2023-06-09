@@ -236,7 +236,7 @@ exports.dashboard_get = async (req, res) => {
         books = []
     }
     // res.render('index' , {})
-  res.render("index", { name: email , user: user, books : books});
+  res.render("index", { user: user, books : books});
 };
 exports.logout_post = (req, res) => {
   req.session.destroy((err) => {

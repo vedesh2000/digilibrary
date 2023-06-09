@@ -13,8 +13,8 @@
 .btn {
   border: 1px solid var(--color-btn-border);
   border-radius: .5rem;
-  padding: .5rem 1rem;
-  font-size: 1.2rem;
+  padding: .5rem .5rem;
+  font-size: 0.75rem;
   font-family: 'Gotham Rounded';
   cursor: pointer;
   text-decoration: none;
@@ -63,4 +63,43 @@
 
 .btn-group a {
   flex: 1 1 auto;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.profile-button {
+  background: none;
+  border: none;
+  margin-left: 10px;
+  margin-top: 12px;
+  cursor: pointer;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color:  var(--color-text-light);
+  min-width: 120px;
+  box-shadow: 0px 8px 16px 0px var(--color-background-light);
+  padding: 12px;
+  z-index: 1;
+  border-radius: 5%;
+}
+
+.dropdown-content.show {
+  display: block;
+}
+
+.dropdown-item {
+  display: block;
+  margin-bottom: 8px;
+  text-decoration: none;
+  color: #333;
+}
+
+.dropdown-item:last-child {
+  margin-bottom: 0;
 }

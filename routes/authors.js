@@ -51,7 +51,7 @@ routes.post('/', isAuth, async (req, res) => {
         .then(() => {
             // res.redirect(`User Created ${author.name}`)
             // res.redirect(`authors`);
-            console.log("Author Created");
+            // console.log("Author Created");
             res.redirect(`/files/authors/${author.id}`)
         })
         .catch((err) => {
