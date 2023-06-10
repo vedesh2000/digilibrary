@@ -43,7 +43,7 @@
 
 @media (max-width: 480px) {
   .header-nav li a {
-    padding: 0.3rem;
+    padding: 0.25rem;
     font-size: 0.85rem;
   }
 }
@@ -52,7 +52,7 @@
 }
 
 .theme-toggle {
-  margin-left: 20px;
+  margin-left: 5px;
   margin-top: 10px;
 }
 .theme-toggle:hover {
