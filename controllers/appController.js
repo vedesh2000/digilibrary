@@ -257,7 +257,7 @@ exports.logout_post = (req, res) => {
       console.log(err);
       throw err;
     }
-    res.redirect("/login");
+    res.redirect("/");
   });
 };
 

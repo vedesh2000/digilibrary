@@ -60,15 +60,15 @@ router.get('/new', isAuth, async (req, res) => {
 });
 router.get('/:id', async (req, res) => {
     try {
-        const book = await Book.findById(req.params.id).populate('author').exec()
-        const user = await User.findById(book.user)
-        book.lastOpenedAt = new Date();
-        await book.save()
         if (req.session.email != user.email) {
             res.redirect('/')
             console.log("Invalid user accessed Book");
             return
         }
+        const book = await Book.findById(req.params.id).populate('author').exec()
+        const user = await User.findById(book.user)
+        book.lastOpenedAt = new Date();
+        await book.save()
         res.render('books/show', { book: book })
     } catch (err) {
         console.log(err);
