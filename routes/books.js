@@ -11,7 +11,7 @@ const imageMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg']
 router.get('/', isAuth, async (req, res) => {
     const email = req.session.email;
     const user = await User.findOne({ email })
-    const recentSearches = await user.recentSearches;
+    const recentSearches = user.recentSearches;
     let searchOptions = { user: user }
     let query = Book.find(searchOptions)
     if (req.query.title != null && req.query.title != ''){
@@ -31,19 +31,26 @@ router.get('/', isAuth, async (req, res) => {
     const sortBy = req.query.sortBy;
     const sort = req.query.sort;
     try {
+        let pageNumber = parseInt(req.query.page) || 1; // Get the requested page number from the query string
+        const pageSize = 20; // Number of items to load per page
         let sortOptions = {};
         sortOptions[sortBy] = sort;
-        const books = await query.sort(sortOptions).exec()
+        const queryResult = await query.sort(sortOptions).exec();
+        const books = queryResult.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+
         res.render('books/index', {
             books: books,
             searchOptions: req.query,
             sortBy: sortBy,
             sort: sort,
             filterToggle: req.query.filterToggle,
-            recentSearches: recentSearches
+            recentSearches: recentSearches,
+            current: pageNumber, 
+            pages: Math.ceil(queryResult.length / pageSize)
         })
     }
-    catch {
+    catch(err) {
+        console.log(err);
         res.redirect('/')
     }
 });

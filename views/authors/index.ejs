@@ -81,6 +81,42 @@
   </div>
 <% }) %>
 
+<% if (pages > 0) { %>
+  <ul class="pagination text-center">
+    <% if (current == 1) { %>
+      <li class="disabled"><a>First</a></li>
+    <% } else { %>
+      <li><a href="/files/authors?page=1">First</a></li>
+    <% } %>
+    <% if (current > 1) { %>
+      <li><a href="/files/authors?page=<%= current - 1 %>">Previous</a></li>
+    <% } %>
+    <% var i = (Number(current) > 5 ? Number(current) - 4 : 1) %>
+    <% if (i !== 1) { %>
+      <li class="disabled"><a>...</a></li>
+    <% } %>
+    <% for (; i <= (Number(current) + 4) && i <= pages; i++) { %>
+      <% if (i == current) { %>
+        <li class="active"><a><%= i %></a></li>
+      <% } else { %>
+        <li><a href="/files/authors?page=<%= i %>"><%= i %></a></li>
+      <% } %>
+      <% if (i == Number(current) + 4 && i < pages) { %>
+        <li class="disabled"><a>...</a></li>
+      <% } %>
+    <% } %>
+    <% if (current < pages) { %>
+      <li><a href="/files/authors?page=<%= current + 1 %>">Next</a></li>
+    <% } %>
+    <% if (current == pages) { %>
+      <li class="disabled"><a>Last</a></li>
+    <% } else { %>
+      <li><a href="/files/books?page=<%= pages %>">Last</a></li>
+    <% } %>
+  </ul>
+<% } %>
+
+
 <script>
   function resetForm() {
   document.getElementById("asc").checked = true;

@@ -55,7 +55,7 @@
 }
 
 .btn-group {
-  width: 75%;
+  width: 50%;
   display: flex;
   flex-wrap: wrap;
   gap: 10px;

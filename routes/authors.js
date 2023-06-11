@@ -15,16 +15,21 @@ routes.get('/', isAuth, async (req, res) => {
         searchOptions.name = new RegExp(req.query.name, 'i')
     }
     try {
+        let pageNumber = parseInt(req.query.page) || 1; // Get the requested page number from the query string
+        const pageSize = 1; // Number of items to load per page
         let sortOptions = {};
         if(sortBy)
             sortOptions[sortBy] = sort;
-        const authors = await Author.find(searchOptions).sort(sortOptions).exec()
+            const queryResult = await Author.find(searchOptions).sort(sortOptions).exec();
+            const authors = queryResult.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
         res.render('authors/index',
             {
                 authors: authors,
                 searchOptions: req.query.name,
                 sortBy: req.query.sortBy,
-                sort: req.query.sort
+                sort: req.query.sort,
+                current: pageNumber, 
+                pages: Math.ceil(queryResult.length / pageSize)
             })
     } catch(err) {
         console.log(err);

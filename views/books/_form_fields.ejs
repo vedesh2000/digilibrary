@@ -8,15 +8,15 @@
   <div class="form-item">
     <label class="required">Author</label>
     <select name="author">
-      <% authors.forEach(author=> { %>
-        <% if (author.id===book.author) { %>
-          <% console.log("found"); %>
+      <% authors.forEach(author => { %>
+        <% if (book.author && author.id === book.author.valueOf()) { %> <!-- Use valueOf() to access the inner value -->
           <option class="author-row" selected label="<%= author.name %>" value="<%= author.id %>">
-            <% } else { %>
+        <% } else { %>
           <option class="author-row" label="<%= author.name %>" value="<%= author.id %>">
         <% } %>
       <% }) %>
     </select>
+    
   </div>
 </div>
 <div class="form-row">
