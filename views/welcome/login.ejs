@@ -4,22 +4,34 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/stylesheets/main.css">
     <title>Login</title>
+    <link rel="stylesheet" href="/stylesheets/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css">
   </head>
-  
-  <script>
-    function myFunction() {
-      var x = document.getElementById("myInput");
-      if (x.type === "password") {
-        x.type = "text";
-      } else {
-        x.type = "password";
-      }
-    }
-  </script>
-
+  <header>
+    <nav class="header-nav">
+    <div class="form-row">
+      <a class="header-title" href="/"><i class="fas fa-home-user"></i></a>
+      <br>
+      <button type="button" onclick="toggleTheme()" class="theme-toggle" id="theme-button" style="margin-left: 30px; margin-top: 12px;">
+          <i class = "fas"></i>
+      </button>
+      <div style="margin-left: 20px;" id="google_translate_element"></div>
+    </div>
+    <ul>
+        <li><a href="/signup">Signup</a></li>
+    </ul>
+</nav>
+</header>
   <body>
+    <script defer src="/javascripts/toggle.js"></script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script type="text/javascript">
+    function googleTranslateElementInit() {
+    new google.translate.TranslateElement( 'google_translate_element');
+    }
+    window.onload = googleTranslateElementInit;
+    </script>
     <div class="center-form">
       <h3>Login Page</h3>
       <div style="color: red;">
@@ -59,15 +71,25 @@
         </div>
         <div class="form-row">
           <div class="form-item">
-            <div class="btn-group">
+            <div>
               <button class="btn btn-primary" type="submit">Login</button>
-              <a class="btn btn-primary" href="/signup">Signup</a>
-              <a class="btn btn-primary" href="/forgotPassword">Forgot Password</a>
-              <a class="btn btn-primary" href="/">Welcome Page</a>
             </div>
+            <br>
+            <a style="color:  var(--color-text-light);" href="/forgotPassword">Forgot Password</a>
           </div>
         </div>
       </form>
     </div>
   </body>
 </html>
+
+<script>
+  function myFunction() {
+    var x = document.getElementById("myInput");
+    if (x.type === "password") {
+      x.type = "text";
+    } else {
+      x.type = "password";
+    }
+  }
+</script>

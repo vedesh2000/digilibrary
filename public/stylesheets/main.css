@@ -1,4 +1,5 @@
 @import 'shared/variables.css';
+@import 'shared/pagination.css';
 @import 'shared/fonts.css';
 @import 'shared/header.css';
 @import 'shared/buttons.css';
@@ -24,6 +25,11 @@ body{
   font-weight: 500;
 }
 
+.title-header {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
 .error-message {
   color: hsl(var(--color-danger-hue), 100%, 50%);
 }
@@ -31,9 +37,9 @@ body{
 .dashboard-details{
   text-decoration: none;
   color: var(--color-text-light);
-  font-weight: bold;
-  padding: 1rem;
-  font-size: 30px;
+  font-weight: 500;
+  padding: 0.5rem;
+  font-size: 1rem;
 }
 
 .cards-container {
@@ -48,7 +54,7 @@ body{
 }
 .card {
   overflow: hidden;
-  width: 160px;
+  width: 150px;
   height: 300px;
   margin: 10px;
   text-align: left;
@@ -138,13 +144,15 @@ input:checked + .slider:before {
 
 .description {
 background-color: var(--color-background-dark);
-margin: 10px;
+margin: 2px;
 border: var(--color-text-dark);
 padding: 10px;
-align-content: flex-start;
 border-radius: 10px;
 border-style: double;
+font-size: 0.75rem;
 }
+
+
 /* Customize the scrollbar track */
 ::-webkit-scrollbar {
   width: 10px;

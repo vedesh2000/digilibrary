@@ -227,38 +227,39 @@ user.password = hasdPsw;
 };
 exports.dashboard_get = async (req, res) => {
   const email = req.session.email;
-  const user = await User.findOne({ email })
-    let books
-    try{
-        books = await Book.find({user: user}).sort({ lastOpenedAt : 'desc'}).limit(10).exec()
-    }
-    catch{
-        books = []
-    }
-    // res.render('index' , {})
-  res.render("index", { name: email , user: user, books : books});
+  const user = await User.findOne({ email });
+
+  let pageNumber = parseInt(req.query.page) || 1; // Get the requested page number from the query string
+  const pageSize = 20; // Number of items to load per page
+
+  try {
+    const allBooks = await Book.find({ user: user });
+    const dbBooks = await Book.find({ user: user })
+      .sort({ lastOpenedAt: 'desc' })
+      .skip((pageNumber - 1) * pageSize) // Skip the appropriate number of items based on the page number
+      .limit(pageSize)
+      .exec();
+
+    const books = dbBooks.map((book) => {
+      return { id: book.id, coverImagePath: book.coverImagePath, title: book.title };
+    });
+
+    res.render('index', { user: user, books: books, current: pageNumber, pages: Math.ceil(allBooks.length / pageSize) });
+  } catch (error) {
+    console.error(error);
+    res.render('index', { user: user, books: books, current: pageNumber, pages: Math.ceil(allBooks.length / pageSize) , errorMessage: error });
+  }
 };
+
 exports.logout_post = (req, res) => {
   req.session.destroy((err) => {
     if (err) {
       console.log(err);
       throw err;
     }
-    res.redirect("/login");
+    res.redirect("/");
   });
 };
 
-exports.toggle_theme = (req, res) => {
-  // Toggle the theme after clicking the button
-  const theme = req.cookies.theme === "light" ? "dark" : "light";
-  // Get the referring URL from the 'Referer' header
-  let referringUrl = req.headers.referer;
-  if (!referringUrl) {
-    referringUrl = "/files";
-  }
-  // Set the updated theme in the cookie
-  res.cookie("theme", theme);
-  res.redirect(referringUrl);
-};
 
 

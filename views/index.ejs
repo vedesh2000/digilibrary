@@ -1,19 +1,53 @@
-<%- include('./partials/user' , {url: `${user.id}`}) %>
-<h2 class="page-header">Recently added by <%=user.username%></h2>
+<h2 class="page-header">Recently Read by <%= user.username %></h2>
 
 <div class="cards-container">
-    <% books.forEach(book => {%>
-      <div class="card">
-        <a href="/files/books/<%=book.id%>">
-          <% if(book.coverImagePath) { %>
-            <img src="<%= book.coverImagePath %>">
-          <% } else { %>
-            <img src="/book.png">
-          <% } %>
-          <div class="container">
-            <h4><b><%=book.title %></b></h4> 
-          </div>
-        </a>    
-      </div>
-    <%})%>
-  </div>
+  <% books.forEach(book => { %>
+    <div class="card">
+      <a href="/files/books/<%= book.id %>">
+        <% if (book.coverImagePath) { %>
+          <img src="<%= book.coverImagePath %>">
+        <% } else { %>
+          <img src="/book.png">
+        <% } %>
+        <div class="container">
+          <h4><b><%= book.title %></b></h4>
+        </div>
+      </a>
+    </div>
+  <% }) %>
+</div>
+<% if (pages > 0) { %>
+  <ul class="pagination text-center">
+    <% if (current == 1) { %>
+      <li class="disabled"><a>First</a></li>
+    <% } else { %>
+      <li><a href="/files?page=1">First</a></li>
+    <% } %>
+    <% if (current > 1) { %>
+      <li><a href="/files?page=<%= current - 1 %>">Previous</a></li>
+    <% } %>
+    <% var i = (Number(current) > 5 ? Number(current) - 4 : 1) %>
+    <% if (i !== 1) { %>
+      <li class="disabled"><a>...</a></li>
+    <% } %>
+    <% for (; i <= (Number(current) + 4) && i <= pages; i++) { %>
+      <% if (i == current) { %>
+        <li class="active"><a><%= i %></a></li>
+      <% } else { %>
+        <li><a href="/files?page=<%= i %>"><%= i %></a></li>
+      <% } %>
+      <% if (i == Number(current) + 4 && i < pages) { %>
+        <li class="disabled"><a>...</a></li>
+      <% } %>
+    <% } %>
+    <% if (current < pages) { %>
+      <li><a href="/files?page=<%= current + 1 %>">Next</a></li>
+    <% } %>
+    <% if (current == pages) { %>
+      <li class="disabled"><a>Last</a></li>
+    <% } else { %>
+      <li><a href="/files?page=<%= pages %>">Last</a></li>
+    <% } %>
+  </ul>
+<% } %>
+

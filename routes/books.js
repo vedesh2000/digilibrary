@@ -7,11 +7,11 @@ const Author = require("../models/author")
 const User = require("../models/user")
 const imageMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg']
 
-//all authors route
+//all Books route
 router.get('/', isAuth, async (req, res) => {
     const email = req.session.email;
     const user = await User.findOne({ email })
-    const recentSearches = await user.recentSearches;
+    const recentSearches = user.recentSearches;
     let searchOptions = { user: user }
     let query = Book.find(searchOptions)
     if (req.query.title != null && req.query.title != ''){
@@ -31,19 +31,26 @@ router.get('/', isAuth, async (req, res) => {
     const sortBy = req.query.sortBy;
     const sort = req.query.sort;
     try {
+        let pageNumber = parseInt(req.query.page) || 1; // Get the requested page number from the query string
+        const pageSize = 20; // Number of items to load per page
         let sortOptions = {};
         sortOptions[sortBy] = sort;
-        const books = await query.sort(sortOptions).exec()
+        const queryResult = await query.sort(sortOptions).exec();
+        const books = queryResult.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+
         res.render('books/index', {
             books: books,
             searchOptions: req.query,
             sortBy: sortBy,
             sort: sort,
             filterToggle: req.query.filterToggle,
-            recentSearches: recentSearches
+            recentSearches: recentSearches,
+            current: pageNumber, 
+            pages: Math.ceil(queryResult.length / pageSize)
         })
     }
-    catch {
+    catch(err) {
+        console.log(err);
         res.redirect('/')
     }
 });
@@ -55,13 +62,13 @@ router.get('/:id', async (req, res) => {
     try {
         const book = await Book.findById(req.params.id).populate('author').exec()
         const user = await User.findById(book.user)
-        book.lastOpenedAt = new Date();
-        await book.save()
         if (req.session.email != user.email) {
             res.redirect('/')
             console.log("Invalid user accessed Book");
             return
         }
+        book.lastOpenedAt = new Date();
+        await book.save()
         res.render('books/show', { book: book })
     } catch (err) {
         console.log(err);
@@ -99,6 +106,10 @@ router.put('/:id', isAuth, async (req, res) => {
         book.driveLink = req.body.driveLink
         book.publishDate = new Date(req.body.publishDate)
         book.pageCount = req.body.pageCount
+        book.pagesCompleted = req.body.pagesCompleted
+        book.percentageCompleted = req.body.pagesCompleted/req.body.pageCount
+        book.language = req.body.language
+        book.chaptersCount = req.body.chaptersCount
         book.description = req.body.description
         book.lastModifiedAt = new Date()
         book.version += 1
@@ -169,16 +180,33 @@ router.post('/', isAuth, async (req, res) => {
     //publish date check
     let publishDate = new Date();
     let driveLink = ''
+    let pagesCompleted = 0;
+    let percentageCompleted = 0;
     if (req.body.publishDate) {
         publishDate = req.body.publishDate
     }
-    if(req.body.driveLink){
+    if(req.body.type === "ebook" && req.body.driveLink){
         driveLink = req.body.driveLink
     }
+    if(req.body.progress === "inProgress"){
+        pagesCompleted = req.body.pagesCompleted;
+        percentageCompleted = req.body.pagesCompleted/req.body.pageCount;
+    } else if(req.body.progress === "completed"){
+        pagesCompleted = req.body.pageCount;
+        percentageCompleted = 100;
+    } else {
+        pagesCompleted = 0;
+        percentageCompleted = 0;
+    }
+
     const book = new Book({
         title: req.body.title,
         author: req.body.author,
         type: req.body.type,
+        language: req.body.language,
+        pagesCompleted: pagesCompleted,
+        percentageCompleted: percentageCompleted,
+        chaptersCount: req.body.chaptersCount,
         driveLink: driveLink,
         progress: req.body.progress,
         publishDate: publishDate,
@@ -238,7 +266,6 @@ function saveCover(book, coverEncoded) {
         book.coverImage = new Buffer.from(cover.data, 'base64')
         book.coverImageType = cover.type
     }
-
 }
 module.exports = router
 
