@@ -20,7 +20,8 @@
         <span class="slider round"></span>
         </label>
         <div style="display: none;" id="showDescDiv" class="description">
-            <div>
+            <button onclick="copyText()">Copy Text</button>
+            <div id="description">
                 <%- book.sanitizedDescription %>
             </div>
         </div>
@@ -97,4 +98,30 @@
     else
       showDescDiv.style.display = "none";
     }
+
+
+function copyText() {
+  // Get the content of the div
+  var description = document.getElementById("description").innerText;
+
+  // Create a temporary textarea element
+  var textarea = document.createElement("textarea");
+  textarea.value = description;
+
+  // Append the textarea to the document
+  document.body.appendChild(textarea);
+
+  // Select the text in the textarea
+  textarea.select();
+  textarea.setSelectionRange(0, 99999); // For mobile devices
+
+  // Copy the text to the clipboard
+  document.execCommand("copy");
+
+  // Remove the temporary textarea
+  document.body.removeChild(textarea);
+
+  // Alert the user
+  alert("Text copied to clipboard: " + description);
+}
 </script>
