@@ -16,7 +16,7 @@ routes.get('/', isAuth, async (req, res) => {
     }
     try {
         let pageNumber = parseInt(req.query.page) || 1; // Get the requested page number from the query string
-        const pageSize = 1; // Number of items to load per page
+        const pageSize = 20; // Number of items to load per page
         let sortOptions = {};
         if(sortBy)
             sortOptions[sortBy] = sort;
