@@ -44,7 +44,7 @@
 @media (max-width: 480px) {
   .header-nav li a {
     padding: 0.25rem;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
   }
 }
 .header-nav li a:hover, .header-title:hover {

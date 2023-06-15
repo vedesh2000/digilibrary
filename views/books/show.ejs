@@ -13,6 +13,18 @@
     </div>
     <div>Publish Date : <%=book.publishDate.toDateString() %>
     </div>
+    <div>Book Type :
+        <% if(book.type==="book" ) { %>
+            Book
+        <% } else { %>
+            E-Book
+            <%if(book.driveLink) {%>
+                <div>
+                    <a href="<%=book.driveLink%>">Drive Link</a>
+                </div>
+             <% } %> 
+        <%}%>
+    </div>
     <div>
         <label>Show Description</label>
         <label class="switch">
@@ -26,21 +38,8 @@
             </div>
         </div>
     </div>
-    <br/>
-    <div>Book Type :
-        <% if(book.type==="book" ) { %>
-            Book
-            <% } else { %>
-                E-Book
-                <%if(book.driveLink) {%>
-                    <div>
-                        <a href="<%=book.driveLink%>">Drive Link</a>
-                    </div>
-                    <% } %>
-                        <%}%>
-    </div>
-    <div>Chapters Count : <%=book.chaptersCount %>
-    <br/>
+    
+    <br>
     <div>Page Count : <%=book.pageCount %>
     <br/>
     <div>Progress :
