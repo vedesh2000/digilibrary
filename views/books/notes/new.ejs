@@ -1,0 +1,11 @@
+<div class="container">
+    <h1 class="mb-4">New Chapter</h1>
+
+    <form action="/files/books/<%=bookId %>/newNotes" method="POST">
+      <%- include('_form_fields') %>
+      <div class="form-row form-row-end btn-row">
+        <a href="/files/books/<%= bookId%>/notes" class="btn btn-danger">Cancel</a>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </div>
+    </form>
+</div>

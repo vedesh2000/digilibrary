@@ -1,0 +1,24 @@
+<div class="form-row">
+<div class="form-item">
+    <label for="chapterNumber">Chapter Number</label>
+    <input required value="<%= chapter.chapterNumber %>" min="1" type="number" name="chapterNumber" id="chapterNumber" class="form-control">
+  </div>
+</div>
+<div class="form-row">
+<div class="form-item">
+    <label for="title">Title</label>
+    <input required value="<%= chapter.title %>" type="text" name="title" id="title" class="form-control">
+  </div>
+  </div>
+  <div class="form-row">
+  <div class="form-item">
+    <label for="description">Description</label>
+    <textarea name="description" id="description" class="description"><%= chapter.description %></textarea>
+  </div>
+  </div>
+  <div class="form-row">
+  <div class="form-item">
+    <label for="markdown">Notes (markdown)</label>
+    <textarea required name="notesMarkdown" id="markdown" maxlength="10000"><%= chapter.notesMarkdown %></textarea>
+  </div>
+  </div>

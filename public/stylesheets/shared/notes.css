@@ -1,0 +1,18 @@
+.card-body {
+    border-radius: 2rem;
+    border: var(--color-text-dark);
+    padding: 10px;
+    border-radius: 10px;
+    border-style: double;
+    margin-top: 0.5rem;
+    background-color: var(--color-background-light);
+    color: var(--color-text-light);
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+}
+
+.card-title{margin-bottom:.75rem}
+
+.card-text:last-child{margin-bottom:0}
+.mb-2,.my-2{margin-bottom:.5rem!important}

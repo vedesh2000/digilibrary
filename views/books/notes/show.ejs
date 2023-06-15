@@ -1,0 +1,98 @@
+
+<div class="container">
+  <h1 class="mb-1">Chapter Number: <%= chapter.chapterNumber %></h1>
+  <h1 class="mb-1">Title: <%= chapter.title %></h1>
+  <div id="description">
+    <%- chapter.sanitizedDescription %>
+  </div>
+  <a href="/files/books/<%= bookId%>/notes" class="btn btn-primary">All chapters</a>
+  <a href="edit/" class="btn btn-primary">Edit</a>
+  <br>
+  <br>
+  <div class="description">
+    <button onclick="copyText()">Copy Text</button>
+    <div id="notes">
+      <%- chapter.sanitizedNotesMarkdown %>
+    </div>
+    <label for="speed">Speed</label>
+    <input type="number" name="speed" id="speed" min=".5" max="3" step=".5" value="1">
+    <button onclick="stop();">Stop</button>
+    <button onclick="play();">Play</button>
+    <button onclick="pause();">Pause</button>
+  </div>
+</div>
+
+<script>
+
+function copyText() {
+  // Get the content of the div
+  var description = document.getElementById("notes").innerText;
+
+  // Create a temporary textarea element
+  var textarea = document.createElement("textarea");
+  textarea.value = description;
+
+  // Append the textarea to the document
+  document.body.appendChild(textarea);
+
+  // Select the text in the textarea
+  textarea.select();
+  textarea.setSelectionRange(0, 99999); // For mobile devices
+
+  // Copy the text to the clipboard
+  document.execCommand("copy");
+
+  // Remove the temporary textarea
+  document.body.removeChild(textarea);
+
+  // Alert the user
+  alert("Text copied to clipboard: " + description);
+}
+//Speech/////////////////////////////////////////////////////////////////////////////////////
+
+var description = document.getElementById("notes").innerText;
+
+// Create a temporary textarea element
+var textInput = document.createElement("textarea");
+textInput.value = description;
+
+// Append the textInput to the document
+document.body.appendChild(textInput);
+
+const speedInput = document.getElementById('speed')
+const synth = window.speechSynthesis;
+    let myPauseProperty = false;
+    let utterThis;
+    function stop() {
+        myPauseProperty = false;
+        synth.cancel(utterThis);
+    }
+    function play() {
+        if ((myPauseProperty === true)&&(synth.speaking===true)) {//alredy started not ended
+            //speech somewhere in the middle, and paused, needs resumed
+            synth.resume();
+            myPauseProperty=false;
+        }
+        else if (synth.speaking===false) {
+            //not started or has ended, user expects to start play
+            utterThis = new SpeechSynthesisUtterance(textInput.value);
+            synth.cancel();
+            synth.speak(utterThis);
+            myPauseProperty=false;
+        }
+    }
+    function pause() {
+        if ((myPauseProperty === true)&&(synth.speaking===true)) {
+            //speech somewhere in middle of phrase and paused, user wants unpause
+            synth.resume();
+            myPauseProperty = false;
+        }
+        else if ((myPauseProperty === false)&&(synth.speaking===true)) {
+            //speech somewhere in middle of phrase and unpaused, user wants pause
+            synth.pause()
+            myPauseProperty=true;
+        }
+    }
+// Remove the temporary textInput
+document.body.removeChild(textInput);
+</script>

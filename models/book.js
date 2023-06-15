@@ -12,13 +12,26 @@ marked("# heading");
 const createDomPurify = require('dompurify');
 const { JSDOM } = require('jsdom');
 const domPurify = createDomPurify(new JSDOM().window);
-const ChapterSchema = new mongoose.Schema({
-    chapter: {
+
+
+const chapterSchema = new mongoose.Schema({
+    chapterNumber: {
+        type: Number,
+        default:1,
+        min:1
+    },
+    title: {
       type: String,
       required: true
     },
-    chapterString: {
+    description: {
+        type: String
+    },
+    notesMarkdown: {
       type: String
+    },
+    sanitizedNotesMarkdown: {
+        type: String
     }
   });
 
@@ -38,15 +51,9 @@ const bookSchema = mongoose.Schema({
         type: Date,
         required: true
     },
-    chaptersCount: {
-        type: Number,
-        required: true,
-        min: 1,
-        default: 1
-    },
     chapterNotes: {
-        type: [ChapterSchema]
-        // ,
+        type: [chapterSchema],
+        default : [],
         // required: true,
     },
     pageCount: {
@@ -138,5 +145,17 @@ bookSchema.pre('validate' , function(next){
     next();
 })
 
+chapterSchema.pre('validate' , function (next) {
+    if(this.notesMarkdown){
+        this.sanitizedNotesMarkdown = domPurify.sanitize(marked.parse(this.notesMarkdown));
+    }
+    next();
+})
 
-module.exports = mongoose.model('Book' , bookSchema)
+const Chapter = mongoose.model('Chapter', chapterSchema);
+const Book = mongoose.model('Book', bookSchema);
+
+module.exports = {
+  Chapter,
+  Book
+};

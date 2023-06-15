@@ -1,0 +1,27 @@
+
+<div class="">
+  <h1><%=title %></h1>
+  <h2>Chapter Wise Notes</h2>
+  <a href="notes/new" class="btn btn-primary">Add Chapter</a>
+  <a href="/files/books/<%=bookId%>" class="btn btn-primary">Goto Book</a>
+  <!-- <a href="/files/books/<%=bookId%>/PDF" class="btn btn-primary">Get Notes PDF</a> -->
+  <br>
+  <% chapters.forEach(chapter => { %>
+    <div class="form-row">
+      <div class="card-body">
+        <h3 class="card-title">Chapter Number: <%= chapter.chapterNumber %></h3>
+        <h4 class="card-title">Title: <%= chapter.title %></h4>
+        <p>Description:</p>
+        <div class="card-text description"><%= chapter.description %></div>
+        <br>
+        <div class="btn-group">
+          <a href="notes/<%= chapter.id %>/show" class="btn btn-primary">Read More</a>
+          <a href="notes/<%= chapter.id %>/edit" class="btn btn-primary">Edit</a>
+          <form action="notes/<%= chapter.id %>/delete?_method=DELETE" method="POST" class="d-inline">
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  <% }) %>
+</div>
