@@ -15,10 +15,10 @@
       <%- chapter.sanitizedNotesMarkdown %>
     </div>
     <label for="speed">Speed</label>
-    <input type="number" name="speed" id="speed" min=".5" max="3" step=".5" value="1">
-    <button onclick="stop();">Stop</button>
-    <button onclick="play();">Play</button>
-    <button onclick="pause();">Pause</button>
+    <input type="number" name="speed" id="speed" min=".25" max="3" step=".25" value="1">
+    <button id="stop" onclick="stop();">Stop</button>
+    <button id="play" onclick="play();">Play</button>
+    <button id="pause" onclick="pause();"></button>
   </div>
 </div>
 
@@ -51,7 +51,8 @@ function copyText() {
 //Speech/////////////////////////////////////////////////////////////////////////////////////
 
 var description = document.getElementById("notes").innerText;
-
+var pauseButton = document.getElementById("pause");
+pauseButton.textContent = "Pause";
 // Create a temporary textarea element
 var textInput = document.createElement("textarea");
 textInput.value = description;
@@ -59,7 +60,7 @@ textInput.value = description;
 // Append the textInput to the document
 document.body.appendChild(textInput);
 
-const speedInput = document.getElementById('speed')
+
 const synth = window.speechSynthesis;
     let myPauseProperty = false;
     let utterThis;
@@ -68,14 +69,20 @@ const synth = window.speechSynthesis;
         synth.cancel(utterThis);
     }
     function play() {
+      const speedInput = document.getElementById('speed').value;
         if ((myPauseProperty === true)&&(synth.speaking===true)) {//alredy started not ended
             //speech somewhere in the middle, and paused, needs resumed
             synth.resume();
+            //added below line to reslove bug in android chrome
+            synth.speak(utterThis);
             myPauseProperty=false;
         }
         else if (synth.speaking===false) {
             //not started or has ended, user expects to start play
             utterThis = new SpeechSynthesisUtterance(textInput.value);
+            
+            //adjust the speed
+            utterThis.rate = parseFloat(speedInput);
             synth.cancel();
             synth.speak(utterThis);
             myPauseProperty=false;
@@ -85,12 +92,14 @@ const synth = window.speechSynthesis;
         if ((myPauseProperty === true)&&(synth.speaking===true)) {
             //speech somewhere in middle of phrase and paused, user wants unpause
             synth.resume();
+            pauseButton.textContent = "Pause";
             myPauseProperty = false;
         }
         else if ((myPauseProperty === false)&&(synth.speaking===true)) {
             //speech somewhere in middle of phrase and unpaused, user wants pause
-            synth.pause()
+            synth.pause();
             myPauseProperty=true;
+            pauseButton.textContent = "Resume";
         }
     }
 // Remove the temporary textInput

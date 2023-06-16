@@ -210,7 +210,7 @@ router.put('/:bookId/notes/:chapterId/edit', isAuth, async (req, res) => {
         if(chapterObj === null)
             return res.render("books/notes/index", { title: book.title, bookId: req.params.bookId , chapters: book.chapterNotes, errorMessage: "Notes not found Please create New chapter"});
         
-        
+        book.lastModifiedAt = new Date();
         await book.save()
         res.redirect(`/files/books/${req.params.bookId}/notes/${req.params.chapterId}/show`)
     }
@@ -278,6 +278,7 @@ router.delete('/:bookId/notes/:chapterId/delete', isAuth, async (req, res) => {
         }
 
         book.chapterNotes.splice(chapterIndex, 1); // Remove the chapter from the array
+        book.lastModifiedAt = new Date();
         await book.save();
         res.redirect(`/files/books/${req.params.bookId}/notes`);
     } catch (error) {
@@ -406,6 +407,7 @@ router.post('/:id/newNotes', isAuth, async (req, res) => {
             notesMarkdown: req.body.notesMarkdown
         })
         book.chapterNotes.push(chapter);
+        book.lastModifiedAt = new Date();
         await book.save()
         res.redirect('notes')
     }

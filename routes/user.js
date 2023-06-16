@@ -3,7 +3,7 @@ const isAuth = require("../middleware/is-auth");
 const routes = express.Router();
 const bcrypt = require("bcryptjs");
 const User = require('../models/user');
-const Book = require('../models/book')
+const {Book} = require('../models/book')
 const Author = require('../models/author')
 const imageMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg']
 
