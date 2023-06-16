@@ -233,15 +233,44 @@ router.put('/:id', isAuth, async (req, res) => {
             res.redirect('/')
             return
         }
+    let publishDate = new Date();
+    let driveLink = ''
+    let pagesCompleted = 0;
+    let percentageCompleted = 0;
+    if (req.body.publishDate) {
+        publishDate = req.body.publishDate
+    }
+    if(req.body.type === "ebook" && req.body.driveLink){
+        driveLink = req.body.driveLink
+    }
+    if(req.body.progress === "inProgress"){
+        if(req.body.pagesCompleted > 0 && req.body.pagesCompleted < req.body.pageCount){
+            pagesCompleted = req.body.pagesCompleted;
+            percentageCompleted = req.body.pagesCompleted/req.body.pageCount;
+        } else if(req.body.pagesCompleted >= req.body.pageCount){
+            
+            pagesCompleted = req.body.pageCount-1;
+            percentageCompleted = pagesCompleted/req.body.pageCount;
+        } else {
+            pagesCompleted = 1;
+            percentageCompleted = pagesCompleted/req.body.pageCount;
+        }
+    } else if(req.body.progress === "completed"){
+        pagesCompleted = req.body.pageCount;
+        percentageCompleted = 100;
+    } else {
+        pagesCompleted = 0;
+        percentageCompleted = 0;
+    }
         book.title = req.body.title
         book.author = req.body.author
         book.type = req.body.type
         book.progress = req.body.progress
-        book.driveLink = req.body.driveLink
-        book.publishDate = new Date(req.body.publishDate)
+        book.driveLink = driveLink
+        book.publishDate = new Date(publishDate)
         book.pageCount = req.body.pageCount
-        book.pagesCompleted = req.body.pagesCompleted
-        book.percentageCompleted = req.body.pagesCompleted/req.body.pageCount
+        book.pagesCompleted = pagesCompleted
+        book.percentageCompleted = percentageCompleted
         book.language = req.body.language
         book.description = req.body.description
         book.lastModifiedAt = new Date()
@@ -351,8 +380,18 @@ router.post('/', isAuth, async (req, res) => {
         driveLink = req.body.driveLink
     }
     if(req.body.progress === "inProgress"){
-        pagesCompleted = req.body.pagesCompleted;
-        percentageCompleted = req.body.pagesCompleted/req.body.pageCount;
+        console.log(req.body.pagesCompleted, req.body.pageCount);
+        if(req.body.pagesCompleted > 0 && req.body.pagesCompleted < req.body.pageCount){
+            pagesCompleted = req.body.pagesCompleted;
+            percentageCompleted = req.body.pagesCompleted/req.body.pageCount;
+        } else if(req.body.pagesCompleted >= req.body.pageCount){
+            
+            pagesCompleted = req.body.pageCount-1;
+            percentageCompleted = pagesCompleted/req.body.pageCount;
+        } else {
+            pagesCompleted = 1;
+            percentageCompleted = pagesCompleted/req.body.pageCount;
+        }
     } else if(req.body.progress === "completed"){
         pagesCompleted = req.body.pageCount;
         percentageCompleted = 100;
@@ -414,6 +453,27 @@ router.post('/:id/newNotes', isAuth, async (req, res) => {
     catch (error) {
         console.log(error)
         res.render("books/notes/index", { title: book.title, bookId: book.id, chapters: book.chapterNotes, errorMessage: "Error creating notes"})
+    }
+})
+//add to favorites
+router.post('/:id/addOrRemoveFav', isAuth, async (req, res) => {
+    let book
+    try {
+        book = await Book.findById(req.params.id)
+        const user = await User.findById(book.user)
+        if (req.session.email != user.email) {
+            res.redirect('/')
+            return
+        }
+        
+        book.isFavourite = !(book.isFavourite);
+        book.lastModifiedAt = new Date();
+        await book.save()
+        res.render("books/show", { book: book});
+    }
+    catch (error) {
+        console.log(error)
+        res.render("books/show", { book: book, errorMessage: "Error adding to Favourites"})
     }
 })
 async function renderNewPage(req, res, book, hasError = false) {

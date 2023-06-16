@@ -12,15 +12,25 @@ routes.get('/', isAuth, async (req, res) => {
         const user = await User.findOne({email: req.session.email});
         const books = await Book.find({ user: user });
         const authors = await Author.find({ user: user });
+        const inProgressBooks = books.filter((book) => book.progress === 'inProgress');
+        var percentagesList = [];
+        for(var i=0; i<10; i++){
+            percentagesList.push(0);
+        }
+        //getting percentage completed for all in progress books
+        inProgressBooks.forEach(book => {
+            percentagesList[Math.floor(book.percentageCompleted*10)] += 1;
+        });
         res.render('user/show', {
             user: user,
             authorsLength: authors.length,
             totalBooksLength: books.length,
-            inProgressBooksLength: books.filter((book) => book.progress === 'inProgress').length,
+            inProgressBooksLength: inProgressBooks.length,
             completedBooksLength: books.filter((book) => book.progress === 'completed').length,
             yetToStartBooksLength: books.filter((book) => book.progress === 'yetToStart').length,
             physicalBooksLength: books.filter((book) => book.type === 'book').length,
             eBooksLength: books.filter((book) => book.type === 'ebook').length,
+            percentageGroupsList: percentagesList
         });
 
     } catch (err) {
@@ -118,7 +128,7 @@ routes.put('/:id', isAuth, async (req, res) => {
     user.save()
         .then(() => {
             console.log("User Updated successfully");
-            res.redirect(`/user/${user.id}`)
+            res.redirect(`/user/`)
             // console.log(user);
         })
         .catch((err) => {

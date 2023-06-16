@@ -74,6 +74,9 @@
     </div>
     </div>
 <div class="btn-group">
+    <form action="<%= book.id%>/addOrRemoveFav" method="post">
+        <button type="submit" class="btn btn-primary">Add to Fav</button>
+    </form>
     <a class="btn btn-primary" href="/files/books/<%= book.id%>/notes">Notes</a>
     <a class="btn btn-primary" href="/files/books/<%= book.id%>/edit">Edit</a>
     <a class="btn btn-primary" href="/files/authors/<%= book.author.id%>/">View Author</a>

@@ -129,6 +129,14 @@ const bookSchema = mongoose.Schema({
         enum: ['completed', 'inProgress', 'yetToStart'],
         default: 'yetToStart',
         required: true
+    },
+    isFavourite: {
+        type: Boolean,
+        default: false
+    },
+    isTenPagesPerDay: {
+        type: Boolean,
+        default: false
     }
 })
 

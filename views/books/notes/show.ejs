@@ -78,13 +78,24 @@ const synth = window.speechSynthesis;
             myPauseProperty=false;
         }
         else if (synth.speaking===false) {
+            let flag = true;
             //not started or has ended, user expects to start play
             utterThis = new SpeechSynthesisUtterance(textInput.value);
-            
-            //adjust the speed
+            utterThis.lang = 'en-US';
             utterThis.rate = parseFloat(speedInput);
             synth.cancel();
+            //adjust the speed
             synth.speak(utterThis);
+            //adding to resolve pausing for long texts more than 14sec
+            let r = setInterval(() => {
+            // console.log(synth.speaking);
+            if (!synth.speaking) {
+              clearInterval(r);
+            } else {
+              synth.pause();
+              synth.resume();
+            }
+            }, 14000);
             myPauseProperty=false;
         }
     }

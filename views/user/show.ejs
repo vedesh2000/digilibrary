@@ -1,3 +1,5 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
 <h2 class="page-header">Hello <%= user.username %>!</h2>
 
 <div>
@@ -7,6 +9,7 @@
             <img  class="book-image" style="border-radius: 50%;" src="/user.png">
             <% } %>
 </div>
+<input id="percentageGroupsList" style="display: none;" value="<%=percentageGroupsList %>"></input>
 
 <div class="dashboard-details">
     Total Authors : <%= authorsLength %>
@@ -28,6 +31,9 @@
     <label for="yetToStartBooks">Yet to Start Books: </label>
     <progress id="yetToStartBooks" name="yetToStartBooks" value="<%=yetToStartBooksLength%>" max="<%=totalBooksLength%>"></progress>
     <%=yetToStartBooksLength%>/<%=totalBooksLength%>
+    
+    <canvas id="myChart" class="myChart"></canvas>
+    <canvas id="myBarChart" class="myChart"></canvas>
 </div>
 
 <div class="btn-row">
@@ -36,4 +42,67 @@
 </div>
 <br>
 <%- include('../partials/deleteForm', { url: `/user/${user.id}`, buttonName: "Delete account" }) %>
+
+
+<script>
+
+    var completedBooks = document.getElementById("completedBooks").value;
+    var inProgressBooks = document.getElementById("inProgressBooks").value;
+    var yetToStartBooks = document.getElementById("yetToStartBooks").value;
+
+    var xValues = ["Yet To Start", "In Progress", "Completed"];
+    var yValues = [yetToStartBooks, inProgressBooks, completedBooks];
+    var barColors = [
+      "#b91d47",
+      "#2b5797",
+      "#1e7145"
+    ];
+    
+    new Chart("myChart", {
+      type: "pie",
+      data: {
+        labels: xValues,
+        datasets: [{
+          backgroundColor: barColors,
+          data: yValues
+        }]
+      },
+      options: {
+        title: {
+          display: true,
+          text: "Books Progress Pie Chart"
+        }
+      }
+    });
+
+//bar graph
+
+var xBarValues = [];
+for (var i = 0; i <= 90; i += 10) {
+  var label = i + "-" + (i + 10) + "%";
+  xBarValues.push(label);
+}
+var yBarValues = document.getElementById("percentageGroupsList").value.split(",");
+var barColors =  ["red", "orange", "brown", "yellow", "gray", "teal", "blue", "purple", "magenta", "green"];
+
+new Chart("myBarChart", {
+  type: "bar",
+  data: {
+    labels: xBarValues,
+    datasets: [{
+      backgroundColor: barColors,
+      data: yBarValues
+    }]
+  },
+  options: {
+    legend: { display: false },
+    title: {
+      display: true,
+      text: "In Progress Books Percentage completed"
+    }
+  }
+});
+
+
+</script>
 
