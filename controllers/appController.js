@@ -23,7 +23,15 @@ exports.login_get = (req, res) => {
   delete req.session.error;
   const msg = req.session.msg;
   delete req.session.msg;
-  res.render("welcome/login", { layout: false ,err: error, msg: msg});
+  let isPending = false;
+  let resendEmail = ''
+  if(req.session.isPending){
+    isPending = req.session.isPending;
+    delete req.session.isPending;
+    resendEmail = req.session.email;
+    delete req.session.email;
+  }
+  res.render("welcome/login", { layout: false ,err: error, msg: msg, isPending: isPending, resendEmail: resendEmail});
 };
 exports.login_post = async (req, res) => {
   const email = req.body.email.toLowerCase();
@@ -35,6 +43,8 @@ exports.login_post = async (req, res) => {
   }
   if (user.status != "Active") {
     req.session.error = "Pending Account. Please Verify Your Email!";
+    req.session.isPending = true;
+    req.session.email = email;
     return res.redirect("/login");
   }
 
@@ -69,6 +79,26 @@ exports.register_get = (req, res) => {
   delete req.session.error;
   res.render("welcome/signup", { layout: false , err: error });
 };
+exports.resendVerificationEmail_get = async (req, res) => {
+  // const email = req.body
+  const email = req.params.email.toLowerCase();
+  const user = await User.findOne({email});
+    if(user){
+      const subject = "Link to verify Email";
+      const mailMsg = "Please confirm your email";
+      const url = process.env.BASE_URL + "/api/auth/confirm/" + user.confirmationCode;
+      mailStatus = await sendEmail(process.env.USER_EMAIL, process.env.PASSWORD, url, user.username, user.email, subject, mailMsg);
+      }
+    //Sending Mail
+    if(mailStatus){
+      req.session.msg = "Resent Confirmation Email, Please confirm and try to Login";
+      res.redirect("/login");
+    }
+    else{
+      req.session.error = "Sorry Unable to sent email now, Please try again";
+      return res.redirect("/login");
+    }
+}
 exports.register_post = async (req, res) => {
   const { username, password, confirmpassword } = req.body;
   const email = req.body.email.toLowerCase();

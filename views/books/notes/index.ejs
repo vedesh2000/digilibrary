@@ -6,6 +6,21 @@
   <a href="/files/books/<%=bookId%>" class="btn btn-primary">Goto Book</a>
   <!-- <a href="/files/books/<%=bookId%>/PDF" class="btn btn-primary">Get Notes PDF</a> -->
   <br>
+  <br>
+  <br>
+  <form action = "/files/books/<%=bookId%>/notes" method="GET" id="myForm">
+    <div class="form-row">
+      <div class="form-item">
+        <label>Search in Notes</label>
+        <input type="text" placeholder="Search Here" name="notes" id="notes" value="<%= searchOptions.notes %>">
+      </div>
+    </div>
+    <div class="form-row form-row-end">
+      <button type="submit" class="btn btn-danger" onclick="resetForm()">Reset</button>
+      <button class="btn btn-primary" type="submit">Search</button>
+    </div>
+  </form>
+
   <% chapters.forEach(chapter => { %>
     <div class="form-row">
       <div class="card-body">
@@ -25,3 +40,9 @@
     </div>
   <% }) %>
 </div>
+
+<script>
+  function resetForm() {
+    document.getElementById("notes").value='';
+  }
+</script>

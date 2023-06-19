@@ -14,11 +14,22 @@ router.get('/', isAuth, async (req, res) => {
     const recentSearches = user.recentSearches;
     let searchOptions = { user: user }
     let query = Book.find(searchOptions)
-    if (req.query.title != null && req.query.title != ''){
-        query = query.regex('title', new RegExp(req.query.title, 'i'))
-        // No need to wait here as it may happen in backend...?
+    
+    //adding fuzzy as 2 if req add Levenshtein distance to handle wrong spells
+    if (req.query.title != null && req.query.title != '') {
+        const fuzzyRegex = new RegExp('.*' + req.query.title.split('').join('.{0,2}') + '.*', 'i');
+        query = query.regex('title', fuzzyRegex);
+        // No need to wait here as it may happen in the backend...?
         updateRecentSearches(email, req.query.title);
-    }
+      }
+    //adding fuzzy as 2 if req add Levenshtein distance to handle wrong spells
+    if (req.query.description != null && req.query.description != '') {
+        const fuzzyRegex = new RegExp('.*' + req.query.description.split('').join('.{0,2}') + '.*', 'i');
+        query = query.regex('description', fuzzyRegex);
+      }
+      
+    if (req.query.percentageCompleted != null && req.query.percentageCompleted != '')
+        query = query.gte('percentageCompleted', req.query.percentageCompleted/100)
     if (req.query.publishedBefore != null && req.query.publishedBefore != '')
         query = query.lte('publishDate', req.query.publishedBefore)
     if (req.query.publishedAfter != null && req.query.publishedAfter != '')
@@ -36,10 +47,30 @@ router.get('/', isAuth, async (req, res) => {
         let sortOptions = {};
         sortOptions[sortBy] = sort;
         const queryResult = await query.sort(sortOptions).exec();
-        const books = queryResult.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+        const books = queryResult;
+        let filteredBooks = books;
+        if (req.query.notes != null && req.query.notes != '') {
+            let queryChapters = [];
+            for (const book of queryResult) {
+                queryChapters = queryChapters.concat(book.chapterNotes);
+            }
+
+            queryChapters = queryChapters.filter(query => {
+              const fuzzyRegex = new RegExp('.*' + req.query.notes.split('').join('.{0,2}') + '.*', 'i');
+              return fuzzyRegex.test(query.notesMarkdown) || fuzzyRegex.test(query.description);
+            });
+
+            filteredBooks = books.filter(book => {
+                const bookChapters = book.chapterNotes;
+                return bookChapters.some(chapter => queryChapters.includes(chapter));
+            });
+          }
+
+          filteredBooks = filteredBooks.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+
 
         res.render('books/index', {
-            books: books,
+            books: filteredBooks,
             searchOptions: req.query,
             sortBy: sortBy,
             sort: sort,
@@ -99,8 +130,16 @@ router.get('/:id/notes', isAuth, async (req, res) => {
             res.redirect('/')
             return
         }
-        const sortedNotes = book.chapterNotes.sort((a, b) => a.chapterNumber - b.chapterNumber) ;
-        res.render("books/notes/index", {title: book.title, bookId: book.id, chapters: sortedNotes });
+        let queryChapters = book.chapterNotes;
+        //adding fuzzy as 2 if req add Levenshtein distance to handle wrong spells
+        if (req.query.notes != null && req.query.notes != '') {
+        queryChapters = queryChapters.filter(query => {
+            const fuzzyRegex = new RegExp('.*' + req.query.notes.split('').join('.{0,2}') + '.*', 'i');
+            return fuzzyRegex.test(query.notesMarkdown) || fuzzyRegex.test(query.description);
+        });
+        }
+        const sortedNotes = queryChapters.sort((a, b) => a.chapterNumber - b.chapterNumber);
+        res.render("books/notes/index", {title: book.title, bookId: book.id, chapters: sortedNotes , searchOptions: req.query });
     } catch(err) {
         console.log(err);
         res.redirect('/')
@@ -211,6 +250,7 @@ router.put('/:bookId/notes/:chapterId/edit', isAuth, async (req, res) => {
             return res.render("books/notes/index", { title: book.title, bookId: req.params.bookId , chapters: book.chapterNotes, errorMessage: "Notes not found Please create New chapter"});
         
         book.lastModifiedAt = new Date();
+        book.version += 1;
         await book.save()
         res.redirect(`/files/books/${req.params.bookId}/notes/${req.params.chapterId}/show`)
     }
@@ -270,7 +310,7 @@ router.put('/:id', isAuth, async (req, res) => {
         book.publishDate = new Date(publishDate)
         book.pageCount = req.body.pageCount
         book.pagesCompleted = pagesCompleted
-        book.percentageCompleted = percentageCompleted
+        book.percentageCompleted = Math.round(percentageCompleted * 100) / 100
         book.language = req.body.language
         book.description = req.body.description
         book.lastModifiedAt = new Date()
@@ -308,6 +348,7 @@ router.delete('/:bookId/notes/:chapterId/delete', isAuth, async (req, res) => {
 
         book.chapterNotes.splice(chapterIndex, 1); // Remove the chapter from the array
         book.lastModifiedAt = new Date();
+        book.version += 1;
         await book.save();
         res.redirect(`/files/books/${req.params.bookId}/notes`);
     } catch (error) {
@@ -380,7 +421,6 @@ router.post('/', isAuth, async (req, res) => {
         driveLink = req.body.driveLink
     }
     if(req.body.progress === "inProgress"){
-        console.log(req.body.pagesCompleted, req.body.pageCount);
         if(req.body.pagesCompleted > 0 && req.body.pagesCompleted < req.body.pageCount){
             pagesCompleted = req.body.pagesCompleted;
             percentageCompleted = req.body.pagesCompleted/req.body.pageCount;
@@ -406,7 +446,7 @@ router.post('/', isAuth, async (req, res) => {
         type: req.body.type,
         language: req.body.language,
         pagesCompleted: pagesCompleted,
-        percentageCompleted: percentageCompleted,
+        percentageCompleted: Math.round(percentageCompleted * 100) / 100,
         driveLink: driveLink,
         progress: req.body.progress,
         publishDate: publishDate,
@@ -447,6 +487,7 @@ router.post('/:id/newNotes', isAuth, async (req, res) => {
         })
         book.chapterNotes.push(chapter);
         book.lastModifiedAt = new Date();
+        book.version += 1;
         await book.save()
         res.redirect('notes')
     }
@@ -468,6 +509,7 @@ router.post('/:id/addOrRemoveFav', isAuth, async (req, res) => {
         
         book.isFavourite = !(book.isFavourite);
         book.lastModifiedAt = new Date();
+        book.version += 1;
         await book.save()
         res.render("books/show", { book: book});
     }

@@ -74,6 +74,12 @@
             <div>
               <button class="btn btn-primary" type="submit">Login</button>
             </div>
+            <div>
+              <% if(isPending) { %>
+                <br>
+                <a href="/resendVerificationEmail/<%= resendEmail %>" class="btn btn-primary">Resend Verification Email</a>
+              <% } %>
+            </div>
             <br>
             <a style="color:  var(--color-text-light);" href="/forgotPassword">Forgot Password</a>
           </div>

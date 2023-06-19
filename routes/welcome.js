@@ -13,6 +13,9 @@ app.post("/login", appController.login_post);
 app.get("/signup", appController.register_get);
 app.post("/signup", appController.register_post);
 
+//Resend confirmation email
+app.get("/resendVerificationEmail/:email", appController.resendVerificationEmail_get);
+
 // Verify
 app.get("/api/auth/confirm/:confirmationCode", appController.verifyUser)
 // //Reset Link

@@ -3,7 +3,7 @@ const isAuth = require("../middleware/is-auth");
 const routes = express.Router();
 const Author = require('../models/author');
 const User = require('../models/user');
-const Book = require('../models/book');
+const {Book} = require('../models/book');
 //All authors
 routes.get('/', isAuth, async (req, res) => {
     const email = req.session.email
@@ -75,14 +75,14 @@ routes.get('/:id', isAuth, async (req, res) => {
         // const books = await Book.find({author: author.id}).limit(6).exec()
         // Modifying last opened at
         author.lastOpenedAt = new Date();
-        author.save();
+        await author.save();
         const books = await Book.find({author: author.id}).exec()
         res.render('authors/show' , {
             author: author,
             booksByAuthor: books
         })
     }catch(err){
-        //console.log(err);
+        console.log(err);
         res.redirect('/')
     }
 })

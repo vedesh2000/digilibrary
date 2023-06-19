@@ -11,7 +11,20 @@
       </datalist>
     </div>
   </div>
+
+  <div class="form-row">
+    <div class="form-item">
+      <label>Search in Description</label>
+      <input type="text" placeholder="Search Here" name="description" id="description" value="<%= searchOptions.description %>">
+    </div>
+  </div>
   
+  <div class="form-row">
+    <div class="form-item">
+      <label>Search in Notes</label>
+      <input type="text" placeholder="Search Here" name="notes" id="notes" value="<%= searchOptions.notes %>">
+    </div>
+  </div>
   <div class="form-row">
     <div class="form-item">
       <label>Sort By</label>
@@ -120,6 +133,16 @@
     </div>
   </div>
   <div class="form-row">
+    <div class="form-item">
+      <% const percentageCompleted = searchOptions.percentageCompleted !== undefined ? searchOptions.percentageCompleted : 0; %>
+      <label>Percentage Completed</label>
+      <span id="percentageValue" style="margin-left: 2px;"><%= percentageCompleted %></span>
+      <input type="range" min="0" max="100" name="percentageCompleted" id="percentageCompleted" value="<%= percentageCompleted %>">
+    </div>
+  </div>
+  
+   
+  <div class="form-row">
     <div class="form-item-no-grow">
       <label>Book Progress:</label>
       <% if(searchOptions.progress === undefined || searchOptions.progress === "") {%>
@@ -192,22 +215,21 @@
 </div>
 </form>
 <div class="cards-container">
-  <% books.forEach(book => {%>
+  <% books.forEach(book => { %>
     <div class="card">
-      <a href="/files/books/<%=book.id%>">
-        <% if(book.coverImagePath) { %>
+      <a href="/files/books/<%= book.id %>">
+        <% if (book.coverImagePath) { %>
           <img src="<%= book.coverImagePath %>">
-          <% } else { %>
-            <img src="/book.png">
-            <% } %>
-          </a>    
-          <div class="container">
-            <h4><b><%=book.title %></b></h4> 
-          </div>
+        <% } else { %>
+          <img src="/book.png">
+        <% } %>
+        <div class="container">
+          <h4><b><%= book.title %></b></h4>
         </div>
-        <%})%>
-      </div>
-      
+      </a>
+    </div>
+  <% }) %>
+</div>
 <br/>
 <%- include('../partials/deleteForm' , {url : "books/deleteAll" , buttonName: "Delete All Books"}) %>
 <br/>
@@ -249,8 +271,18 @@
 
 
 <script>
+  const slider = document.getElementById('percentageCompleted');
+  const percentageValue = document.getElementById('percentageValue');
+
+  slider.addEventListener('input', function() {
+    percentageValue.textContent = slider.value;
+  });
+
+
   function resetForm() {
     document.getElementById("title").value='';
+    document.getElementById("description").value='';
+    document.getElementById("notes").value='';
     document.getElementById("asc").checked = true;
     document.getElementById("desc").checked = false;
     document.getElementById("sortByTitle").selected = true;
@@ -263,6 +295,7 @@
       filterDiv.style.display = "block";
     else{
       filterDiv.style.display = "none";
+      document.getElementById("percentageCompleted").value=0;
       document.getElementById("publishedAfter").value='';
       document.getElementById("publishedBefore").value='';
       document.getElementById("typeAll").checked=true;

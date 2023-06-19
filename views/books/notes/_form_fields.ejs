@@ -1,24 +1,144 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
 <div class="form-row">
-<div class="form-item">
+  <div class="form-item">
     <label for="chapterNumber">Chapter Number</label>
-    <input required value="<%= chapter.chapterNumber %>" min="1" type="number" name="chapterNumber" id="chapterNumber" class="form-control">
+    <input required value="<%= chapter.chapterNumber %>" min="1" type="number" name="chapterNumber" id="chapterNumber"
+      class="form-control">
   </div>
 </div>
 <div class="form-row">
-<div class="form-item">
+  <div class="form-item">
     <label for="title">Title</label>
     <input required value="<%= chapter.title %>" type="text" name="title" id="title" class="form-control">
   </div>
-  </div>
-  <div class="form-row">
+</div>
+<div class="form-row">
   <div class="form-item">
     <label for="description">Description</label>
     <textarea name="description" id="description" class="description"><%= chapter.description %></textarea>
   </div>
-  </div>
-  <div class="form-row">
+</div>
+<div class="form-row">
   <div class="form-item">
     <label for="markdown">Notes (markdown)</label>
-    <textarea required name="notesMarkdown" id="markdown" maxlength="10000" ><%= chapter.notesMarkdown %></textarea>
+    <textarea required name="notesMarkdown" id="markdown" maxlength="10000"><%= chapter.notesMarkdown %></textarea>
   </div>
-  </div>
+</div>
+
+
+<button id="start-record-btn" title="Start Recording" >Start Voice Recognition</button>
+<button id="pause-record-btn" title="Pause Recording" >Pause Voice Recognition</button> 
+<p id="recording-instructions">Press the <strong>Start Recognition</strong> button and allow access.</p>
+
+<div id="permission-dialog" style="display: none;">
+  <p>This website requires access to your microphone to enable voice recognition.</p>
+  <button id="allow-access-btn">Allow Access</button>
+</div>
+
+<script>
+
+try {
+  var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var recognition = new SpeechRecognition();
+  console.log("Sup");
+}
+catch(e) {
+  console.error(e);
+  $('.no-browser-support').show();
+  $('.app').hide();
+}
+
+var permissionDialog = $('#permission-dialog');
+  var allowAccessBtn = $('#allow-access-btn');
+
+var noteTextarea = $('#markdown');
+var instructions = $('#recording-instructions');
+
+var noteContent = noteTextarea.val();
+
+console.log(noteContent);
+
+
+
+
+/*-----------------------------
+      Voice Recognition 
+------------------------------*/
+
+// If false, the recording will stop after a few seconds of silence.
+// When true, the silence period is longer (about 15 seconds),
+// allowing us to keep recording even when the user pauses. 
+recognition.continuous = true;
+
+// This block is called every time the Speech APi captures a line. 
+recognition.onresult = function(event) {
+
+  // event is a SpeechRecognitionEvent object.
+  // It holds all the lines we have captured so far. 
+  // We only need the current one.
+  var current = event.resultIndex;
+
+  // Get a transcript of what was said.
+  var transcript = event.results[current][0].transcript;
+
+  // Add the current transcript to the contents of our Note.
+  // There is a weird bug on mobile, where everything is repeated twice.
+  // There is no official solution so far so we have to handle an edge case.
+  var mobileRepeatBug = (current == 1 && transcript == event.results[0][0].transcript);
+
+  if(!mobileRepeatBug) {
+    noteContent += transcript;
+    noteTextarea.val(noteContent);
+  }
+};
+
+recognition.onstart = function() { 
+  instructions.text('Voice recognition activated. Try speaking into the microphone.');
+}
+
+recognition.onspeechend = function() {
+  instructions.text('You were quiet for a while so voice recognition turned itself off.');
+}
+
+recognition.onerror = function(event) {
+  if(event.error == 'no-speech') {
+    instructions.text('No speech was detected. Try again.');  
+  };
+}
+
+
+
+/*-----------------------------
+      App buttons and input 
+------------------------------*/
+
+$('#start-record-btn').on('click', function(e) {
+  e.preventDefault();
+  if (noteContent.length) {
+    noteContent += ' ';
+    console.log(noteContent);
+  }
+  if (recognition.permission === 'denied') {
+      permissionDialog.show();
+    }
+  recognition.start();
+});
+
+allowAccessBtn.on('click', function() {
+    permissionDialog.hide();
+    recognition.start();
+  });
+
+$('#pause-record-btn').on('click', function(e) {
+  e.preventDefault();
+  recognition.stop();
+  instructions.text('Voice recognition paused.');
+});
+
+// Sync the text inside the text area with the noteContent variable.
+noteTextarea.on('input', function() {
+  noteContent = $(this).val();
+})
+
+</script>
