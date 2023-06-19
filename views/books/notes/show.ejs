@@ -81,7 +81,6 @@ const synth = window.speechSynthesis;
             let flag = true;
             //not started or has ended, user expects to start play
             utterThis = new SpeechSynthesisUtterance(textInput.value);
-            utterThis.lang = 'en-US';
             utterThis.rate = parseFloat(speedInput);
             synth.cancel();
             //adjust the speed
