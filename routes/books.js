@@ -6,7 +6,92 @@ const { Chapter, Book } = require("../models/book");
 const Author = require("../models/author")
 const User = require("../models/user");
 const imageMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg']
-
+// all Languages
+const allLanguages = [
+    'afrikaans',
+    'albanian',
+    'amharic',
+    'arabic',
+    'armenian',
+    'assamese',
+    'azerbaijani',
+    'bengali',
+    'bosnian',
+    'bulgarian',
+    'burmese',
+    'catalan',
+    'chinese',
+    'croatian',
+    'czech',
+    'danish',
+    'dutch',
+    'english',
+    'estonian',
+    'finnish',
+    'french',
+    'georgian',
+    'german',
+    'greek',
+    'gujarati',
+    'haitian creole',
+    'hebrew',
+    'hindi',
+    'hungarian',
+    'icelandic',
+    'indonesian',
+    'irish',
+    'italian',
+    'japanese',
+    'kannada',
+    'kazakh',
+    'khmer',
+    'korean',
+    'kurdish',
+    'kyrgyz',
+    'lao',
+    'latvian',
+    'lithuanian',
+    'macedonian',
+    'malay',
+    'malayalam',
+    'maltese',
+    'marathi',
+    'mongolian',
+    'nepali',
+    'norwegian',
+    'odia',
+    'pashto',
+    'persian',
+    'polish',
+    'portuguese',
+    'punjabi',
+    'romanian',
+    'russian',
+    'sanskrit',
+    'serbian',
+    'simplified chinese',
+    'sinhala',
+    'slovak',
+    'slovenian',
+    'somali',
+    'spanish',
+    'swahili',
+    'swedish',
+    'tamil',
+    'telugu',
+    'thai',
+    'tibetan',
+    'traditional chinese',
+    'turkish',
+    'ukrainian',
+    'urdu',
+    'uyghur',
+    'uzbek',
+    'vietnamese',
+    'welsh',
+    'yoruba',
+    'zulu'
+  ];
 //all Books route
 router.get('/', isAuth, async (req, res) => {
     const email = req.session.email;
@@ -34,6 +119,8 @@ router.get('/', isAuth, async (req, res) => {
         query = query.lte('publishDate', req.query.publishedBefore)
     if (req.query.publishedAfter != null && req.query.publishedAfter != '')
         query = query.gte('publishDate', req.query.publishedAfter)
+    if (req.query.language != null && req.query.language != '')
+        query = query.where('language').equals(req.query.language);
     if (req.query.type != null && req.query.type != '')
         query = query.where('type').equals(req.query.type);
     if (req.query.progress != null && req.query.progress != '')
@@ -77,7 +164,8 @@ router.get('/', isAuth, async (req, res) => {
             filterToggle: req.query.filterToggle,
             recentSearches: recentSearches,
             current: pageNumber, 
-            pages: Math.ceil(queryResult.length / pageSize)
+            pages: Math.ceil(queryResult.length / pageSize),
+            allLanguages: allLanguages
         })
     }
     catch(err) {
@@ -309,6 +397,7 @@ router.put('/:id', isAuth, async (req, res) => {
         book.driveLink = driveLink
         book.publishDate = new Date(publishDate)
         book.pageCount = req.body.pageCount
+        book.copies = req.body.copies
         book.pagesCompleted = pagesCompleted
         book.percentageCompleted = Math.round(percentageCompleted * 100) / 100
         book.language = req.body.language
@@ -451,6 +540,7 @@ router.post('/', isAuth, async (req, res) => {
         progress: req.body.progress,
         publishDate: publishDate,
         pageCount: req.body.pageCount,
+        copies: req.body.copies,
         description: req.body.description,
         user: await User.findOne({ email }),
         lastModifiedAt: new Date(),
@@ -531,7 +621,8 @@ async function renderFormPage(req, res, book, form, hasError = false) {
         const authors = await Author.find({ user: user }).sort({ name: 1 })
         const params = {
             authors: authors,
-            book: book
+            book: book,
+            allLanguages: allLanguages
         }
         if (hasError) {
             if (form === 'edit')

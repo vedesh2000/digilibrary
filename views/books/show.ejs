@@ -17,10 +17,10 @@
         <% if(book.type==="book" ) { %>
             Book
         <% } else { %>
-            E-Book
+            E-Book/Web
             <%if(book.driveLink) {%>
                 <div>
-                    <a href="<%=book.driveLink%>">Drive Link</a>
+                    <a href="<%=book.driveLink%>">Drive/Web Link</a>
                 </div>
              <% } %> 
         <%}%>
