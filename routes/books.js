@@ -54,6 +54,100 @@ router.get('/', isAuth, async (req, res) => {
         res.redirect('/')
     }
 });
+//all favourite Books route
+router.get('/favourites', isAuth, async (req, res) => {
+    const email = req.session.email;
+    const user = await User.findOne({ email })
+    const recentSearches = user.recentSearches;
+    let searchOptions = { user: user , isFavourite: true}
+    let query = Book.find(searchOptions)
+    if (req.query.title != null && req.query.title != ''){
+        query = query.regex('title', new RegExp(req.query.title, 'i'))
+        // No need to wait here as it may happen in backend...?
+        updateRecentSearches(email, req.query.title);
+    }
+    if (req.query.publishedBefore != null && req.query.publishedBefore != '')
+        query = query.lte('publishDate', req.query.publishedBefore)
+    if (req.query.publishedAfter != null && req.query.publishedAfter != '')
+        query = query.gte('publishDate', req.query.publishedAfter)
+    if (req.query.type != null && req.query.type != '')
+        query = query.where('type').equals(req.query.type);
+    if (req.query.progress != null && req.query.progress != '')
+        query = query.where('progress').equals(req.query.progress);
+
+    const sortBy = req.query.sortBy;
+    const sort = req.query.sort;
+    try {
+        let pageNumber = parseInt(req.query.page) || 1; // Get the requested page number from the query string
+        const pageSize = 20; // Number of items to load per page
+        let sortOptions = {};
+        sortOptions[sortBy] = sort;
+        const queryResult = await query.sort(sortOptions).exec();
+        const books = queryResult.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+
+        res.render('books/index', {
+            books: books,
+            searchOptions: req.query,
+            sortBy: sortBy,
+            sort: sort,
+            filterToggle: req.query.filterToggle,
+            recentSearches: recentSearches,
+            current: pageNumber, 
+            pages: Math.ceil(queryResult.length / pageSize)
+        })
+    }
+    catch(err) {
+        console.log(err);
+        res.redirect('/')
+    }
+});
+//all daily Books route
+router.get('/dailyBooks', isAuth, async (req, res) => {
+    const email = req.session.email;
+    const user = await User.findOne({ email })
+    const recentSearches = user.recentSearches;
+    let searchOptions = { user: user , isDailyBook: true}
+    let query = Book.find(searchOptions)
+    if (req.query.title != null && req.query.title != ''){
+        query = query.regex('title', new RegExp(req.query.title, 'i'))
+        // No need to wait here as it may happen in backend...?
+        updateRecentSearches(email, req.query.title);
+    }
+    if (req.query.publishedBefore != null && req.query.publishedBefore != '')
+        query = query.lte('publishDate', req.query.publishedBefore)
+    if (req.query.publishedAfter != null && req.query.publishedAfter != '')
+        query = query.gte('publishDate', req.query.publishedAfter)
+    if (req.query.type != null && req.query.type != '')
+        query = query.where('type').equals(req.query.type);
+    if (req.query.progress != null && req.query.progress != '')
+        query = query.where('progress').equals(req.query.progress);
+
+    const sortBy = req.query.sortBy;
+    const sort = req.query.sort;
+    try {
+        let pageNumber = parseInt(req.query.page) || 1; // Get the requested page number from the query string
+        const pageSize = 20; // Number of items to load per page
+        let sortOptions = {};
+        sortOptions[sortBy] = sort;
+        const queryResult = await query.sort(sortOptions).exec();
+        const books = queryResult.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+
+        res.render('books/index', {
+            books: books,
+            searchOptions: req.query,
+            sortBy: sortBy,
+            sort: sort,
+            filterToggle: req.query.filterToggle,
+            recentSearches: recentSearches,
+            current: pageNumber, 
+            pages: Math.ceil(queryResult.length / pageSize)
+        })
+    }
+    catch(err) {
+        console.log(err);
+        res.redirect('/')
+    }
+});
 // new Book route
 router.get('/new', isAuth, async (req, res) => {
     renderNewPage(req, res, new Book())
@@ -474,6 +568,27 @@ router.post('/:id/addOrRemoveFav', isAuth, async (req, res) => {
     catch (error) {
         console.log(error)
         res.render("books/show", { book: book, errorMessage: "Error adding to Favourites"})
+    }
+})
+//add to dailybook
+router.post('/:id/addOrRemoveDailyReadBook', isAuth, async (req, res) => {
+    let book
+    try {
+        book = await Book.findById(req.params.id)
+        const user = await User.findById(book.user)
+        if (req.session.email != user.email) {
+            res.redirect('/')
+            return
+        }
+        
+        book.isDailyBook = !(book.isDailyBook);
+        book.lastModifiedAt = new Date();
+        await book.save()
+        res.render("books/show", { book: book});
+    }
+    catch (error) {
+        console.log(error)
+        res.render("books/show", { book: book, errorMessage: "Error adding to dailyReadbooks"})
     }
 })
 async function renderNewPage(req, res, book, hasError = false) {

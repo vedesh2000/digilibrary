@@ -74,8 +74,25 @@
     </div>
     </div>
 <div class="btn-group">
-    <form action="<%= book.id%>/addOrRemoveFav" method="post">
-        <button type="submit" class="btn btn-primary">Add to Fav</button>
+    <form action="/files/books/<%= book.id%>/addOrRemoveFav" method="post">
+        <% if(book.isFavourite){ %>
+        <button type="submit" class="btn btn-primary" ><i class="fas fa-heart" style="color: red;"></i></button>
+        <% } else { %>
+        <button type="submit" class="btn btn-primary"><i class="fas fa-heart"></i></button> 
+        <% } %> 
+    </form>
+    <form action="/files/books/<%= book.id%>/addOrRemoveDailyReadBook" method="post">
+        <% if(book.isDailyBook){ %>
+            <button id="showPopupButton" type="submit" class="btn btn-primary" >Remove from DailyBooks</button>
+            <div id="popup" class="popup">
+                <p>Book is removed</p>
+            </div> 
+        <% } else { %>
+            <button id="showPopupButton" type="submit" class="btn btn-primary">Add to DailyBooks</button>
+            <div id="popup" class="popup">
+                <p><% book.title %>Book is added</p>
+            </div> 
+        <% } %> 
     </form>
     <a class="btn btn-primary" href="/files/books/<%= book.id%>/notes">Notes</a>
     <a class="btn btn-primary" href="/files/books/<%= book.id%>/edit">Edit</a>
@@ -127,4 +144,12 @@ function copyText() {
   // Alert the user
   alert("Text copied to clipboard: " + description);
 }
+
+document.getElementById("showPopupButton").addEventListener("click", function() {
+    var popup = document.getElementById("popup");
+    popup.style.display = "block";
+    setTimeout(function() {
+        popup.style.display = "none";
+    }, 80000);
+});
 </script>
