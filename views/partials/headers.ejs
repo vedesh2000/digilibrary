@@ -1,17 +1,18 @@
 <header>
+    <div style="margin-left: 8px;" id="google_translate_element"></div>
     <nav class="header-nav">
     <div class="form-row">
         <a class="header-title profile-button" href="/files"><i class="fas fa-home-user"></i></a>
         <%- include('../partials/user') %>
         <br>
+        <a class="header-title profile-button" href="/files/books/favourites"><i class="fas fa-heart"></i></a>
+        <a class="header-title profile-button" href="/files/books/dailyBooks"><i class="fas fa-book"></i></a>
         <button type="button" onclick="toggleTheme()" class="theme-toggle" id="theme-button">
             <i class = "fas"></i>
         </button>
-        <a class="header-title profile-button" href="/files/books/favourites"><i class="fas fa-heart"></i></a>
-        <div style="margin-left: 8px;" id="google_translate_element"></div>
     </div>
     <ul>
-        <li><a href="/files/books/dailyBooks">DailyBooks</a></li>
+       
         <li><a href="/files/authors">authors</a></li>
         <li><a href="/files/authors/new">add author</a></li>
         <li><a href="/files/books">books</a></li>
