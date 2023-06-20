@@ -1,8 +1,11 @@
 const mongoose = require('mongoose');
 const Author = require("./author")
-const Book = require("./book")
+const {Book} = require("./book")
 const Schema = mongoose.Schema;
 const userSchema = new Schema({
+  googleId: {
+    type: String
+  },
   email: {
     type: String,
     required: true,
@@ -15,7 +18,8 @@ const userSchema = new Schema({
   },
   password: {
     type: String,
-    required: true,
+    required: false,
+    default: null
   },
   status: {
     type: String, 

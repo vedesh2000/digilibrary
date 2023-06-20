@@ -9,6 +9,10 @@ app.get("/", appController.landing_page);
 app.get("/login", appController.login_get);
 app.post("/login", appController.login_post);
 
+// GET route for Google Sign-In callback
+app.get('/auth/google/get', appController.authGoogle_get);
+app.get('/auth/google/callback', appController.authGoogle_callback);
+
 // Register Page
 app.get("/signup", appController.register_get);
 app.post("/signup", appController.register_post);

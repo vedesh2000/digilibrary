@@ -37,13 +37,23 @@
       <div style="color: red;">
         <% if(err !=null) {%>
           <%= err%>
+          <br>
+          <br>
             <% }%>
       </div>
       <div style="color: black;">
         <% if(msg !=null) {%>
           <%= msg%>
+          <br>
+          <br>
             <% }%>
       </div>
+      <a href="/auth/google/get" class="btn btn-primary">
+        <i class="fab fa-google left"></i> Log-In With Google
+      </a>
+      <br>
+      <br>
+      <hr>
       <form action="/login" method="POST">
         <div class="form-row">
           <div class="form-item">

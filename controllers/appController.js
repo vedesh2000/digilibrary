@@ -3,6 +3,13 @@ const User = require("../models/user");
 const { Book } = require("../models/book");
 const sendEmail = require("./sendEmail")
 const jwt = require('jsonwebtoken');
+const { google } = require('googleapis');
+
+const oauth2Client = new google.auth.OAuth2(
+  process.env.GOOGLE_CLIENT_ID,
+  process.env.GOOGLE_CLIENT_SECRET,
+  process.env.GOOGLE_REDIRECT_URI
+);
 
 function checkPassword(inputtxt){
   var paswd=  /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{7,15}$/;
@@ -12,6 +19,79 @@ function checkPassword(inputtxt){
   }
   return false;
 }
+exports.authGoogle_get = (req, res) => {
+  // Redirect the user to the Google OAuth2 authentication URL
+  const authUrl = oauth2Client.generateAuthUrl({
+    access_type: 'offline',
+    prompt: 'consent',
+    scope: ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email'],
+  });
+  res.redirect(authUrl);
+};
+
+exports.authGoogle_callback = async (req, res) => {
+  const code = req.query.code;
+
+  try {
+    // Exchange the authorization code for an access token
+    const { tokens } = await oauth2Client.getToken(code);
+    oauth2Client.setCredentials(tokens);
+
+    // Retrieve user information from the Google API
+    const oauth2 = google.oauth2({ version: 'v2', auth: oauth2Client });
+    const { data } = await oauth2.userinfo.get();
+
+    // Extract the username from the user's profile information
+    const givenName = data.given_name;
+    const familyName = data.family_name;
+    const username = `${givenName} ${familyName}`;
+
+    // Check if the user already exists in your database
+    let user = await User.findOne({ googleId: data.id });
+
+    // Check if the user already exists in your database
+    let passUser = await User.findOne({ email: data.email });
+
+    if(passUser && !user){
+      let isPending = false;
+      let resendEmail = ''
+      let msgTail = "please use password to login";
+      if(passUser.status != 'Active'){
+        isPending = true;
+        resendEmail = data.email;
+        msgTail = "with pending Email validation, Please validate and signIn"
+      }
+      return res.render("welcome/login", {layout: false, err:"User already present with password based auth, "+ msgTail , msg: "", isPending: isPending, resendEmail: resendEmail})
+    }
+
+    if (!user) {
+      // User does not exist, create a new user in the database
+      user = new User({
+        googleId: data.id,
+        email: data.email,
+        username: username,
+        createdAt: Date.now(),
+        lastOpenedAt: Date.now(),
+        status: 'Active'
+      });
+      await user.save();
+      console.log(username + "User Created Successfully");
+    }
+    req.session.isAuth = true;
+    if (!req.cookies.theme) {
+      // Set the theme cookie to "light" if it's not already set
+      res.cookie("theme", "light");
+    }
+    req.session.email = user.email;
+    // Redirect or respond with user data as needed
+    res.redirect("/files"); // Redirect to the dashboard after successful authentication
+  } catch (err) {
+    console.log(err);
+    req.session.error = "Error Creating User";
+    return res.redirect("/signup");
+  }
+};
+
 exports.landing_page = (req, res) => {
   res.render("welcome/welcome" ,{layout: false});
 };
@@ -67,7 +147,7 @@ exports.login_post = async (req, res) => {
     res.redirect("/files");
   }).catch((err)=> {
     console.log(err);
-    req.session.error = "Unable to update the user opening in time, Please retry";
+    req.session.error = "Unable to Login";
     return res.redirect("/login");
   })
 };
@@ -280,7 +360,6 @@ exports.dashboard_get = async (req, res) => {
     res.render('index', { user: user, books: books, current: pageNumber, pages: Math.ceil(allBooks.length / pageSize) , errorMessage: error });
   }
 };
-
 exports.logout_post = (req, res) => {
   req.session.destroy((err) => {
     if (err) {
