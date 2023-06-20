@@ -170,3 +170,21 @@ font-size: 0.75rem;
 ::-webkit-scrollbar-thumb:hover {
   background-color: #555;
 }
+
+.popup {
+  display: none;
+  position: fixed;
+  align-content: center;
+  top: 10%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  color: black;
+  font-size: 22px;
+  padding: 50px 50px 10px 10px;
+  border: 1px solid black;
+  width: 600px;
+  height: 200px;
+  padding: 50px;
+  z-index: 9999;
+}
