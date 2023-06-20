@@ -33,6 +33,7 @@
     "express-session": "^1.17.3",
     "filepond-plugin-file-encode": "^2.1.10",
     "find-config": "^1.0.0",
+    "googleapis": "^118.0.0",
     "install": "^0.13.0",
     "jsdom": "^22.1.0",
     "jsonwebtoken": "^9.0.0",

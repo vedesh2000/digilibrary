@@ -12,7 +12,92 @@ marked("# heading");
 const createDomPurify = require('dompurify');
 const { JSDOM } = require('jsdom');
 const domPurify = createDomPurify(new JSDOM().window);
-
+// all Languages
+const allLanguages = [
+    'afrikaans',
+    'albanian',
+    'amharic',
+    'arabic',
+    'armenian',
+    'assamese',
+    'azerbaijani',
+    'bengali',
+    'bosnian',
+    'bulgarian',
+    'burmese',
+    'catalan',
+    'chinese',
+    'croatian',
+    'czech',
+    'danish',
+    'dutch',
+    'english',
+    'estonian',
+    'finnish',
+    'french',
+    'georgian',
+    'german',
+    'greek',
+    'gujarati',
+    'haitian creole',
+    'hebrew',
+    'hindi',
+    'hungarian',
+    'icelandic',
+    'indonesian',
+    'irish',
+    'italian',
+    'japanese',
+    'kannada',
+    'kazakh',
+    'khmer',
+    'korean',
+    'kurdish',
+    'kyrgyz',
+    'lao',
+    'latvian',
+    'lithuanian',
+    'macedonian',
+    'malay',
+    'malayalam',
+    'maltese',
+    'marathi',
+    'mongolian',
+    'nepali',
+    'norwegian',
+    'odia',
+    'pashto',
+    'persian',
+    'polish',
+    'portuguese',
+    'punjabi',
+    'romanian',
+    'russian',
+    'sanskrit',
+    'serbian',
+    'simplified chinese',
+    'sinhala',
+    'slovak',
+    'slovenian',
+    'somali',
+    'spanish',
+    'swahili',
+    'swedish',
+    'tamil',
+    'telugu',
+    'thai',
+    'tibetan',
+    'traditional chinese',
+    'turkish',
+    'ukrainian',
+    'urdu',
+    'uyghur',
+    'uzbek',
+    'vietnamese',
+    'welsh',
+    'yoruba',
+    'zulu'
+  ];
 
 const chapterSchema = new mongoose.Schema({
     chapterNumber: {
@@ -59,13 +144,22 @@ const bookSchema = mongoose.Schema({
     pageCount: {
         type: Number,
         required: true,
-        min: 1
+        min: 1,
+        max: 1000000
+    },
+    copies: {
+        type: Number,
+        required: true,
+        default: 1,
+        min: 1,
+        max: 1000000
     },
     pagesCompleted: {
         type: Number,
         required: true,
         default: 0,
-        min: 0
+        min: 0,
+        max: 1000000
     },
     percentageCompleted: {
         type: Number,
@@ -120,7 +214,7 @@ const bookSchema = mongoose.Schema({
     },
     language: {
         type: String,
-        enum: ['english', 'telugu', 'hindi', 'sanskrit'],
+        enum: allLanguages,
         required: true,
         default: 'english'
     },

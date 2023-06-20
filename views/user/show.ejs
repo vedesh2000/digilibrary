@@ -18,7 +18,7 @@
     <br>
     Normal Books : <%= physicalBooksLength %>
     <br>
-    E-Books : <%= eBooksLength %>
+    E-Books/Web : <%= eBooksLength %>
     <br>
     <label for="completedBooks">Completed Books: </label>
     <progress id="completedBooks" name="completedBooks" value="<%=completedBooksLength%>" max="<%=totalBooksLength%>"></progress>
@@ -38,7 +38,9 @@
 
 <div class="btn-row">
     <a class="btn btn-primary" href="/user/<%= user.id %>/edit">Edit User</a>
-    <a class="btn btn-primary" href="/user/<%= user.id %>/editPassword">Change Password</a>
+    <% if(isPassword) { %>
+      <a class="btn btn-primary" href="/user/<%= user.id %>/editPassword">Change Password</a>
+    <% } %>
 </div>
 <br>
 <%- include('../partials/deleteForm', { url: `/user/${user.id}`, buttonName: "Delete account" }) %>

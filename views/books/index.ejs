@@ -134,6 +134,19 @@
   </div>
   <div class="form-row">
     <div class="form-item">
+      <label>Book Language</label>
+      <select name="language" id="language">
+        <option value="<%= searchOptions.language %>" selected>Select Language</option>
+        <% allLanguages.forEach(language => { %>
+          <option value="<%= language %>" <% if (searchOptions.language === language) { %>selected<% } %>><%= language.charAt(0).toUpperCase() + language.slice(1) %></option>
+        <% }); %>
+      </select>
+    </div>
+  </div>
+  
+  
+  <div class="form-row">
+    <div class="form-item">
       <% const percentageCompleted = searchOptions.percentageCompleted !== undefined ? searchOptions.percentageCompleted : 0; %>
       <label>Percentage Completed</label>
       <span id="percentageValue" style="margin-left: 2px;"><%= percentageCompleted %></span>
@@ -199,10 +212,10 @@
 
       <% if(searchOptions.type === "ebook") {%>
         <input type="radio" name="type" id="typeEBook" value="ebook" checked>
-      <label>E-Book</label>
+      <label>E-Book/Web</label>
       <% } else { %>
         <input type="radio" name="type" id="typeEBook" value="ebook">
-        <label>E-Book</label>
+        <label>E-Book/Web</label>
       <% } %>
 
     </div>
@@ -215,6 +228,9 @@
 </div>
 </form>
 <div class="cards-container">
+  <% if(books.length < 1) {%>
+    <h4>No Results Found!</h4>
+  <% } %>
   <% books.forEach(book => { %>
     <div class="card">
       <a href="/files/books/<%= book.id %>">
@@ -296,6 +312,7 @@
     else{
       filterDiv.style.display = "none";
       document.getElementById("percentageCompleted").value=0;
+      document.getElementById("language").value='';
       document.getElementById("publishedAfter").value='';
       document.getElementById("publishedBefore").value='';
       document.getElementById("typeAll").checked=true;

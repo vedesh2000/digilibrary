@@ -16,33 +16,19 @@
         <% } %>
       <% }) %>
     </select>
-    
   </div>
 </div>
 <div class="form-row">
   <div class="form-item">
     <label>Book Language</label>
     <select name="language" id="docLanguageSelect">
-      <% if (book.language==="english") { %>
-        <option selected label="English" value="english">
-          <% } else { %>
-        <option label="English" value="english">
-      <% } %>
-      <% if (book.language==="hindi") { %>
-        <option selected label="Hindi" value="hindi">
-          <% } else { %>
-        <option label="Hindi" value="hindi">
-      <% } %>
-      <% if (book.language==="telugu") { %>
-        <option selected label="Telugu" value="telugu">
-          <% } else { %>
-        <option label="Telugu" value="telugu">
-      <% } %>
-      <% if (book.language==="sanskrit") { %>
-        <option selected label="Sanskrit" value="sanskrit">
-          <% } else { %>
-        <option label="Sanskrit" value="sanskrit">
-      <% } %>
+      <% allLanguages.forEach(language => { %>
+        <% if (book.language === language.toLowerCase()) { %>
+          <option selected label="<%= language.charAt(0).toUpperCase() + language.slice(1) %>" value="<%= language.toLowerCase() %>">
+        <% } else { %>
+          <option label="<%= language.charAt(0).toUpperCase() + language.slice(1) %>" value="<%= language.toLowerCase() %>">
+        <% } %>
+      <% }) %>
     </select>
   </div>
 </div>
@@ -58,7 +44,7 @@
       <% if (book.type==="ebook") { %>
         <option selected label="E-Book" value="ebook">
           <% } else { %>
-        <option label="E-Book" value="ebook">
+        <option label="E-Book/Web" value="ebook">
       <% } %>
     </select>
   </div>
@@ -66,12 +52,12 @@
 <div class="form-row">
   <% if (book.type==="ebook") { %>
     <div class="form-item" id="driveUpload">
-      <label for="driveLink">Drive Link (Optional)</label>
+      <label for="driveLink">Drive/Web Link (Optional)</label>
       <input type="text" name="driveLink" value = "<%=book.driveLink%>" placeholder="It is highly recommended to a add drive link to avoid loosing of ebook">
     </div>
   <%} else {%>
   <div class="form-item" id="driveUpload" style="display: none;">
-    <label for="driveLink">Drive Link (Optional)</label>
+    <label for="driveLink">Drive/Web Link (Optional)</label>
     <br>
     <input id="driveUploadInput" style="position: relative; width: 100%;" type="text" name="driveLink" placeholder="It is highly recommended to a add drive link to avoid loosing of ebook">
   </div>
@@ -89,6 +75,13 @@
   <div class="form-item">
     <label class="required">Page Count</label>
     <input type="number" name="pageCount" id="pageCount" min="1" value="<%= book.pageCount %>" required>
+  </div>
+</div>
+
+<div class="form-row">
+  <div class="form-item">
+    <label class="required">Copies</label>
+    <input type="number" name="copies" id="copies" min="1" value="<%= book.copies %>" required>
   </div>
 </div>
 

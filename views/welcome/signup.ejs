@@ -36,8 +36,17 @@
       <div style="color: red;">
         <% if(err != null) {%>
           <%= err%>
+          <br>
+      <br>
         <% }%>
       </div>
+      
+      <a href="/auth/google/get" class="btn btn-primary">
+        <i class="fab fa-google left"></i> Sign-Up With Google
+      </a>
+      <br>
+      <br>
+      <hr>
       <form action="/signup" method="POST" >
         <div class="form-row">
           <div class="form-item">

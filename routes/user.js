@@ -21,7 +21,11 @@ routes.get('/', isAuth, async (req, res) => {
         inProgressBooks.forEach(book => {
             percentagesList[Math.floor(book.percentageCompleted*10)] += 1;
         });
+        let isPassword = false;
+        if(user.password)
+            isPassword = true;
         res.render('user/show', {
+            isPassword: isPassword,
             user: user,
             authorsLength: authors.length,
             totalBooksLength: books.length,
@@ -127,7 +131,7 @@ routes.put('/:id', isAuth, async (req, res) => {
     }
     user.save()
         .then(() => {
-            console.log("User Updated successfully");
+            // console.log("User Updated successfully");
             res.redirect(`/user/`)
             // console.log(user);
         })
