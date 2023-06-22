@@ -99,7 +99,7 @@ router.get('/', isAuth, async (req, res) => {
     const recentSearches = user.recentSearches;
     let searchOptions = { user: user }
     let query = Book.find(searchOptions)
-    
+    let booksField = "All Books";
     //adding fuzzy as 2 if req add Levenshtein distance to handle wrong spells
     if (req.query.title != null && req.query.title != '') {
         const fuzzyRegex = new RegExp('.*' + req.query.title.split('').join('.{0,2}') + '.*', 'i');
@@ -154,10 +154,9 @@ router.get('/', isAuth, async (req, res) => {
           }
 
           filteredBooks = filteredBooks.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
-
-
         res.render('books/index', {
             books: filteredBooks,
+            booksField: booksField,
             searchOptions: req.query,
             sortBy: sortBy,
             sort: sort,
@@ -180,15 +179,28 @@ router.get('/favourites', isAuth, async (req, res) => {
     const recentSearches = user.recentSearches;
     let searchOptions = { user: user , isFavourite: true}
     let query = Book.find(searchOptions)
-    if (req.query.title != null && req.query.title != ''){
-        query = query.regex('title', new RegExp(req.query.title, 'i'))
-        // No need to wait here as it may happen in backend...?
+    let booksField = "Favourite Books";
+    //adding fuzzy as 2 if req add Levenshtein distance to handle wrong spells
+    if (req.query.title != null && req.query.title != '') {
+        const fuzzyRegex = new RegExp('.*' + req.query.title.split('').join('.{0,2}') + '.*', 'i');
+        query = query.regex('title', fuzzyRegex);
+        // No need to wait here as it may happen in the backend...?
         updateRecentSearches(email, req.query.title);
-    }
+      }
+    //adding fuzzy as 2 if req add Levenshtein distance to handle wrong spells
+    if (req.query.description != null && req.query.description != '') {
+        const fuzzyRegex = new RegExp('.*' + req.query.description.split('').join('.{0,2}') + '.*', 'i');
+        query = query.regex('description', fuzzyRegex);
+      }
+      
+    if (req.query.percentageCompleted != null && req.query.percentageCompleted != '')
+        query = query.gte('percentageCompleted', req.query.percentageCompleted/100)
     if (req.query.publishedBefore != null && req.query.publishedBefore != '')
         query = query.lte('publishDate', req.query.publishedBefore)
     if (req.query.publishedAfter != null && req.query.publishedAfter != '')
         query = query.gte('publishDate', req.query.publishedAfter)
+    if (req.query.language != null && req.query.language != '')
+        query = query.where('language').equals(req.query.language);
     if (req.query.type != null && req.query.type != '')
         query = query.where('type').equals(req.query.type);
     if (req.query.progress != null && req.query.progress != '')
@@ -202,17 +214,37 @@ router.get('/favourites', isAuth, async (req, res) => {
         let sortOptions = {};
         sortOptions[sortBy] = sort;
         const queryResult = await query.sort(sortOptions).exec();
-        const books = queryResult.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+        const books = queryResult;
+        let filteredBooks = books;
+        if (req.query.notes != null && req.query.notes != '') {
+            let queryChapters = [];
+            for (const book of queryResult) {
+                queryChapters = queryChapters.concat(book.chapterNotes);
+            }
 
+            queryChapters = queryChapters.filter(query => {
+              const fuzzyRegex = new RegExp('.*' + req.query.notes.split('').join('.{0,2}') + '.*', 'i');
+              return fuzzyRegex.test(query.notesMarkdown) || fuzzyRegex.test(query.description);
+            });
+
+            filteredBooks = books.filter(book => {
+                const bookChapters = book.chapterNotes;
+                return bookChapters.some(chapter => queryChapters.includes(chapter));
+            });
+          }
+
+          filteredBooks = filteredBooks.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
         res.render('books/index', {
-            books: books,
+            books: filteredBooks,
+            booksField: booksField,
             searchOptions: req.query,
             sortBy: sortBy,
             sort: sort,
             filterToggle: req.query.filterToggle,
             recentSearches: recentSearches,
             current: pageNumber, 
-            pages: Math.ceil(queryResult.length / pageSize)
+            pages: Math.ceil(queryResult.length / pageSize),
+            allLanguages: allLanguages
         })
     }
     catch(err) {
@@ -220,6 +252,7 @@ router.get('/favourites', isAuth, async (req, res) => {
         res.redirect('/')
     }
 });
+
 //all daily Books route
 router.get('/dailyBooks', isAuth, async (req, res) => {
     const email = req.session.email;
@@ -227,15 +260,28 @@ router.get('/dailyBooks', isAuth, async (req, res) => {
     const recentSearches = user.recentSearches;
     let searchOptions = { user: user , isDailyBook: true}
     let query = Book.find(searchOptions)
-    if (req.query.title != null && req.query.title != ''){
-        query = query.regex('title', new RegExp(req.query.title, 'i'))
-        // No need to wait here as it may happen in backend...?
+    let booksField = "Dialy Books";
+    //adding fuzzy as 2 if req add Levenshtein distance to handle wrong spells
+    if (req.query.title != null && req.query.title != '') {
+        const fuzzyRegex = new RegExp('.*' + req.query.title.split('').join('.{0,2}') + '.*', 'i');
+        query = query.regex('title', fuzzyRegex);
+        // No need to wait here as it may happen in the backend...?
         updateRecentSearches(email, req.query.title);
-    }
+      }
+    //adding fuzzy as 2 if req add Levenshtein distance to handle wrong spells
+    if (req.query.description != null && req.query.description != '') {
+        const fuzzyRegex = new RegExp('.*' + req.query.description.split('').join('.{0,2}') + '.*', 'i');
+        query = query.regex('description', fuzzyRegex);
+      }
+      
+    if (req.query.percentageCompleted != null && req.query.percentageCompleted != '')
+        query = query.gte('percentageCompleted', req.query.percentageCompleted/100)
     if (req.query.publishedBefore != null && req.query.publishedBefore != '')
         query = query.lte('publishDate', req.query.publishedBefore)
     if (req.query.publishedAfter != null && req.query.publishedAfter != '')
         query = query.gte('publishDate', req.query.publishedAfter)
+    if (req.query.language != null && req.query.language != '')
+        query = query.where('language').equals(req.query.language);
     if (req.query.type != null && req.query.type != '')
         query = query.where('type').equals(req.query.type);
     if (req.query.progress != null && req.query.progress != '')
@@ -249,17 +295,37 @@ router.get('/dailyBooks', isAuth, async (req, res) => {
         let sortOptions = {};
         sortOptions[sortBy] = sort;
         const queryResult = await query.sort(sortOptions).exec();
-        const books = queryResult.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+        const books = queryResult;
+        let filteredBooks = books;
+        if (req.query.notes != null && req.query.notes != '') {
+            let queryChapters = [];
+            for (const book of queryResult) {
+                queryChapters = queryChapters.concat(book.chapterNotes);
+            }
 
+            queryChapters = queryChapters.filter(query => {
+              const fuzzyRegex = new RegExp('.*' + req.query.notes.split('').join('.{0,2}') + '.*', 'i');
+              return fuzzyRegex.test(query.notesMarkdown) || fuzzyRegex.test(query.description);
+            });
+
+            filteredBooks = books.filter(book => {
+                const bookChapters = book.chapterNotes;
+                return bookChapters.some(chapter => queryChapters.includes(chapter));
+            });
+          }
+
+          filteredBooks = filteredBooks.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
         res.render('books/index', {
-            books: books,
+            books: filteredBooks,
+            booksField: booksField,
             searchOptions: req.query,
             sortBy: sortBy,
             sort: sort,
             filterToggle: req.query.filterToggle,
             recentSearches: recentSearches,
             current: pageNumber, 
-            pages: Math.ceil(queryResult.length / pageSize)
+            pages: Math.ceil(queryResult.length / pageSize),
+            allLanguages: allLanguages
         })
     }
     catch(err) {
@@ -267,6 +333,7 @@ router.get('/dailyBooks', isAuth, async (req, res) => {
         res.redirect('/')
     }
 });
+
 // new Book route
 router.get('/new', isAuth, async (req, res) => {
     renderNewPage(req, res, new Book())
