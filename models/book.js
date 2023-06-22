@@ -228,7 +228,7 @@ const bookSchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
-    isTenPagesPerDay: {
+    isDailyBook: {
         type: Boolean,
         default: false
     }
