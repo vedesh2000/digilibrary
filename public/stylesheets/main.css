@@ -1,5 +1,6 @@
 @import 'shared/variables.css';
 @import 'shared/pagination.css';
+@import 'shared/tooltip.css';
 @import 'shared/dashboardCharts.css';
 @import 'shared/notes.css';
 @import 'shared/fonts.css';
@@ -172,19 +173,21 @@ font-size: 0.75rem;
 }
 
 .popup {
+  opacity: 80%;
   display: none;
   position: fixed;
-  align-content: center;
+  flex-wrap: wrap;
   top: 10%;
   left: 50%;
+  border-radius: 10px;
   transform: translate(-50%, -50%);
-  background-color: white;
-  color: black;
-  font-size: 22px;
-  padding: 50px 50px 10px 10px;
-  border: 1px solid black;
-  width: 600px;
-  height: 200px;
+  background-color: whitesmoke ;
+  color: var(--color-text-dark);
+  font-size: 1.2rem;
+  padding: 5px 5px 1px 1px;
+  border: 1px solid var(--color-text-dark);
+  width: 60%;
+  height: auto;
   padding: 50px;
   z-index: 9999;
 }

@@ -76,21 +76,39 @@
 <div class="btn-group">
     <form action="/files/books/<%= book.id%>/addOrRemoveFav" method="post">
         <% if(book.isFavourite){ %>
-        <button type="submit" class="btn btn-primary" ><i class="fas fa-heart" style="color: red;"></i></button>
+        <button id="showPopupButton" type="submit" class="btn btn-primary tooltip" >
+            <i class="fas fa-heart" style="color: red;"></i>
+            <span class="tooltiptext">Remove From Favourite Books</span>
+        </button>
+        <div id="popup" class="popup">
+            <p>Book removed</p>
+        </div> 
         <% } else { %>
-        <button type="submit" class="btn btn-primary"><i class="fas fa-heart"></i></button> 
+        <button id="showPopupButton" type="submit" class="btn btn-primary tooltip">
+            <i class="fas fa-heart"></i>
+            <span class="tooltiptext">Add to Favourite Books</span>
+        </button> 
+        <div id="popup" class="popup">
+            <p>Book added</p>
+        </div> 
         <% } %> 
     </form>
     <form action="/files/books/<%= book.id%>/addOrRemoveDailyReadBook" method="post">
         <% if(book.isDailyBook){ %>
-            <button id="showPopupButton" type="submit" class="btn btn-primary" >Remove from DailyBooks</button>
-            <div id="popup" class="popup">
-                <p>Book is removed</p>
+            <button id="showPopupButtonDailyBook" type="submit" class="btn btn-primary tooltip" >
+                <i class="fas fa-book" style="color: rgb(248, 169, 50);"></i>
+                <span class="tooltiptext">Remove From Daily Read</span>
+            </button>
+            <div id="popupDailyBook" class="popup">
+                <p>Book removed</p>
             </div> 
         <% } else { %>
-            <button id="showPopupButton" type="submit" class="btn btn-primary">Add to DailyBooks</button>
-            <div id="popup" class="popup">
-                <p><% book.title %>Book is added</p>
+            <button id="showPopupButtonDailyBook" type="submit" class="btn btn-primary tooltip">
+                <i class="fas fa-book"></i>
+                <span class="tooltiptext">Add to Daily Read</span>
+            </button>
+            <div id="popupDailyBook" class="popup">
+                <p>Book added</p>
             </div> 
         <% } %> 
     </form>
@@ -150,6 +168,13 @@ document.getElementById("showPopupButton").addEventListener("click", function() 
     popup.style.display = "block";
     setTimeout(function() {
         popup.style.display = "none";
-    }, 80000);
+    }, 8000);
+});
+document.getElementById("showPopupButtonDailyBook").addEventListener("click", function() {
+    var popup = document.getElementById("popupDailyBook");
+    popup.style.display = "block";
+    setTimeout(function() {
+        popup.style.display = "none";
+    }, 8000);
 });
 </script>

@@ -2,13 +2,20 @@
     <div style="margin-left: 8px;" id="google_translate_element"></div>
     <nav class="header-nav">
     <div class="form-row">
-        <a class="header-title profile-button" href="/files"><i class="fas fa-home-user"></i></a>
+        <a class="header-title profile-button tooltip" href="/files"><i class="fas fa-home-user"></i>
+            <span class="tooltiptext">Home</span>
+        </a>
         <%- include('../partials/user') %>
         <br>
-        <a class="header-title profile-button" href="/files/books/favourites"><i class="fas fa-heart"></i></a>
-        <a class="header-title profile-button" href="/files/books/dailyBooks"><i class="fas fa-book"></i></a>
-        <button type="button" onclick="toggleTheme()" class="theme-toggle" id="theme-button">
+        <a class="header-title profile-button tooltip" href="/files/books/favourites"><i class="fas fa-heart"></i>
+            <span class="tooltiptext">Favourite Books</span>
+        </a>
+        <a class="header-title profile-button tooltip" href="/files/books/dailyBooks"><i class="fas fa-book"></i>
+            <span class="tooltiptext">Daily Read Books</span>
+        </a>
+        <button type="button" onclick="toggleTheme()" class="theme-toggle tooltip" id="theme-button">
             <i class = "fas"></i>
+            <span class="tooltiptext">Toggle Theme</span>
         </button>
     </div>
     <ul>
