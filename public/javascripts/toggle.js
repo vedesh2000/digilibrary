@@ -56,10 +56,5 @@ function toggleTheme() {
     html.classList.add("dark-theme");
   }
 
-  var buttonElement = document.getElementById("theme-button");
-    buttonElement.style.border = "none";
-    buttonElement.style.background = "none";
-    buttonElement.style.padding = "0";
-    buttonElement.style.cursor = "pointer";
 
   
