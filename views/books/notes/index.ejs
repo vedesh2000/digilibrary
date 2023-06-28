@@ -1,10 +1,9 @@
-
 <div class="">
   <h1><%=title %></h1>
   <h2>Chapter Wise Notes</h2>
-  <a href="notes/new" class="btn btn-primary">Add Chapter</a>
+  <a href="notes/new" class="btn btn-secondary">Add Chapter</a>
+  <button class="btn btn-primary" onclick="generatePDF()">Get Notes PDF</button>
   <a href="/files/books/<%=bookId%>" class="btn btn-primary">Goto Book</a>
-  <!-- <a href="/files/books/<%=bookId%>/PDF" class="btn btn-primary">Get Notes PDF</a> -->
   <br>
   <br>
   <br>
@@ -22,12 +21,14 @@
   </form>
 
   <% chapters.forEach(chapter => { %>
-    <div class="form-row">
+    <div>
       <div class="card-body">
         <h3 class="card-title">Chapter Number: <%= chapter.chapterNumber %></h3>
         <h4 class="card-title">Title: <%= chapter.title %></h4>
-        <p>Description:</p>
-        <div class="card-text description"><%= chapter.description %></div>
+        <h4 class="card-title">Description: </h4>
+        <div class="description">
+          <%- chapter.description %>
+        </div>
         <br>
         <div class="btn-group">
           <a href="notes/<%= chapter.id %>/show" class="btn btn-primary">Read More</a>
@@ -41,8 +42,65 @@
   <% }) %>
 </div>
 
+
+<script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
 <script>
   function resetForm() {
     document.getElementById("notes").value='';
   }
+  // Define an array to store chapter content
+  function generatePDF() {
+    const chapterContent = [];
+    let chapterDetails
+      // Iterate through the chapters and extract their details
+      <% chapters.forEach(chapter => { %>
+        chapterDetails = {
+          chapterNumber: "<%= chapter.chapterNumber %>",
+          title: "<%= chapter.title %>",
+          description: `<%- chapter.description %>`,
+          sanitizedNotesMarkdown: `<%- chapter.sanitizedNotesMarkdown %>`
+        };
+        chapterContent.push(chapterDetails);
+      <% }) %>
+      
+      // Define the document definition for PDF
+      console.log(chapterContent); 
+      let chapterWiseNotes = [
+          "<div style='margin:25px; padding:25px'>",
+          "<h1 style='color: red'><%= title %></h1>",
+          "<h2 style='color: green'>Chapter Wise Notes By <%= ownerName %></h2>",
+          "<hr/><hr/>",
+        ]
+
+      for (let i = 0; i < chapterContent.length; i++) {
+        chapterWiseNotes.push(`<hr/><hr/>`);
+        chapterWiseNotes.push(`<h3 style='color: blue'>Chapter Number: ${chapterContent[i].chapterNumber}</h3>`);
+        chapterWiseNotes.push(`<h4 style='color: black'>Title:</h4>`);
+        chapterWiseNotes.push(`<h4 style='color: blue'>${chapterContent[i].title}</h4>`);
+        chapterWiseNotes.push(`<h4 style='color: black'>Description:</h4>`);
+        chapterWiseNotes.push(`<p class="description">${chapterContent[i].description}</p>`);
+        chapterWiseNotes.push(`<h4 style='color: black'>Notes:</h4>`);
+        chapterWiseNotes.push(`<div>${chapterContent[i].sanitizedNotesMarkdown}</div>`);
+        chapterWiseNotes.push(`<br/><br/>`);
+      }
+      
+      const title = "<%= title %>";
+      
+      const content = chapterWiseNotes.join("") + "</div>";
+      
+      const options = {
+        filename: `${title}_notes.pdf`,
+        pagesplit: true,
+        html2canvas: {
+          scale: 2.25, // Adjust the scale for better quality
+        },
+        jsPDF: {
+          format: "a4",
+          orientation: "portrait"
+        },
+      };
+      
+      html2pdf().set(options).from(content).save();
+    };
 </script>

@@ -153,6 +153,8 @@ padding: 10px;
 border-radius: 10px;
 border-style: double;
 font-size: 0.75rem;
+word-wrap: break-word;
+text-overflow: clip;
 }
 
 
@@ -173,7 +175,6 @@ font-size: 0.75rem;
 }
 
 .popup {
-  opacity: 80%;
   display: none;
   position: fixed;
   flex-wrap: wrap;
@@ -181,8 +182,8 @@ font-size: 0.75rem;
   left: 50%;
   border-radius: 10px;
   transform: translate(-50%, -50%);
-  background-color: var(--color-background-light) ;
-  color: var(--color-text-light);
+  background-color: grey;
+  color: whitesmoke;
   font-size: 1.2rem;
   padding: 5px 5px 1px 1px;
   border: 1px solid var(--color-text-dark);
