@@ -388,7 +388,7 @@ router.get('/:id/notes', isAuth, async (req, res) => {
         });
         }
         const sortedNotes = queryChapters.sort((a, b) => a.chapterNumber - b.chapterNumber);
-        res.render("books/notes/index", {title: book.title, bookId: book.id, chapters: sortedNotes , searchOptions: req.query });
+        res.render("books/notes/index", {title: book.title, bookId: book.id, chapters: sortedNotes , searchOptions: req.query, ownerName: user.username});
     } catch(err) {
         console.log(err);
         res.redirect('/')
@@ -435,7 +435,7 @@ router.get('/:bookId/notes/:chapterId/show', isAuth, async (req, res) => {
         if(chapterObj === null)
             return res.render("books/notes/index", {title: book.title, bookId: req.params.bookId , chapters: book.chapterNotes, errorMessage: "Notes not found"});
 
-        return res.render("books/notes/show", {bookId: req.params.bookId , chapter: chapterObj});
+        return res.render("books/notes/show", {title: book.title, bookId: req.params.bookId , chapter: chapterObj , ownerName: user.username});
 
 
     } catch (err) {
@@ -762,7 +762,7 @@ router.post('/:id/addOrRemoveFav', isAuth, async (req, res) => {
         book.lastModifiedAt = new Date();
         book.version += 1;
         await book.save()
-        res.render("books/show", { book: book});
+        res.redirect(`/files/books/${req.params.id}`);
     }
     catch (error) {
         console.log(error)
@@ -783,7 +783,7 @@ router.post('/:id/addOrRemoveDailyReadBook', isAuth, async (req, res) => {
         book.isDailyBook = !(book.isDailyBook);
         book.lastModifiedAt = new Date();
         await book.save()
-        res.render("books/show", { book: book});
+        res.redirect(`/files/books/${req.params.id}`);
     }
     catch (error) {
         console.log(error)
@@ -820,6 +820,7 @@ async function renderFormPage(req, res, book, form, hasError = false) {
         res.redirect('/books')
     }
 }
+
 function saveCover(book, coverEncoded) {
     if (coverEncoded == null) return
     const cover = JSON.parse(coverEncoded)

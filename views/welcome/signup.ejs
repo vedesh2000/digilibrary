@@ -10,9 +10,11 @@
   <header>
     <nav class="header-nav">
       <div class="form-row">
-        <a class="header-title" href="/"><i class="fas fa-home-user"></i></a>
+        <a class="header-title tooltip" href="/"><i class="fas fa-home-user"></i>
+          <span class="tooltiptext">Welcome page</span>
+        </a>
         <br>
-        <button type="button" onclick="toggleTheme()" class="theme-toggle" id="theme-button" style="margin-left: 20px">
+        <button type="button" onclick="toggleTheme()" class="theme-toggle theme-button" >
             <i class = "fas"></i>
         </button>
         <div style="margin-left: 20px;" id="google_translate_element"></div>
@@ -32,17 +34,16 @@
     window.onload = googleTranslateElementInit;
     </script>
     <div class="center-form">
-      <h3>Register Page</h3>
-      <div style="color: red;">
+      <h2>Sign Up</h2>
+      <div class="error-message">
         <% if(err != null) {%>
           <%= err%>
           <br>
       <br>
         <% }%>
       </div>
-      
-      <a href="/auth/google/get" class="btn btn-primary">
-        <i class="fab fa-google left"></i> Sign-Up With Google
+      <a href="/auth/google/get" class="btn btn-primary" style="border-radius: 0%; ">
+        <i class="fab fa-google"> </i> Continue With Google
       </a>
       <br>
       <br>

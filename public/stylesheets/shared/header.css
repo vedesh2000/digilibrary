@@ -51,6 +51,18 @@
   color: whitesmoke;
 }
 
+.theme-button {
+  border : none;
+  border-radius: 50%;
+  background : none;
+  padding : auto;
+  cursor : pointer;
+}
+
+.theme-button:hover {
+  background-color: var(--color-text-light);
+}
+
 .theme-toggle {
   margin-left: 15px;
   margin-top: 10px;
