@@ -5,6 +5,7 @@
   --color-background-dark: hsl(var(--color-base-hue), 10%, 80%);
   --color-background-light: hsl(var(--color-base-hue), 100%, 16%);
   --color-text-light: hsl(var(--color-base-hue), 100%, 87%);
+  --color-background-text:rgba(242, 246, 248, 0.842);
   --placeholder-color: hsl(var(--color-base-hue), 100%, 8%);
 }
 
@@ -15,6 +16,7 @@
   --color-background-dark: hsl(var(--color-base-hue), 10%, 80%);
   --color-background-light: hsl(var(--color-base-hue), 100%, 60%);
   --color-text-light: hsl(var(--color-base-hue), 100%, 8%);
+  --color-background-text:rgba(242, 246, 248, 0.842);
   --placeholder-color: hsl(var(--color-base-hue), 100%, 8%);
 }
 
@@ -25,5 +27,6 @@
   --color-background-dark: hsl(var(--color-base-hue), 100%, 8%);
   --color-background-light: hsl(var(--color-base-hue), 100%, 22%);
   --color-text-light: hsl(var(--color-base-hue), 100%, 87%);
+  --color-background-text:#353535;
   --placeholder-color: hsl(var(--color-base-hue), 100%, 87%);
 }

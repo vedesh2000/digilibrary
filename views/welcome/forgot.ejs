@@ -3,14 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login</title>
+    <title>Forgot Password</title>
     <link rel="stylesheet" href="/stylesheets/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css">
   </head>
   <header>
     <nav class="header-nav">
     <div class="form-row">
-      <a class="header-title" href="/"><i class="fas fa-home-user"></i></a>
+      <a class="header-title tooltip" href="/"><i class="fas fa-home-user"></i>
+        <span class="tooltiptext">Welcome page</span>
+      </a>
       <br>
       <button type="button" onclick="toggleTheme()" class="theme-toggle theme-button">
           <i class = "fas"></i>
@@ -37,12 +39,12 @@
     
     <div class="center-form" >
       <h3>Forgot Password Page</h3>
-      <div style="color: red;">
+      <div class="error-message">
         <% if(err != null) {%>
           <%= err%>
         <% }%>
       </div>
-      <div style="color: black;">
+      <div style="color: var(--color-text-light);">
         <% if(msg != null) {%>
           <%= msg%>
         <% }%>

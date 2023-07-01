@@ -1,9 +1,11 @@
 <div class="">
-  <h1><%=title %></h1>
-  <h2>Chapter Wise Notes</h2>
+  <h1 class="title-header"><%=title %></h1>
+  <h2 class="title-header">Chapter Wise Notes by <%= ownerName  %></h2>
+  <div class="btn-group">
   <a href="notes/new" class="btn btn-secondary">Add Chapter</a>
-  <button class="btn btn-primary" onclick="generatePDF()">Get Notes PDF</button>
+  <button class="btn btn-primary" onclick="generatePDF()" id="downloadButton" >Get Notes PDF</button>
   <a href="/files/books/<%=bookId%>" class="btn btn-primary">Goto Book</a>
+  </div>
   <br>
   <br>
   <br>
@@ -27,7 +29,11 @@
         <h4 class="card-title">Title: <%= chapter.title %></h4>
         <h4 class="card-title">Description: </h4>
         <div class="description">
-          <%- chapter.description %>
+          <% if (chapter.description.length <= 500) { %>
+            <%= chapter.description %>
+          <% } else { %>
+            <%= chapter.description.slice(0, 500) + '...' %>
+          <% } %>
         </div>
         <br>
         <div class="btn-group">
@@ -49,6 +55,42 @@
   function resetForm() {
     document.getElementById("notes").value='';
   }
+  function addPageBreaks(notes, maxCharacters , addCharecters) {
+  const words = notes.split(' ');
+  let result = '';
+  let currentLine = '';
+
+  for (let i = 0; i < words.length; i++) {
+    const word = words[i];
+    const isHtmlTag = word.startsWith('<') && word.endsWith('>');
+    const lineWithWord = currentLine.length > 0 ? currentLine + ' ' + word : word;
+
+    if ((currentLine + ' ' + word).length <= maxCharacters && !isHtmlTag) {
+      currentLine = lineWithWord;
+    } else {
+      if (currentLine.length > 0) {
+        result += currentLine + ' ';
+      }
+
+      if (isHtmlTag) {
+        result += '<br/><hr/><div style="page-break-before: always;"></div><br/><br/><hr/><br/><br/>';
+      } else {
+        result += '<br/><hr/><div style="page-break-before: always;"></div><br/><br/><hr/><br/><br/> ' + word;
+      }
+
+      currentLine = '';
+    }
+    //for remaining pages except 1st page of notes
+    if(i === 0) maxCharacters += addCharecters;
+  }
+
+  if (currentLine.length > 0) {
+    result += currentLine;
+  }
+  // console.log(result);
+  return result;
+}
+
   // Define an array to store chapter content
   function generatePDF() {
     const chapterContent = [];
@@ -62,31 +104,53 @@
           sanitizedNotesMarkdown: `<%- chapter.sanitizedNotesMarkdown %>`
         };
         chapterContent.push(chapterDetails);
-      <% }) %>
+      <% }); %>
       
       // Define the document definition for PDF
-      console.log(chapterContent); 
+      // console.log(chapterContent); 
       let chapterWiseNotes = [
-          "<div style='margin:25px; padding:25px'>",
-          "<h1 style='color: red'><%= title %></h1>",
-          "<h2 style='color: green'>Chapter Wise Notes By <%= ownerName %></h2>",
+          "<div style='padding:50px; background-color: var(--color-background-dark)'>",
           "<hr/><hr/>",
+          "<div style=''>",
+            "<h1 class='title-header'><%= title %></h1>",
+            "<h2 class='title-header'>Chapter Wise Notes By <%= ownerName %></h2>",
+            "<p>Notes Created by using DigiLibrary, try at </p>",
+            "<p> www.digilibrary.onrender.com </p>",
+            "<hr/><hr/>",
+          "</div>",
         ]
 
       for (let i = 0; i < chapterContent.length; i++) {
+        chapterWiseNotes.push(`<div style="page-break-before: always;"></div>`);
         chapterWiseNotes.push(`<hr/><hr/>`);
-        chapterWiseNotes.push(`<h3 style='color: blue'>Chapter Number: ${chapterContent[i].chapterNumber}</h3>`);
-        chapterWiseNotes.push(`<h4 style='color: black'>Title:</h4>`);
-        chapterWiseNotes.push(`<h4 style='color: blue'>${chapterContent[i].title}</h4>`);
-        chapterWiseNotes.push(`<h4 style='color: black'>Description:</h4>`);
-        chapterWiseNotes.push(`<p class="description">${chapterContent[i].description}</p>`);
-        chapterWiseNotes.push(`<h4 style='color: black'>Notes:</h4>`);
-        chapterWiseNotes.push(`<div>${chapterContent[i].sanitizedNotesMarkdown}</div>`);
-        chapterWiseNotes.push(`<br/><br/>`);
+        chapterWiseNotes.push('<div class="card-body" style="margin: 0 auto;">');
+        chapterWiseNotes.push(`<h3 class="card-title">Chapter Number: ${chapterContent[i].chapterNumber}</h3>`);
+        chapterWiseNotes.push(`<h4 class="card-title">Title:</h4>`);
+        chapterWiseNotes.push(`<h4 class="description">${chapterContent[i].title}</h4>`);
+        chapterWiseNotes.push(`<h4 class="card-title">Description:</h4>`);
+        chapterWiseNotes.push(`<div style='background-color: var(--color-background-text);
+                                            margin: 2px;
+                                            border: var(--color-text-dark);
+                                            padding: 10px;
+                                            border-radius: 10px;
+                                            border-style: double;
+                                            font-size: 0.75rem;'>${addPageBreaks(chapterContent[i].description , 2000 , 1100)}</div>`);
+        chapterWiseNotes.push(`</div><div style="page-break-after: always;"></div>`);
+        chapterWiseNotes.push('<div class="card-body">');
+        chapterWiseNotes.push(`<h2 class="card-title">Notes:</h2>`);
+        chapterWiseNotes.push(`<div style='background-color: var(--color-background-text);
+                                            margin: 2px;
+                                            border: var(--color-text-dark);
+                                            padding: 10px;
+                                            border-radius: 10px;
+                                            border-style: double;
+                                            font-size: 0.75rem;'>${addPageBreaks(chapterContent[i].sanitizedNotesMarkdown , 2700 , 620)}</div>`);
+        chapterWiseNotes.push(`</div>`);
       }
-      
+      chapterWiseNotes.push(`<div style="page-break-after: always;"></div>`);
       const title = "<%= title %>";
-      
+      const theme = document.cookie.replace(/(?:(?:^|.*;\s*)theme\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+
       const content = chapterWiseNotes.join("") + "</div>";
       
       const options = {
@@ -100,7 +164,34 @@
           orientation: "portrait"
         },
       };
-      
-      html2pdf().set(options).from(content).save();
+      var downloadButton = document.getElementById('downloadButton');
+      downloadButton.disabled = true;
+      downloadButton.textContent = 'Preparing download...'
+      // html2pdf().set(options).from(content).save();
+      // Generate and save the PDF
+      html2pdf()
+        .set(options)
+        .from(content)
+        .toPdf()
+        .get('pdf')
+        .then(pdf => {
+          // Get the total number of pages in the PDF
+          const totalPages = pdf.internal.getNumberOfPages();
+
+          // Remove the last page
+          pdf.deletePage(totalPages);
+
+          // Save the modified PDF
+          pdf.save(`${title}_diginotes_(${theme}).pdf`);
+
+          // console.log(`${title}_diginotes_(${theme}).pdf`);
+
+          //enable and reset button text
+          downloadButton.disabled = false;
+          downloadButton.textContent = 'Get Notes PDF'
+          alert("Check the Downloaded PDF, Not satisfied? please redownload, cache will improve the scales, still not satisfied please adjust overflows in the notes by editing and redownload");
+        });
+
     };
+
 </script>

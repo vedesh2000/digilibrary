@@ -435,7 +435,7 @@ router.get('/:bookId/notes/:chapterId/show', isAuth, async (req, res) => {
         if(chapterObj === null)
             return res.render("books/notes/index", {title: book.title, bookId: req.params.bookId , chapters: book.chapterNotes, errorMessage: "Notes not found"});
 
-        return res.render("books/notes/show", {bookId: req.params.bookId , chapter: chapterObj});
+        return res.render("books/notes/show", {title: book.title, bookId: req.params.bookId , chapter: chapterObj , ownerName: user.username});
 
 
     } catch (err) {
