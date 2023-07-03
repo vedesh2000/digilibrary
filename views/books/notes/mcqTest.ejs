@@ -1,0 +1,76 @@
+  <div id="question-container">
+    <!-- Questions and options will be dynamically added here -->
+  </div>
+  <button class="btn btn-primary" id="submit-btn">Submit</button>
+  <div id="result-container">
+    <!-- Correct answers and final score will be displayed here -->
+  </div>
+
+<script>
+    // Define your MCQs as an array of objects
+const mcqs = [
+  {
+    question: "What is the capital of France?",
+    options: ["Paris", "London", "Berlin"],
+    correctAnswer: "Paris"
+  },
+  {
+    question: "Which planet is known as the Red Planet?",
+    options: ["Mars", "Venus", "Jupiter"],
+    correctAnswer: "Mars"
+  },
+  // Add more questions as needed
+];
+
+// Add event listener to the submit button
+const submitBtn = document.getElementById("submit-btn");
+submitBtn.addEventListener("click", showResults);
+
+// Generate MCQs dynamically
+const questionContainer = document.getElementById("question-container");
+mcqs.forEach((mcq, index) => {
+  const questionDiv = document.createElement("div");
+  const question = document.createElement("p");
+  question.textContent = `Q${index + 1}: ${mcq.question}`;
+  questionDiv.appendChild(question);
+
+  mcq.options.forEach(option => {
+    const optionLabel = document.createElement("label");
+    const optionInput = document.createElement("input");
+    optionInput.type = "radio";
+    optionInput.name = `question-${index}`;
+    optionInput.value = option;
+    optionLabel.appendChild(optionInput);
+    optionLabel.appendChild(document.createTextNode(option));
+    questionDiv.appendChild(optionLabel);
+  });
+
+  questionContainer.appendChild(questionDiv);
+});
+
+// Calculate and display the results
+function showResults() {
+  const resultContainer = document.getElementById("result-container");
+  const totalQuestions = mcqs.length;
+  let score = 0;
+
+  // Check each selected answer and update the score
+  mcqs.forEach((mcq, index) => {
+    const selectedOption = document.querySelector(`input[name="question-${index}"]:checked`);
+    if (selectedOption && selectedOption.value === mcq.correctAnswer) {
+      score++;
+    }
+  });
+
+  // Display the correct answers and the final score
+  resultContainer.innerHTML = `
+    <h3>Correct Answers:</h3>
+    <ul>
+      ${mcqs.map(mcq => `<li>${mcq.question}: ${mcq.correctAnswer}</li>`).join("")}
+    </ul>
+    <h3>Final Score:</h3>
+    <p>${score}/${totalQuestions}</p>
+  `;
+}
+
+</script>

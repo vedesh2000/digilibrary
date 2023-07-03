@@ -50,10 +50,13 @@ routes.get('/:id/edit', isAuth, async (req, res) => {
         res.redirect('/')
     }
 })
-routes.get('/:id/editPassword', isAuth, async (req, res) => {
+routes.get('/:id/editPassword/', isAuth, async (req, res) => {
     try {
         const user = await User.findById(req.params.id)
-        res.render('user/editPassword', { user: user })
+        let isPassword = false;
+        if(user.password)
+            isPassword = true;
+        res.render('user/editPassword', { user: user , isPassword: isPassword})
     } catch {
         res.redirect('/')
     }
@@ -67,16 +70,18 @@ routes.put('/editPassword/:id', isAuth, async (req, res) => {
 
     if (!user) {
         req.session.error = "Invalid User";
-        res.redirect(`user/${userId}`);
-        return
+        return res.redirect('/user');
     }
-
-    const isMatch = await bcrypt.compare(oldPassword, user.password);
-
-    if (!isMatch) {
+    let isPassword = false;
+    if(user.password)
+        isPassword = true;
+    let isMatch
+    if(isPassword){
+        isMatch = await bcrypt.compare(oldPassword, user.password);
+    }
+    if (isPassword && !isMatch) {
         error = "Invalid Credentials";
-        res.render('user/editPassword', { user: user, errorMessage: error })
-        return
+        return res.render('user/editPassword', { user: user, errorMessage: error , isPassword: isPassword})
     }
 
     let passMatch
@@ -88,13 +93,13 @@ routes.put('/editPassword/:id', isAuth, async (req, res) => {
 
     if (!passMatch) {
         error = "Passwords didn't match";
-        res.render('user/editPassword', { user: user, errorMessage: error })
+        res.render('user/editPassword', { user: user, errorMessage: error , isPassword: isPassword })
         return
     }
 
     if (!checkPassword(newPassword)) {
         error = "Password Should contain 7 to 15 characters which contain at least one numeric digit and a special character";
-        res.render('user/editPassword', { user: user, errorMessage: error })
+        res.render('user/editPassword', { user: user, errorMessage: error , isPassword: isPassword })
         return
     }
     const hasdPsw = await bcrypt.hash(newPassword, 12);
@@ -102,7 +107,7 @@ routes.put('/editPassword/:id', isAuth, async (req, res) => {
     user.save()
         .then(() => {
             console.log("User Password Updated successfully");
-            res.redirect(`/user/${user.id}`)
+            res.redirect('/user')
             // console.log(user);
         })
         .catch((err) => {
@@ -143,10 +148,11 @@ routes.put('/:id', isAuth, async (req, res) => {
 })
 
 routes.delete('/:id', isAuth, async (req, res) => {
-    let user
+    const user = await User.findOne({email: req.session.email});
+    const books = await Book.find({ user: user });
     try {
-        user = await User.findById(req.params.id)
         const username = user.username;
+
         await user.deleteOne()
         //clearing session
         req.session.destroy((err) => {
@@ -164,8 +170,8 @@ routes.delete('/:id', isAuth, async (req, res) => {
             res.redirect('/files')
         }
         else {
-            // res.redirect(`/user/${user.id}`)
-            res.render('user/show', { user: user, errorMessage: "\nError Deleting User " + err })
+            //need to show error message here
+            res.redirect("/user");
         }
     }
 })

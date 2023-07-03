@@ -47,22 +47,7 @@ exports.authGoogle_callback = async (req, res) => {
     const username = `${givenName} ${familyName}`;
 
     // Check if the user already exists in your database
-    let user = await User.findOne({ googleId: data.id });
-
-    // Check if the user already exists in your database
-    let passUser = await User.findOne({ email: data.email });
-
-    if(passUser && !user){
-      let isPending = false;
-      let resendEmail = ''
-      let msgTail = "please use password to login";
-      if(passUser.status != 'Active'){
-        isPending = true;
-        resendEmail = data.email;
-        msgTail = "with pending Email validation, Please validate and signIn"
-      }
-      return res.render("welcome/login", {layout: false, err:"User already present with password based auth, "+ msgTail , msg: "", isPending: isPending, resendEmail: resendEmail})
-    }
+    let user = await User.findOne({ email: data.email });
 
     if (!user) {
       // User does not exist, create a new user in the database
@@ -77,6 +62,17 @@ exports.authGoogle_callback = async (req, res) => {
       await user.save();
       console.log(username + "User Created Successfully");
     }
+
+    else if(user.password && !user.googleId){
+       // User exist, but google id is not in the database
+      user.googleId= data.id;
+      user.lastOpenedAt= Date.now()
+      if(user.status === 'Pending')
+        user.status= 'Active';
+      await user.save();
+    }
+
+    
     req.session.isAuth = true;
     if (!req.cookies.theme) {
       // Set the theme cookie to "light" if it's not already set
@@ -117,6 +113,10 @@ exports.login_post = async (req, res) => {
   const email = req.body.email.toLowerCase();
   const password = req.body.password;
   const user = await User.findOne({ email });
+  if (password.length < 7) {
+    req.session.error = "Invalid Password";
+    return res.redirect("/login");
+  }
   if (!user) {
     req.session.error = "Invalid User";
     return res.redirect("/login");
@@ -185,8 +185,18 @@ exports.register_post = async (req, res) => {
   //Checking user existance
   let user = await User.findOne({ email });
   if (user) {
-    req.session.error = "User already exists use forgot password to login";
-    return res.redirect("/signup");
+    if(user.googleId && user.password) {
+      req.session.error = "User already exists with google signIn and password use any one";
+      return res.redirect("/login");
+    }
+    else if(user.googleId) {
+      req.session.error = "User already exists with google signIn";
+      return res.redirect("/login");
+    }
+    else {
+      req.session.error = "User already exists use forgot password to login";
+      return res.redirect("/login");
+    }
   }
   //Comparing entered passwords
   const passMatch = (password === confirmpassword);
