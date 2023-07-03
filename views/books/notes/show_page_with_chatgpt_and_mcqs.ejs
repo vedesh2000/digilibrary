@@ -5,6 +5,7 @@
   <div class="btn-group">
   <a href="/files/books/<%= bookId%>/notes" class="btn btn-primary">All chapters</a>
   <a href="edit/" class="btn btn-primary">Edit</a>
+  <a href="mcqTest/" class="btn btn-primary">Get MCQs Test</a>
   <button class="btn btn-primary" onclick="generatePDF()" id="downloadButton" >Get Notes PDF</button>
   </div>
   <h1 class="mb-1">Chapter Number: <%= chapter.chapterNumber %></h1>
@@ -21,7 +22,7 @@
     <br/>
     <label for="speed">Speed</label>
     <input type="number" name="speed" id="speed" min=".25" max="3" step=".25" value="1">
-    <button id="stop" onclick="stop();">Reset</button>
+    <button id="stop" onclick="stop();">Stop</button>
     <button id="play" onclick="play();">Play</button>
     <button id="pause" onclick="pause();"></button>
     <div id="notes">
@@ -29,7 +30,71 @@
     </div>
     <hr/>
   </div>
+  <h4>OpenAI Integration</h4>
+  <div class="form-row">
+  <div class="form-item">
+  <label for="promptDropdown">Select a prompt:</label>
+  <select id="promptDropdown">
+    <option selected value="Proofread using ChatGPT">Proof read using ChatGPT</option>
+    <option value="Make an awesome LinkedIn post">Make an awesome LinkedIn post</option>
+    <option value="Ask a few questions">Ask a few questions</option>
+    <option value="custom">Add custom prompt</option>
+  </select>
+
+  <div id="customPromptDiv" style="display: none;">
+    <br/>
+    <label for="customPromptInput">Enter a custom prompt:</label>
+    <input type="text" id="customPromptInput">
+  </div>
+  </div>
+  </div>
+  <br>
+  <div>
+  <button class="form-item btn btn-secondary" onclick="sendToGPT()">Send to GPT</button>
+  </div>
+  <br>
+  <div class="form-item">
+  <textarea class="description" id="generatedResponse"></textarea>
+  </div>
 </div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    function sendToGPT() {
+      var selectedPrompt = document.getElementById("promptDropdown").value;
+      var notes = document.getElementById("notes").innerText;
+      var customPrompt = document.getElementById("customPromptInput").value;
+
+      var promptToSend = selectedPrompt;
+      if (selectedPrompt === "custom") {
+        promptToSend = customPrompt;
+      }
+      promptToSend = notes + "\n" + promptToSend;
+      console.log(promptToSend);
+      var currentURL = window.location.href
+      axios
+        .post(`${currentURL}/generate-prompt`, { prompt: promptToSend })
+        .then(response => {
+          document.getElementById("generatedResponse").value = response.data.generatedText;
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }
+
+    document.getElementById("promptDropdown").addEventListener("change", function() {
+      var customPromptDiv = document.getElementById("customPromptDiv");
+      var selectedPrompt = this.value;
+
+      if (selectedPrompt === "custom") {
+        customPromptDiv.style.display = "block";
+      } else {
+        customPromptDiv.style.display = "none";
+      }
+    });
+  </script>
+
 
 <script>
 function copyText() {
@@ -74,7 +139,7 @@ textInput.value = notesInnerHTML;
 // Append the textInput to the document
 document.body.appendChild(textInput);
 let voiceCheck = window.speechSynthesis;
-// console.log(voiceCheck);
+console.log(voiceCheck);
 if(voiceCheck){
 const synth = window.speechSynthesis;
     let myPauseProperty = false;
@@ -87,7 +152,7 @@ const synth = window.speechSynthesis;
         playButton.disabled = false;
     }
     function play() {
-      // console.log("Start play");
+      console.log("Start play");
       //enabling buttons until play starts
       stopButton.disabled = false;
       pauseButton.disabled = false;
@@ -109,7 +174,7 @@ const synth = window.speechSynthesis;
             synth.speak(utterThis);
             //adding to resolve pausing for long texts more than 14sec
             let r = setInterval(() => {
-            // console.log(synth.speaking);
+            console.log(synth.speaking);
             if (!synth.speaking) {
               clearInterval(r);
             } else if(!myPauseProperty){
@@ -210,16 +275,16 @@ document.body.removeChild(textInput);
             "<hr/><hr/>",
           "</div>",
         ]
-        for (let i = 0; i < chapterContent.length; i++) {
+
+      for (let i = 0; i < chapterContent.length; i++) {
         chapterWiseNotes.push(`<div style="page-break-before: always;"></div>`);
         chapterWiseNotes.push(`<hr/><hr/>`);
         chapterWiseNotes.push('<div class="card-body" style="margin: 0 auto;">');
-        chapterWiseNotes.push(`<h3 style='font-weight: normal;' class="card-title">Chapter Number: ${chapterContent[i].chapterNumber}</h3>`);
-        chapterWiseNotes.push(`<h4 style='font-weight: normal;' class="card-title">Title:</h4>`);
-        chapterWiseNotes.push(`<h4 style='font-weight: normal;' class="description">${chapterContent[i].title}</h4>`);
-        chapterWiseNotes.push(`<h4 style='font-weight: normal;' class="card-title">Description:</h4>`);
+        chapterWiseNotes.push(`<h3 class="card-title">Chapter Number: ${chapterContent[i].chapterNumber}</h3>`);
+        chapterWiseNotes.push(`<h4 class="card-title">Title:</h4>`);
+        chapterWiseNotes.push(`<h4 class="description">${chapterContent[i].title}</h4>`);
+        chapterWiseNotes.push(`<h4 class="card-title">Description:</h4>`);
         chapterWiseNotes.push(`<div style='background-color: var(--color-background-text);
-                                            font-weight: normal;
                                             margin: 2px;
                                             border: var(--color-text-dark);
                                             padding: 10px;
@@ -228,9 +293,8 @@ document.body.removeChild(textInput);
                                             font-size: 0.75rem;'>${addPageBreaks(chapterContent[i].description , 2000 , 1100)}</div>`);
         chapterWiseNotes.push(`</div><div style="page-break-after: always;"></div>`);
         chapterWiseNotes.push('<div class="card-body">');
-        chapterWiseNotes.push(`<h2 style='font-weight: normal;' class="card-title">Notes:</h2>`);
+        chapterWiseNotes.push(`<h2 class="card-title">Notes:</h2>`);
         chapterWiseNotes.push(`<div style='background-color: var(--color-background-text);
-                                            font-weight: normal;
                                             margin: 2px;
                                             border: var(--color-text-dark);
                                             padding: 10px;

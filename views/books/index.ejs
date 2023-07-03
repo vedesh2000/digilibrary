@@ -227,10 +227,11 @@
   <button class="btn btn-primary" type="submit">Search</button>
 </div>
 </form>
+<div>
+  <h4><%= books.length %> Results Found!</h4>
+  <br/>
+</div>
 <div class="cards-container">
-  <% if(books.length < 1) {%>
-    <h4>No Results Found!</h4>
-  <% } %>
   <% books.forEach(book => { %>
     <div class="card">
       <a href="/files/books/<%= book.id %>">

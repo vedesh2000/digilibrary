@@ -40,6 +40,8 @@
     <a class="btn btn-primary" href="/user/<%= user.id %>/edit">Edit User</a>
     <% if(isPassword) { %>
       <a class="btn btn-primary" href="/user/<%= user.id %>/editPassword">Change Password</a>
+    <% } else { %>
+      <a class="btn btn-primary" href="/user/<%= user.id %>/editPassword">Set Password</a>
     <% } %>
 </div>
 <br>
