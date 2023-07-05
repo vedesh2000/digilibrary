@@ -1,7 +1,7 @@
 const express = require("express")
-const { Configuration, OpenAIApi } = require("openai");
+// const { Configuration, OpenAIApi } = require("openai");
 const isAuth = require("../middleware/is-auth");
-const generateMCQs = require("../controllers/generateMcqs");
+// const generateMCQs = require("../controllers/generateMcqs");
 const updateRecentSearches = require('../middleware/updateRecentSearches');
 const router = express.Router()
 const { Chapter, Book } = require("../models/book");
@@ -12,10 +12,10 @@ router.use(express.json());
 
 
 // Initialize OpenAI API
-const configuration = new Configuration({
-    apiKey: process.env.OPENAI_API_KEY,
-  });
-  const openai = new OpenAIApi(configuration);
+// const configuration = new Configuration({
+//     apiKey: process.env.OPENAI_API_KEY,
+//   });
+//   const openai = new OpenAIApi(configuration);
 
 // all Languages
 const allLanguages = [
@@ -455,27 +455,27 @@ router.get('/:bookId/notes/:chapterId/show', isAuth, async (req, res) => {
     }
 });
 //chatgpt integration
-router.post("/:bookId/notes/:chapterId/show/generate-prompt", async (req, res) => {
-    const prompt = req.body.prompt;
-    console.log(prompt);
-    try {
-        const completion = await openai.createCompletion({
-            prompt: prompt,
-            model: "text-davinci-003",
-            max_tokens: 100000,
-            n: 1,
-            stop: null,
-            temperature: 0,
-        });
-        const generatedText = completion.data.choices[0].text.trim();
-        console.log(generatedText);
-        res.json({ generatedText });
+// router.post("/:bookId/notes/:chapterId/show/generate-prompt", async (req, res) => {
+//     const prompt = req.body.prompt;
+//     console.log(prompt);
+//     try {
+//         const completion = await openai.createCompletion({
+//             prompt: prompt,
+//             model: "text-davinci-003",
+//             max_tokens: 100000,
+//             n: 1,
+//             stop: null,
+//             temperature: 0,
+//         });
+//         const generatedText = completion.data.choices[0].text.trim();
+//         console.log(generatedText);
+//         res.json({ generatedText });
 
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ error: "Failed to generate prompt." });
-        }
-    });
+//         } catch (error) {
+//             console.error(error);
+//             res.status(500).json({ error: "Failed to generate prompt." });
+//         }
+//     });
 //edit notes
 router.get('/:bookId/notes/:chapterId/edit', isAuth, async (req, res) => {
     try {
@@ -505,36 +505,36 @@ router.get('/:bookId/notes/:chapterId/edit', isAuth, async (req, res) => {
         res.redirect('/')
     }
 });
-// generate MCQs page
-router.get('/:bookId/notes/:chapterId/mcqTest', isAuth, async (req, res) => {
-    try {
-        const book = await Book.findById(req.params.bookId)
-        const user = await User.findById(book.user)
-        if (req.session.email != user.email) {
-            res.redirect('/')
-            return
-        }
-        let chapterObj = {}
-        book.chapterNotes.forEach(chapter => {
-            if (chapter.id === req.params.chapterId){
-                // console.log(chapter);
-                chapterObj = chapter
-                return
-            }
-        });
+// // generate MCQs page
+// router.get('/:bookId/notes/:chapterId/mcqTest', isAuth, async (req, res) => {
+//     try {
+//         const book = await Book.findById(req.params.bookId)
+//         const user = await User.findById(book.user)
+//         if (req.session.email != user.email) {
+//             res.redirect('/')
+//             return
+//         }
+//         let chapterObj = {}
+//         book.chapterNotes.forEach(chapter => {
+//             if (chapter.id === req.params.chapterId){
+//                 // console.log(chapter);
+//                 chapterObj = chapter
+//                 return
+//             }
+//         });
         
-        if(chapterObj === null)
-            return res.render("books/notes/index", { title: book.title, bookId: req.params.bookId , chapters: book.chapterNotes, errorMessage: "Notes not found"});
+//         if(chapterObj === null)
+//             return res.render("books/notes/index", { title: book.title, bookId: req.params.bookId , chapters: book.chapterNotes, errorMessage: "Notes not found"});
         
-        console.log(generateMCQs(chapterObj.notesMarkdown , 10));
-        return res.render("books/notes/mcqTest" , {MCQs: generateMCQs(chapterObj.notesMarkdown , 10)});
+//         console.log(generateMCQs(chapterObj.notesMarkdown , 10));
+//         return res.render("books/notes/mcqTest" , {MCQs: generateMCQs(chapterObj.notesMarkdown , 10)});
         
 
-    } catch (err) {
-        console.log(err);
-        res.redirect('/')
-    }
-});
+//     } catch (err) {
+//         console.log(err);
+//         res.redirect('/')
+//     }
+// });
 //update notes
 router.put('/:bookId/notes/:chapterId/edit', isAuth, async (req, res) => {
     let book
@@ -892,5 +892,6 @@ function saveCover(book, coverEncoded) {
         book.coverImageType = cover.type
     }
 }
+
 module.exports = router
 
