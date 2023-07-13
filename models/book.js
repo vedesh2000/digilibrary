@@ -179,6 +179,11 @@ const bookSchema = mongoose.Schema({
         required: true,
         ref: 'Author'
     },
+    publisher: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'Publisher'
+    },
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',

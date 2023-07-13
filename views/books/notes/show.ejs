@@ -1,3 +1,4 @@
+
 <div class="container">
   <h1 class="title-header"><%=title %></h1>
   <h2 class="title-header">Notes by <%= ownerName  %></h2>
@@ -18,17 +19,11 @@
     <button onclick="copyText()">Copy Text</button>
     <br/>
     <br/>
-    <div id="audio"> 
-    <label for="speed">Playback Speed</label>
+    <label for="speed">Speed</label>
     <input type="number" name="speed" id="speed" min=".25" max="3" step=".25" value="1">
-    <br/>
-    <br/>
-    <div class="btn-group">
-      <button id="stop" onclick="stop();">Reset</button>
-      <button id="play" onclick="play();">Play</button>
-      <button id="pause" onclick="pause();"></button>
-    </div>
-  </div>
+    <button id="stop" onclick="stop();">Reset</button>
+    <button id="play" onclick="play();">Play</button>
+    <button id="pause" onclick="pause();"></button>
     <div id="notes">
       <%- chapter.sanitizedNotesMarkdown %>
     </div>
@@ -62,21 +57,9 @@ function copyText() {
   alert("Text copied to clipboard: " + description);
 }
 //Speech/////////////////////////////////////////////////////////////////////////////////////
-var pauseButton = document.getElementById("pause");
-var browserRefreshReq = true;
-// Check if the browser is Microsoft Edge or Google Chrome, and not Android
-var userAgent = window.navigator.userAgent;
-if (
-  (userAgent.indexOf("Edge") > -1 || 
-    userAgent.indexOf("Chrome") > -1 ||
-    userAgent.indexOf("Brave") > -1) &&
-    userAgent.indexOf("Android") === -1
-) {
-  pauseButton.style.display = "block"; // Show the pause button
-  browserRefreshReq = false;
-}
 
 var notesInnerHTML = document.getElementById("notes").innerText;
+var pauseButton = document.getElementById("pause");
 var playButton = document.getElementById("play");
 var stopButton = document.getElementById("stop");
 var speedButton = document.getElementById("speed");
@@ -102,8 +85,6 @@ const synth = window.speechSynthesis;
         myPauseProperty = false;
         synth.cancel(utterThis);
         playButton.disabled = false;
-        if(browserRefreshReq)
-        window.location.reload()
     }
     function play() {
       // console.log("Start play");
@@ -162,9 +143,9 @@ document.body.removeChild(textInput);
   }
   else{
     console.log("Browser doesn't support speechSynthesis");
-    var audio = document.getElementById("audio")
   }
 </script>
+
 <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
 <script>

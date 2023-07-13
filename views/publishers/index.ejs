@@ -1,0 +1,128 @@
+<h2 class="page-header">Search Publishers</h2>
+<form action="/files/publishers" method="GET" id="myForm">
+  <div class="form-row">
+    <div class="form-item">
+      <label>Name</label>
+      <input type="text" id="name" name="name" value="<%= searchOptions %>" placeholder="Search Here">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-item">
+      <label>Sort By</label>
+      <select name="sortBy">
+        
+        <% if(sortBy === undefined || sortBy === "name") {%>
+          <option selected label="Name" value="name" id="sortByName">
+        <%} else {%>
+          <option label="Name" value="name" id="sortByName">
+        <% } %>
+
+        <% if(sortBy === "createdAt") {%>
+          <option selected label="Created At" value="createdAt">
+        <%} else {%>
+          <option label="Created At" value="createdAt">
+        <% } %>
+
+        <% if(sortBy === 'lastModifiedAt') {%>
+          <option selected label="Modified At" value="lastModifiedAt">
+        <%} else {%>
+          <option label="Modified At" value="lastModifiedAt">
+        <% } %>
+
+        <% if(sortBy === 'lastOpenedAt') {%>
+          <option selected label="Opened At" value="lastOpenedAt">
+        <%} else {%>
+          <option label="Opened At" value="lastOpenedAt">
+        <% } %>
+
+        <% if(sortBy === 'version') {%>
+          <option selected label="Modifications" value="version">
+        <%} else {%>
+          <option label="Modifications" value="version">
+        <% } %>
+
+      </select>
+    </div>
+  </div>
+  <div class="form-row">
+    <label>Sort Type:</label>
+    <div class="form-item-no-grow">
+      <% if(sort === undefined || sort === "asc") {%>
+        <input type="radio" name="sort" value="asc" id="asc" checked> 
+        <label for="asc"><i class="fas fa-arrow-up"></i></label>
+      <%} else {%>
+        <input type="radio" name="sort" value="asc" id="asc"> 
+        <label for="asc"><i class="fas fa-arrow-up"></i></label>
+      <%}%>
+      <% if(sort === "desc") {%>
+        <input type="radio" name="sort" value="desc" id="desc" checked>
+        <label for="desc"><i class="fas fa-arrow-down"></i></label>
+      <%} else {%>
+        <input type="radio" name="sort" value="desc" id="desc">
+        <label for="desc"><i class="fas fa-arrow-down"></i></label>
+      <%}%>
+    </div>
+  </div>
+  <div class="form-row form-row-end">
+    <button type="submit" class="btn btn-danger" onclick="resetForm()">Reset</button>
+    <button class="btn btn-primary" type="submit">Search</button>
+  </div>
+</form>
+<br>
+<% publishers.forEach(publisher => { %>
+  <div class="author-row">
+    <div class="author-name"><%= publisher.name %></div>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="/files/publishers/<%= publisher.id %>">View</a>
+      <a class="btn btn-primary" href="/files/publishers/<%= publisher.id %>/edit">Edit</a>
+      <%- include('../partials/deleteForm',
+      { url: `/files/publishers/${publisher.id}` , buttonName : "Delete"}) %>
+    </div>
+  </div>
+<% }) %>
+
+<% if (pages > 0) { %>
+  <ul class="pagination text-center">
+    <% if (current == 1) { %>
+      <li class="disabled"><a>First</a></li>
+    <% } else { %>
+      <li><a href="/files/publishers?page=1">First</a></li>
+    <% } %>
+    <% if (current > 1) { %>
+      <li><a href="/files/publishers?page=<%= current - 1 %>">Previous</a></li>
+    <% } %>
+    <% var i = (Number(current) > 5 ? Number(current) - 4 : 1) %>
+    <% if (i !== 1) { %>
+      <li class="disabled"><a>...</a></li>
+    <% } %>
+    <% for (; i <= (Number(current) + 4) && i <= pages; i++) { %>
+      <% if (i == current) { %>
+        <li class="active"><a><%= i %></a></li>
+      <% } else { %>
+        <li><a href="/files/publishers?page=<%= i %>"><%= i %></a></li>
+      <% } %>
+      <% if (i == Number(current) + 4 && i < pages) { %>
+        <li class="disabled"><a>...</a></li>
+      <% } %>
+    <% } %>
+    <% if (current < pages) { %>
+      <li><a href="/files/publishers?page=<%= current + 1 %>">Next</a></li>
+    <% } %>
+    <% if (current == pages) { %>
+      <li class="disabled"><a>Last</a></li>
+    <% } else { %>
+      <li><a href="/files/publishers?page=<%= pages %>">Last</a></li>
+    <% } %>
+  </ul>
+<% } %>
+
+
+<script>
+  function resetForm() {
+  document.getElementById("asc").checked = true;
+  document.getElementById("desc").checked = false;
+  document.getElementById("sortByName").selected = true;
+  document.getElementById("name").value = '';
+}
+
+</script>
