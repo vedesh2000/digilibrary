@@ -1,0 +1,33 @@
+<h2 class="title-header"><%= publisher.name %></h2>
+<div class="dashboard-details">
+  Total Books : <%= booksBypublisher.length %>
+  <br>
+  <div>Last Modified At : <%=publisher.lastModifiedAt.toDateString() %></div>
+  <div>Last Opened At : : <%=publisher.lastOpenedAt.toDateString() %></div>
+  <div>Created At : <%=publisher.createdAt.toDateString() %></div>
+  <div>Modification Times : <%=publisher.version %></div>
+</div>
+<div class="btn-row">
+  <a class="btn btn-primary" href="/files/publishers/<%= publisher.id %>/edit">Edit Publisher</a>
+  <%- include('../partials/deleteForm' , 
+                      {url: `/files/publishers/${publisher.id}` , buttonName: "Delete"}) %>
+</div>
+<% if (booksBypublisher.length > 0){ %>    
+    <h2>Books By Publisher</h2>
+    <div class="cards-container">
+      <% booksBypublisher.forEach(book => { %>
+        <div class="card">
+          <a href="/files/books/<%= book.id %>">
+            <% if (book.coverImagePath) { %>
+              <img src="<%= book.coverImagePath %>">
+            <% } else { %>
+              <img src="/book.png">
+            <% } %>
+            <div class="container">
+              <h4><b><%= book.title %></b></h4>
+            </div>
+          </a>
+        </div>
+      <% }) %>
+    </div>
+<% } %>

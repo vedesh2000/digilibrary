@@ -20,7 +20,7 @@ Welcome to DigiLibrary! DigiLibrary is a Fullstack web application that allows u
 
 - **Test Credentials:** To explore DigiLibrary, you can use the following test credentials:
 
-  - **Username:** legendtonystart1@gmail.com
+  - **Username:** legendtonystark01@gmail.com
   - **Password:** asdf@1234
 
 ## Installation

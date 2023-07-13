@@ -6,6 +6,7 @@ const updateRecentSearches = require('../middleware/updateRecentSearches');
 const router = express.Router()
 const { Chapter, Book } = require("../models/book");
 const Author = require("../models/author")
+const Publisher = require("../models/publisher")
 const User = require("../models/user");
 const imageMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg']
 router.use(express.json());
@@ -352,7 +353,7 @@ router.get('/new', isAuth, async (req, res) => {
 //show book route
 router.get('/:id', async (req, res) => {
     try {
-        const book = await Book.findById(req.params.id).populate('author').exec()
+        const book = await Book.findById(req.params.id).populate('author').populate('publisher').exec()
         const user = await User.findById(book.user)
         if (req.session.email != user.email) {
             res.redirect('/')
@@ -616,6 +617,7 @@ router.put('/:id', isAuth, async (req, res) => {
     }
         book.title = req.body.title
         book.author = req.body.author
+        book.publisher = req.body.publisher
         book.type = req.body.type
         book.progress = req.body.progress
         book.driveLink = driveLink
@@ -756,6 +758,7 @@ router.post('/', isAuth, async (req, res) => {
     const book = new Book({
         title: req.body.title,
         author: req.body.author,
+        publisher: req.body.publisher,
         type: req.body.type,
         language: req.body.language,
         pagesCompleted: pagesCompleted,
@@ -864,8 +867,10 @@ async function renderFormPage(req, res, book, form, hasError = false) {
     try {
         const user = await User.findOne({ email })
         const authors = await Author.find({ user: user }).sort({ name: 1 })
+        const publishers = await Publisher.find({ user: user }).sort({ name: 1 })
         const params = {
             authors: authors,
+            publishers: publishers,
             book: book,
             allLanguages: allLanguages
         }

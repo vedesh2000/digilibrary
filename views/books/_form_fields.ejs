@@ -20,6 +20,20 @@
 </div>
 <div class="form-row">
   <div class="form-item">
+    <label class="required">Publisher</label>
+    <select name="publisher">
+      <% publishers.forEach(publisher => { %>
+        <% if (book.publisher && publisher.id === book.publisher.valueOf()) { %> <!-- Use valueOf() to access the inner value -->
+          <option class="author-row" selected label="<%= publisher.name %>" value="<%= publisher.id %>">
+        <% } else { %>
+          <option class="author-row" label="<%= publisher.name %>" value="<%= publisher.id %>">
+        <% } %>
+      <% }) %>
+    </select>
+  </div>
+</div>
+<div class="form-row">
+  <div class="form-item">
     <label>Book Language</label>
     <select name="language" id="docLanguageSelect">
       <% allLanguages.forEach(language => { %>
