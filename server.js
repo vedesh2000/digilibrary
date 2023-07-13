@@ -18,6 +18,7 @@ app.use(bodyParser.urlencoded({ limit: '5mb', extended: false }))
 const store = new MongoDBStore({
     uri: mongoURI,
     collection: "mySessions",
+    expires: 14 * 24 * 3600000
 });
 app.use(
   session({
