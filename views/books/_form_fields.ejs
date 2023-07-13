@@ -98,37 +98,46 @@
     <input type="number" name="copies" id="copies" min="1" value="<%= book.copies %>" required>
   </div>
 </div>
-
-<div class="form-row">
-  <div class="form-item">
-    <label>Progress</label>
-    <select name="progress" required id="progressSelect">
-        <% if (book.progress==="yetToStart") { %>
-          <option selected label="Yet To Start" value="yetToStart">
-            <% } else { %>
-          <option label="Yet To Start" value="yetToStart">
-        <% } %>
-        <% if (book.progress==="completed") { %>
-          <option selected label="Completed" value="completed">
-            <% } else { %>
-          <option label="Completed" value="completed">
-        <% } %>
-        <% if (book.progress==="inProgress") { %>
-          <option selected label="In Progress" value="inProgress"></option>
-            <% } else { %>
-          <option label="In Progress" value="inProgress"></option>
-        <% } %>
-    </select>
+<br>
+<div class="form-item">
+  <label>Set Reading Progress</label>
+  <label class="switch">
+    <input type="checkbox" id="showBookProgressDetailsToggle" name="showBookProgressDetailsToggle" onchange="showBookProgressDetails()">
+    <span class="slider round"></span>
+    </label>
+  <div style="display: none;" id="showBookProgressDetailsDiv">
+    <div class="form-row">
+      <div class="form-item">
+        <label>Progress</label>
+        <select name="progress" required id="progressSelect">
+            <% if (book.progress==="yetToStart") { %>
+              <option selected label="Yet To Start" value="yetToStart">
+                <% } else { %>
+              <option label="Yet To Start" value="yetToStart">
+            <% } %>
+            <% if (book.progress==="completed") { %>
+              <option selected label="Completed" value="completed">
+                <% } else { %>
+              <option label="Completed" value="completed">
+            <% } %>
+            <% if (book.progress==="inProgress") { %>
+              <option selected label="In Progress" value="inProgress"></option>
+                <% } else { %>
+              <option label="In Progress" value="inProgress"></option>
+            <% } %>
+        </select>
+      </div>
+    </div>
+    
+    <div class="form-row">
+        <div class="form-item" id="pagesCompleted">
+          <label>Pages Completed</label>
+          <input type="number" name="pagesCompleted" id="pagesCompletedInput" min="0" value="<%= book.pagesCompleted %>">
+      </div>
+    </div>
   </div>
 </div>
-
-<div class="form-row">
-    <div class="form-item" id="pagesCompleted">
-      <label>Pages Completed</label>
-      <input type="number" name="pagesCompleted" id="pagesCompletedInput" min="0" value="<%= book.pagesCompleted %>">
-  </div>
-</div>
-
+<br>
 <div class="form-row">
   <div class="form-item form-item-no-grow">
     <label>Cover (jpeg/png/gif/jpg)</label>
@@ -170,4 +179,13 @@
       pagesCompletedInput.value = pageCount.value;
     }
   });
+
+  function showBookProgressDetails(){
+    var showBookProgressDetailsToggle = document.getElementById("showBookProgressDetailsToggle");
+    var showBookProgressDetailsDiv = document.getElementById("showBookProgressDetailsDiv");
+    if (showBookProgressDetailsToggle.checked)
+      showBookProgressDetailsDiv.style.display = "block";
+    else
+      showBookProgressDetailsDiv.style.display = "none";
+    }
 </script>

@@ -1,10 +1,28 @@
-<header>
-    <div style="margin-left: 8px;" id="google_translate_element"></div>
-    <nav class="header-nav">
-    <div class="form-row">
-        <a class="header-title profile-button tooltip" href="/files"><i class="fas fa-home-user"></i>
-            <span class="tooltiptext">Home</span>
-        </a>
+<div class="sidebar" id="leftSidebar">
+    <button class="close-button" onclick="closeSidebar()">&times;</button>
+    <ul>
+        <li><a href="/user">My Profile</a></li>
+        <li><a href="/files">Home</a></li>
+        <li><a href="/files/authors">Authors</a></li>
+        <li><a href="/files/authors/new">Add Author</a></li>
+        <li><a href="/files/books">Books</a></li>
+        <li><a href="/files/books/new">Add Book</a></li>
+        <li style="margin: 10px;"><form action="/logout" method="post">
+            <button class="btn btn-danger dropdown-item"  type="submit">Logout</button>
+          </form></li>
+    </ul>
+  </div>
+  
+  <header>
+      <div style="margin-left: 8px;" id="google_translate_element"></div>
+      <nav class="header-nav">
+          <div class="form-row">
+              <button class="toggle-button tooltip theme-button" id="toggle-button" onclick="toggleSidebar()">&#9776;
+                <span class="tooltiptext">Nav Bar</span>
+              </button>
+              <a class="header-title profile-button tooltip" href="/files"><i class="fas fa-home-user"></i>
+                <span class="tooltiptext">Home</span>
+            </a>
         <%- include('../partials/user') %>
         <br>
         <a class="header-title profile-button tooltip" href="/files/books/favourites"><i class="fas fa-heart"></i>
@@ -19,13 +37,63 @@
         </button>
     </div>
     <ul>
-        <li><a href="/files/publishers">publishers</a></li>
-        <li><a href="/files/publishers/new">add publisher</a></li>
-        <li><a href="/files/authors">authors</a></li>
-        <li><a href="/files/authors/new">add author</a></li>
-        <li><a href="/files/books">books</a></li>
-        <li><a href="/files/books/new">add book</a></li>
-        
+        <li></li>
     </ul>
 </nav>
 </header>
+
+<script>
+    var toggleButton = document.getElementById("toggle-button");
+    var sidebar = document.getElementById("leftSidebar");
+    var content = document.getElementById("mainContent");
+    var hideSideBar = getCookie("hideSideBar") === "true"; // Retrieve value from cookie
+
+    // Check if the media size is greater than 624px
+    if (window.innerWidth > 650 && !hideSideBar) {
+        sidebar.classList.add("open");
+        content.classList.add("open");
+    }
+
+    function toggleSidebar() {
+        var toggleButton = document.getElementById("toggle-button");
+        var sidebar = document.getElementById("leftSidebar");
+        var content = document.getElementById("mainContent");
+        sidebar.classList.toggle("open");
+        content.classList.toggle("open");
+        hideSideBar = !hideSideBar;
+        setCookie("hideSideBar", hideSideBar.toString(), 14); // Store value in cookie
+    }
+
+    function closeSidebar() {
+        var toggleButton = document.getElementById("toggle-button");
+        var sidebar = document.getElementById("leftSidebar");
+        var content = document.getElementById("mainContent");
+        sidebar.classList.remove("open");
+        content.classList.remove("open");
+        hideSideBar = true;
+        setCookie("hideSideBar", hideSideBar.toString(), 0); // Store value in cookie
+    }
+
+    // Function to set a cookie
+    function setCookie(name, value, days) {
+        var expires = "";
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + value + expires + "; path=/";
+    }
+
+    // Function to get a cookie value by name
+    function getCookie(name) {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+        }
+        return null;
+    }
+</script>

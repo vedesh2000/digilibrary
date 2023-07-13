@@ -21,9 +21,14 @@
     <br/>
     <label for="speed">Speed</label>
     <input type="number" name="speed" id="speed" min=".25" max="3" step=".25" value="1">
-    <button id="stop" onclick="stop();">Reset</button>
-    <button id="play" onclick="play();">Play</button>
-    <button id="pause" onclick="pause();"></button>
+    <br/>
+    <br/>
+    <div class="btn-group">
+      <button id="stop" onclick="stop();">Reset</button>
+      <button id="play" onclick="play();">Play</button>
+      <button id="pause" onclick="pause();"></button>
+    </div>
+    </div>
     <div id="notes">
       <%- chapter.sanitizedNotesMarkdown %>
     </div>
@@ -57,6 +62,19 @@ function copyText() {
   alert("Text copied to clipboard: " + description);
 }
 //Speech/////////////////////////////////////////////////////////////////////////////////////
+
+var pauseButton = document.getElementById("pause");
+var browserRefreshReq;
+// Check if the browser is Microsoft Edge or Google Chrome, and not Android
+var userAgent = window.navigator.userAgent;
+if (userAgent.indexOf("Android") === -1) {
+  pauseButton.style.display = "block"; // Show the pause button
+  browserRefreshReq = false;
+}
+else{
+  pauseButton.style.display = "none"; // Show the pause button
+  browserRefreshReq = true;
+}
 
 var notesInnerHTML = document.getElementById("notes").innerText;
 var pauseButton = document.getElementById("pause");
@@ -138,12 +156,15 @@ const synth = window.speechSynthesis;
             pauseButton.textContent = "Resume";
         }
     }
-// Remove the temporary textInput
-document.body.removeChild(textInput);
   }
   else{
     console.log("Browser doesn't support speechSynthesis");
+
+    var audio = document.getElementById("audio");
+    audio.style.display = "none";
   }
+  // Remove the temporary textInput
+  document.body.removeChild(textInput);
 </script>
 
 <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
