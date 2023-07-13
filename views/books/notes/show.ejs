@@ -28,7 +28,7 @@
       <button id="play" onclick="play();">Play</button>
       <button id="pause" onclick="pause();"></button>
     </div>
-  </div>
+    </div>
     <div id="notes">
       <%- chapter.sanitizedNotesMarkdown %>
     </div>
@@ -156,14 +156,14 @@ const synth = window.speechSynthesis;
             pauseButton.textContent = "Resume";
         }
     }
-// Remove the temporary textInput
-document.body.removeChild(textInput);
   }
   else{
     console.log("Browser doesn't support speechSynthesis");
     var audio = document.getElementById("audio");
-    audio.display = "none";
+    audio.style.display = "none";
   }
+  // Remove the temporary textInput
+  document.body.removeChild(textInput);
 </script>
 <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
