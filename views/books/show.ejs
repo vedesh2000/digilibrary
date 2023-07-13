@@ -38,10 +38,9 @@
             <div id="description">
                 <%- book.sanitizedDescription %>
             </div>
+            <br/>
         </div>
     </div>
-    
-    <br>
     <div>Page Count : <%=book.pageCount %>
     <br/>
     <div>Progress :
@@ -74,6 +73,7 @@
             </div>
         </div>
     </div>
+    <br/>
     </div>
 <div class="btn-group">
     <form action="/files/books/<%= book.id%>/addOrRemoveFav" method="post">
