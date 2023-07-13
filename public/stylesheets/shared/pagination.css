@@ -39,7 +39,7 @@
 .pagination>li>a:hover,
 .pagination>li>span:focus,
 .pagination>li>span:hover {
-    z-index: 2;
+    z-index: 0;
     color: #23527c;
     background-color: #eee;
     border-color: #ddd
@@ -51,7 +51,7 @@
 .pagination>.active>span,
 .pagination>.active>span:focus,
 .pagination>.active>span:hover {
-    z-index: 3;
+    z-index: 0;
     color: #fff;
     cursor: pointer;
     background-color: #337ab7;
