@@ -6,11 +6,16 @@
   margin-bottom: 1rem;
   background-color: var(--color-background-light);
   border: 5px;
+  box-shadow: 0 4px 8px 0 var(--color-text-light);
+  transition: 0.3s;
   border-radius: 5px;
   width: 100%;
   border: 1px solid var(--color-text-light);
 }
 
+.author-row:hover {
+  box-shadow: 0 8px 16px 0 var(--color-text-light);
+}
 
 .author-name {
   width: 75%;
