@@ -754,11 +754,39 @@ router.post('/', isAuth, async (req, res) => {
         pagesCompleted = 0;
         percentageCompleted = 0;
     }
-
+    //instant creation of author and publisher
+    let author = req.body.author;
+    if(author === "other"){
+        const newAuthor = new Author(
+            { 
+                name: req.body.otherAuthor,
+                user: await User.findOne({email}),
+                createdAt: new Date(),
+                lastModifiedAt: new Date(),
+                lastOpenedAt: new Date(),
+                version: 1
+            })
+        await newAuthor.save();
+        author = newAuthor.id;
+    }
+    let publisher = req.body.publisher;
+    if(publisher === "other"){
+        const newpublisher = new Publisher(
+            { 
+                name: req.body.otherPublisher,
+                user: await User.findOne({email}),
+                createdAt: new Date(),
+                lastModifiedAt: new Date(),
+                lastOpenedAt: new Date(),
+                version: 1
+            })
+        await newpublisher.save();
+        publisher = newpublisher.id;
+    }
     const book = new Book({
         title: req.body.title,
-        author: req.body.author,
-        publisher: req.body.publisher,
+        author: author,
+        publisher: publisher,
         type: req.body.type,
         language: req.body.language,
         pagesCompleted: pagesCompleted,

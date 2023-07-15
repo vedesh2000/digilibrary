@@ -7,7 +7,7 @@
 <div class="form-row">
   <div class="form-item">
     <label class="required">Author</label>
-    <select name="author">
+    <select name="author" id="author-select">
       <% authors.forEach(author => { %>
         <% if (book.author && author.id === book.author.valueOf()) { %> <!-- Use valueOf() to access the inner value -->
           <option class="author-row" selected label="<%= author.name %>" value="<%= author.id %>">
@@ -15,23 +15,29 @@
           <option class="author-row" label="<%= author.name %>" value="<%= author.id %>">
         <% } %>
       <% }) %>
+      <option class="author-row" id="other-author-option" label="Other" value="other">Other</option>
     </select>
+    <input type="text" id="other-author-input" name="otherAuthor" style="display: none;" placeholder="Please Enter Author Name" required>
   </div>
 </div>
+
 <div class="form-row">
   <div class="form-item">
-    <label class="required">Publisher</label>
-    <select name="publisher">
+    <label class="required">Publisher/Platform</label>
+    <select name="publisher" id="publisher-select">
       <% publishers.forEach(publisher => { %>
         <% if (book.publisher && publisher.id === book.publisher.valueOf()) { %> <!-- Use valueOf() to access the inner value -->
-          <option class="author-row" selected label="<%= publisher.name %>" value="<%= publisher.id %>">
+          <option class="publisher-row" selected label="<%= publisher.name %>" value="<%= publisher.id %>">
         <% } else { %>
-          <option class="author-row" label="<%= publisher.name %>" value="<%= publisher.id %>">
+          <option class="publisher-row" label="<%= publisher.name %>" value="<%= publisher.id %>">
         <% } %>
       <% }) %>
+      <option class="publisher-row" id="other-publisher-option" label="Other" value="other">Other</option>
     </select>
+    <input type="text" id="other-publisher-input" name="otherPublisher" style="display: none;"placeholder="Please Enter Publisher Name" required>
   </div>
 </div>
+
 <div class="form-row">
   <div class="form-item">
     <label>Book Language</label>
@@ -147,7 +153,7 @@
 <br>
 <div class="form-row">
   <div class="form-item">
-    <label>Description (markdown supported up to 2000 characters)</label>
+    <label>Description (<a href="/markdown.html" target="_blank">markdown</a> supported up to 2000 characters)</label>
     <textarea name="description" maxlength="2000" class="description"><%= book.description %></textarea>
   </div>
 </div>
@@ -188,4 +194,29 @@
     else
       showBookProgressDetailsDiv.style.display = "none";
     }
+
+    document.getElementById("author-select").addEventListener("change", function() {
+    var selectElement = document.getElementById("author-select");
+    var otherAuthorOption = document.getElementById("other-author-option");
+    var otherAuthorInput = document.getElementById("other-author-input");
+    
+    if (selectElement.value === "other") {
+      otherAuthorInput.style.display = "block";
+    } else {
+      otherAuthorInput.style.display = "none";
+    }
+  });
+
+  document.getElementById("publisher-select").addEventListener("change", function() {
+    var selectElement = document.getElementById("publisher-select");
+    var otherPublisherOption = document.getElementById("other-publisher-option");
+    var otherPublisherInput = document.getElementById("other-publisher-input");
+    
+    if (selectElement.value === "other") {
+      otherPublisherInput.style.display = "block";
+    } else {
+      otherPublisherInput.style.display = "none";
+    }
+  });
+
 </script>
