@@ -8,6 +8,7 @@
   transition: transform 0.2s ease;
   display: none;
   z-index: 2;
+  overflow-y: auto; /* Add this line */
 }
 
 .content {
@@ -80,7 +81,7 @@
   list-style: none;
   display: flex;
   flex-wrap: wrap;
-}
+} 
 
 
 .sidebar li a {

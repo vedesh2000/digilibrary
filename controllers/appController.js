@@ -51,12 +51,15 @@ exports.authGoogle_callback = async (req, res) => {
 
     if (!user) {
       // User does not exist, create a new user in the database
+      const token = jwt.sign({email: email}, process.env.JWT_SECRET, {
+        expiresIn: process.env.JWT_EXPIRES_IN});
       user = new User({
         googleId: data.id,
         email: data.email,
         username: username,
         createdAt: Date.now(),
         lastOpenedAt: Date.now(),
+        confirmationCode: token,
         status: 'Active'
       });
       await user.save();
@@ -165,7 +168,7 @@ exports.resendVerificationEmail_get = async (req, res) => {
   const user = await User.findOne({email});
     if(user){
       const subject = "Link to verify Email";
-      const mailMsg = "Please confirm your email";
+      const mailMsg = "Confirm your Email";
       const url = process.env.BASE_URL + "/api/auth/confirm/" + user.confirmationCode;
       mailStatus = await sendEmail(process.env.USER_EMAIL, process.env.PASSWORD, url, user.username, user.email, subject, mailMsg);
       }
@@ -286,7 +289,7 @@ exports.forgotPassword_post = async (req, res) => {
   }
   let mailStatus;
   const subject = "Link to reset Password";
-  const mailMsg = "Please reset Password";
+  const mailMsg = "Reset Password";
   const url = process.env.BASE_URL + "/api/auth/resetPassword/" + user.confirmationCode;
   mailStatus = await sendEmail(process.env.USER_EMAIL, process.env.PASSWORD, url, user.username, user.email, subject, mailMsg);
   if(mailStatus){
