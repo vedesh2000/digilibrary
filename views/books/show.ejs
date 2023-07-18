@@ -43,6 +43,8 @@
     </div>
     <div>Page Count : <%=book.pageCount %>
     <br/>
+    <div>Copies : <%=book.copies %>
+    <br/>
     <div>Progress :
         <% if(book.progress==="inProgress" ) { %>
             In Progress
@@ -171,13 +173,13 @@ document.getElementById("showPopupButton").addEventListener("click", function() 
     popup.style.display = "block";
     setTimeout(function() {
         popup.style.display = "none";
-    }, 8000);
+    }, 3000);
 });
 document.getElementById("showPopupButtonDailyBook").addEventListener("click", function() {
     var popup = document.getElementById("popupDailyBook");
     popup.style.display = "block";
     setTimeout(function() {
         popup.style.display = "none";
-    }, 8000);
+    }, 3000);
 });
 </script>

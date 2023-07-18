@@ -9,15 +9,21 @@
     <label class="required">Author</label>
     <select name="author" id="author-select">
       <% authors.forEach(author => { %>
-        <% if (book.author && author.id === book.author.valueOf()) { %> <!-- Use valueOf() to access the inner value -->
+        <% if (book.author && author.id === book.author.valueOf()) { %>
           <option class="author-row" selected label="<%= author.name %>" value="<%= author.id %>">
         <% } else { %>
           <option class="author-row" label="<%= author.name %>" value="<%= author.id %>">
         <% } %>
       <% }) %>
-      <option class="author-row" id="other-author-option" label="Other" value="other">Other</option>
-    </select>
-    <input type="text" id="other-author-input" name="otherAuthor" style="display: none;" placeholder="Please Enter Author Name" required>
+      <% if (authors.length === 0) { %> <!-- Add this condition -->
+        <option class="author-row" id="other-author-option" value="other">Add First Author</option>
+      </select>
+      <input type="text" id="other-author-input" name="otherAuthor" style="display: block;" placeholder="Please Enter Author Name" required>
+      <% } else { %>
+        <option class="author-row" id="other-author-option" value="other">Other</option>
+      </select>
+      <input type="text" id="other-author-input" name="otherAuthor" style="display: none;" placeholder="Please Enter Author Name" >
+      <% } %>
   </div>
 </div>
 
@@ -32,15 +38,21 @@
           <option class="publisher-row" label="<%= publisher.name %>" value="<%= publisher.id %>">
         <% } %>
       <% }) %>
-      <option class="publisher-row" id="other-publisher-option" label="Other" value="other">Other</option>
+      <% if (publishers.length === 0) { %> <!-- Add this condition -->
+      <option class="publisher-row" id="other-publisher-option" value="other">Add First Publisher</option>
     </select>
-    <input type="text" id="other-publisher-input" name="otherPublisher" style="display: none;"placeholder="Please Enter Publisher Name" required>
+    <input type="text" id="other-publisher-input" name="otherPublisher" style="display: block;"placeholder="Please Enter Publisher Name" required>
+    <% } else { %>  
+    <option class="publisher-row" id="other-publisher-option" value="other">Other</option>
+    </select>
+    <input type="text" id="other-publisher-input" name="otherPublisher" style="display: none;" placeholder="Please Enter Publisher Name" >
+    <% } %>
   </div>
 </div>
 
 <div class="form-row">
   <div class="form-item">
-    <label>Book Language</label>
+    <label class="required">Book Language</label>
     <select name="language" id="docLanguageSelect">
       <% allLanguages.forEach(language => { %>
         <% if (book.language === language.toLowerCase()) { %>
@@ -54,7 +66,7 @@
 </div>
 <div class="form-row">
   <div class="form-item">
-    <label>Book Type</label>
+    <label class="required">Book Type</label>
     <select name="type" id="docTypeSelect">
       <% if (book.type==="book") { %>
         <option selected label="Book" value="book">
@@ -75,11 +87,19 @@
       <label for="driveLink">Drive/Web Link (Optional)</label>
       <input type="text" name="driveLink" value = "<%=book.driveLink%>" placeholder="It is highly recommended to a add drive link to avoid loosing of ebook">
     </div>
+    <div class="form-item" id="setCopies" style="display: none;">
+      <label>Copies</label>
+      <input type="number" name="copies" id="copies" min="0" value="<%= book.copies %>" required>
+    </div>
   <%} else {%>
   <div class="form-item" id="driveUpload" style="display: none;">
     <label for="driveLink">Drive/Web Link (Optional)</label>
     <br>
-    <input id="driveUploadInput" style="position: relative; width: 100%;" type="text" name="driveLink" placeholder="It is highly recommended to a add drive link to avoid loosing of ebook">
+    <input id="driveUploadInput" type="text" name="driveLink" placeholder="It is highly recommended to a add drive/web link to avoid loosing of ebook">
+  </div>
+  <div class="form-item" id="setCopies">
+    <label>Copies</label>
+    <input type="number" name="copies" id="copies" min="0" value="<%= book.copies %>" required>
   </div>
   <%}%>
 </div>
@@ -98,12 +118,6 @@
   </div>
 </div>
 
-<div class="form-row">
-  <div class="form-item">
-    <label class="required">Copies</label>
-    <input type="number" name="copies" id="copies" min="1" value="<%= book.copies %>" required>
-  </div>
-</div>
 <br>
 <div class="form-item">
   <label>Set Reading Progress</label>
@@ -153,21 +167,28 @@
 <br>
 <div class="form-row">
   <div class="form-item">
-    <label>Description (<a href="/markdown.html" target="_blank">markdown</a> supported up to 2000 characters)</label>
-    <textarea name="description" maxlength="2000" class="description"><%= book.description %></textarea>
+    <label>Description (<a href="/markdown.html" target="_blank">markdown</a>)</label>
+      <div style="position: relative;">
+        <textarea name="description" class="description" id="description" maxlength="2000"><%= book.description %></textarea>
+        <div style="position: absolute; bottom: 15px; right: 5px;" id="character-count"></div>
+      </div>
   </div>
 </div>
+
 
 
 <script>
   var docType = document.getElementById("docTypeSelect");
   var driveUpload = document.getElementById("driveUpload");
+  var setCopies = document.getElementById("setCopies");
 
   docType.addEventListener("change", function() {
     if (docType.value === "ebook") {
       driveUpload.style.display = "block";
+      setCopies.style.display = "none";
     } else {
       driveUpload.style.display = "none";
+      setCopies.style.display = "block";
     }
   });
 
@@ -196,17 +217,17 @@
     }
 
     document.getElementById("author-select").addEventListener("change", function() {
-    var selectElement = document.getElementById("author-select");
+      var selectElement = document.getElementById("author-select");
     var otherAuthorOption = document.getElementById("other-author-option");
     var otherAuthorInput = document.getElementById("other-author-input");
     
     if (selectElement.value === "other") {
       otherAuthorInput.style.display = "block";
+      otherAuthorInput.required = true;
     } else {
       otherAuthorInput.style.display = "none";
     }
   });
-
   document.getElementById("publisher-select").addEventListener("change", function() {
     var selectElement = document.getElementById("publisher-select");
     var otherPublisherOption = document.getElementById("other-publisher-option");
@@ -214,9 +235,27 @@
     
     if (selectElement.value === "other") {
       otherPublisherInput.style.display = "block";
+      otherPublisherInput.required = true;
+
     } else {
       otherPublisherInput.style.display = "none";
     }
+  });
+
+  // Get the textarea element
+  const textarea = document.getElementById('description');
+
+  // Get the element where the character count will be displayed
+  const characterCount = document.getElementById('character-count');
+  const count = textarea.value.length;
+  characterCount.textContent = `${count}/2000`;
+  // Add an event listener to the textarea's input event
+  textarea.addEventListener('input', () => {
+    // Get the current character count
+    const count = textarea.value.length;
+
+    // Update the character count display
+    characterCount.textContent = `${count}/2000`;
   });
 
 </script>

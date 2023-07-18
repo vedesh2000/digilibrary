@@ -149,9 +149,8 @@ const bookSchema = mongoose.Schema({
     },
     copies: {
         type: Number,
-        required: true,
         default: 1,
-        min: 1,
+        min: 0,
         max: 1000000
     },
     pagesCompleted: {
