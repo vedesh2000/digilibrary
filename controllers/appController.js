@@ -51,7 +51,7 @@ exports.authGoogle_callback = async (req, res) => {
 
     if (!user) {
       // User does not exist, create a new user in the database
-      const token = jwt.sign({email: email}, process.env.JWT_SECRET, {
+      const token = jwt.sign({email: data.email}, process.env.JWT_SECRET, {
         expiresIn: process.env.JWT_EXPIRES_IN});
       user = new User({
         googleId: data.id,
