@@ -63,3 +63,14 @@ app.use('/files/publishers', publishersRouter)
 app.use('/user',userRouter)
 app.use('/files/books', booksRouter)
 app.listen(process.env.PORT || 3000)
+
+//to avoid shutting of free service
+function printMessage() {
+  console.log("--- 10 mins ---.");
+}
+
+// Set the interval to 10 minutes (600,000 milliseconds)
+const interval = 10 * 60 * 1000; // 10 minutes in milliseconds
+
+// Call the printMessage function every 10 minutes
+const intervalId = setInterval(printMessage, interval);
