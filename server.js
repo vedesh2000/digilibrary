@@ -63,3 +63,46 @@ app.use('/files/publishers', publishersRouter)
 app.use('/user',userRouter)
 app.use('/files/books', booksRouter)
 app.listen(process.env.PORT || 3000)
+
+function getCurrentDateTime() {
+  const now = new Date();
+  const day = now.getDate().toString().padStart(2, '0');
+  const month = (now.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-based, so add 1
+  const year = now.getFullYear().toString();
+  const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+
+  return `${day}-${month}-${year} ${time}`;
+}
+
+//code to hit digilibrary for every 10mins 
+function hitURL() {
+  // Replace 'YOUR_URL_HERE' with the URL you want to hit
+  const url = 'https://digilibrary.onrender.com/';
+  console.log(url);
+  // Replace this with your code to make the HTTP request to the URL (e.g., using fetch, XMLHttpRequest, etc.)
+  // For simplicity, I'll use fetch in this example.
+  fetch(url)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const currentDateTime = getCurrentDateTime();
+      return `hit ${currentDateTime}`;
+    })
+    .then(data => {
+      // Process the response data if needed
+      console.log('Response:', data);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+}
+
+// Set an initial delay of 10 minutes (600,000 milliseconds) before the first request
+const intervalTime = 10 * 60 * 1000; // 10 minutes in milliseconds
+
+// Call the hitURL() function immediately (for the first time)
+hitURL();
+
+// Set up the interval to call the hitURL() function every 10 minutes
+setInterval(hitURL, intervalTime);

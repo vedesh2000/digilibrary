@@ -3,7 +3,7 @@
   <h2 class="title-header">Chapter Wise Notes by <%= ownerName  %></h2>
   <div class="btn-group">
   <a href="notes/new" class="btn btn-secondary">Add Chapter</a>
-  <button class="btn btn-primary" onclick="generatePDF()" id="downloadButton" >Get Notes PDF</button>
+  <a class="btn btn-primary" onclick="generatePDF()" id="downloadButton" >Get Notes PDF</a>
   <a href="/files/books/<%=bookId%>" class="btn btn-primary">Goto Book</a>
   </div>
   <br>
@@ -159,7 +159,7 @@
         filename: `${title}_notes.pdf`,
         pagesplit: true,
         html2canvas: {
-          scale: 2.25, // Adjust the scale for better quality
+          scale: 1.25, // Adjust the scale for better quality
         },
         jsPDF: {
           format: "a4",

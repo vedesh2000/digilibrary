@@ -1,33 +1,31 @@
 
 <div class="container">
-  <h1 class="title-header"><%=title %></h1>
-  <h2 class="title-header">Notes by <%= ownerName  %></h2>
-  <div class="btn-group">
-  <a href="/files/books/<%= bookId%>/notes" class="btn btn-primary">All chapters</a>
-  <a href="edit/" class="btn btn-primary">Edit</a>
-  <button class="btn btn-primary" onclick="generatePDF()" id="downloadButton" >Get Notes PDF</button>
-  </div>
-  <h1 class="mb-1">Chapter Number: <%= chapter.chapterNumber %></h1>
-  <h1 class="mb-1">Title: <%= chapter.title %></h1>
-  <h3 class="mb-1">Description: </h3>
+  <h1><%=title %></h1>
+  <h2>Notes by <%= ownerName  %></h2>
+  <hr>
+  <h2>Chapter Number: <%= chapter.chapterNumber %></h2>
+  <hr>
+  <h3>Title: <%= chapter.title %></h3>
+  <hr>
+  <h3>Description: </h3>
   <div class="description">
     <%- chapter.description %>
   </div>
   <br/>
-  <h3 class="mb-1">Notes: </h3>
+  <h3>Notes: </h3>
   <div class="description">
-    <button onclick="copyText()">Copy Text</button>
+    <button class="notes-button" onclick="copyText()">Copy Text</button>
     <br/>
     <br/>
     <div id="audio"> 
-    <label for="speed">Playback Speed</label>
+    <label class="notes-button" for="speed">Playback Speed</label>
     <input type="number" name="speed" id="speed" min=".25" max="3" step=".25" value="1">
     <br/>
     <br/>
     <div class="btn-group">
-      <button id="stop" onclick="stop();">Reset</button>
-      <button id="play" onclick="play();">Play</button>
-      <button id="pause" onclick="pause();"></button>
+      <button class="notes-button" id="stop" onclick="stop();">Reset</button>
+      <button class="notes-button" id="play" onclick="play();">Play</button>
+      <button class="notes-button" id="pause" onclick="pause();"></button>
     </div>
     </div>
     <div id="notes">
@@ -35,11 +33,64 @@
     </div>
     <hr/>
   </div>
+  <br>
+  <div class="btn-group">
+    <a href="/files/books/<%= bookId%>/notes" class="btn btn-primary">All Chapters</a>
+    <a href="edit/" class="btn btn-primary">Edit Notes</a>
+    <a class="btn btn-primary" onclick="generatePDF()" id="downloadButton" >Get Notes PDF</a>
+    </div>
 </div>
 
 <script>
+  // Function to copy the code snippet inside the code block
+  function copyCode() {
+    const codeElement = document.querySelector('.description code');
+    const copyButton = document.getElementById('copy-code-button');
+    codeElement.removeChild(copyButton);
+    // Create a temporary textarea to copy the code
+    const tempTextarea = document.createElement('textarea');
+    tempTextarea.value = codeElement.innerText;
+
+    // Append the textarea to the document
+    document.body.appendChild(tempTextarea);
+
+    // Select the text inside the textarea
+    tempTextarea.select();
+
+    // Copy the text to the clipboard
+    document.execCommand('copy');
+
+    // Remove the temporary textarea
+    document.body.removeChild(tempTextarea);
+
+    // Show the "Copied" message for a brief period
+    codeElement.appendChild(copyButton);
+    copyButton.textContent = 'Copied!';
+    setTimeout(function() {
+      copyButton.textContent = 'Copy Code';
+    }, 1000);
+  }
+
+  // Wait for the DOM to load
+  document.addEventListener('DOMContentLoaded', function() {
+    const codeElement = document.querySelector('.description code');
+
+    // Create the "Copy Code" button
+    const copyButton = document.createElement('button');
+    copyButton.textContent = 'Copy Code';
+    copyButton.onclick = copyCode;
+    copyButton.id = 'copy-code-button';
+    copyButton.classList.add('copy-button');
+
+    // Append the button to the code element
+    codeElement.appendChild(copyButton);
+  });
+
 function copyText() {
   // Get the content of the div
+  const copyButton = document.getElementById('copy-code-button');
+  const codeElement = document.querySelector('.description code');
+  codeElement.removeChild(copyButton);
   var description = document.getElementById("notes").innerText;
 
   // Create a temporary textarea element
@@ -58,7 +109,8 @@ function copyText() {
 
   // Remove the temporary textarea
   document.body.removeChild(textarea);
-
+  //Add removed copy button 
+  codeElement.appendChild(copyButton);
   // Alert the user
   alert("Text copied to clipboard: " + description);
 }
@@ -272,7 +324,7 @@ const synth = window.speechSynthesis;
         filename: `${title}_notes.pdf`,
         pagesplit: true,
         html2canvas: {
-          scale: 2.25, // Adjust the scale for better quality
+          scale: 1.25, // Adjust the scale for better quality
         },
         jsPDF: {
           format: "a4",

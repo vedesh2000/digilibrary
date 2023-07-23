@@ -182,15 +182,71 @@ padding: 10px;
 border-radius: 10px;
 border-style: double;
 font-size: 0.75rem;
+font-weight: lighter;
 word-wrap: break-word;
 text-overflow: clip;
+overflow: auto;
+width: 100%;
 }
 
+.description code {
+  font-family: cursive;
+  background-color: var(--color-text-light); /* Set the background color for the code */
+  display: block; /* Ensure the code block takes up the entire width available */
+  padding:  10px 5px 25px 10px; /* Add padding inside the code block */
+  border-radius: 3px; /* Apply a slight border radius for rounded corners */
+  color: var(--color-background-text); /* Set the text color for better contrast */
+  overflow: auto;
+  position: relative;
+}
+
+.description code::before {
+  content: " Code Snippet";
+  display: block;
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 8px;
+  padding: 5px;
+  width: 100%;
+  border-radius: 5px;
+  background-color: #afa8a8;
+}
+
+.copy-button {
+  /* Styles for "Copy Code" button */
+  position: absolute;
+  top: 12px;
+  right: 15px;
+  background-color: var(--color-text-light);
+  color: var(--color-background-text);
+  padding: 5px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  z-index: 100; /* Ensure the button is above the "Copied" message */
+}
+
+.notes-button {
+  font: inherit;
+  top: 5px;
+  right: 5px;
+  background-color: var(--color-text-light);
+  color: var(--color-background-text);
+  padding: 5px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  z-index: 100; /* Ensure the button is above the "Copied" message */
+}
+.notes-button:disabled {
+  /* Styles for the disabled "Reset" button */
+  background-color: #ccc;
+  color: #888;
+  cursor: not-allowed;
+}
 
 /* Customize the scrollbar track */
 ::-webkit-scrollbar {
   width: 10px;
-  background-color: var(--color-background-light);
+  background-color: #afa8a8;
 }
 
 /* Customize the scrollbar thumb */

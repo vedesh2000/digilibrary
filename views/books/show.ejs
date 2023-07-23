@@ -18,6 +18,8 @@
     <div>Book Type :
         <% if(book.type==="book" ) { %>
             Book
+            <br/>
+            <div>Copies : <%=book.copies %>
         <% } else { %>
             E-Book/Web
             <%if(book.driveLink) {%>
@@ -42,8 +44,6 @@
         </div>
     </div>
     <div>Page Count : <%=book.pageCount %>
-    <br/>
-    <div>Copies : <%=book.copies %>
     <br/>
     <div>Progress :
         <% if(book.progress==="inProgress" ) { %>
@@ -85,7 +85,7 @@
             <span class="tooltiptext">Remove From Favourite Books</span>
         </button>
         <div id="popup" class="popup">
-            <p>Book removed</p>
+            <p id="loadingMessage">Removing Book <span id="dots"></span></p>
         </div> 
         <% } else { %>
         <button id="showPopupButton" type="submit" class="btn btn-primary tooltip">
@@ -93,7 +93,7 @@
             <span class="tooltiptext">Add to Favourite Books</span>
         </button> 
         <div id="popup" class="popup">
-            <p>Book added</p>
+            <p id="loadingMessage">Adding Book<span id="dots"></span></p>
         </div> 
         <% } %> 
     </form>
@@ -104,7 +104,7 @@
                 <span class="tooltiptext">Remove From Daily Read</span>
             </button>
             <div id="popupDailyBook" class="popup">
-                <p>Book removed</p>
+                <p>Removing Book</p>
             </div> 
         <% } else { %>
             <button id="showPopupButtonDailyBook" type="submit" class="btn btn-primary tooltip">
@@ -112,7 +112,7 @@
                 <span class="tooltiptext">Add to Daily Read</span>
             </button>
             <div id="popupDailyBook" class="popup">
-                <p>Book added</p>
+                <p>Adding Book</p>
             </div> 
         <% } %> 
     </form>
@@ -168,18 +168,50 @@ function copyText() {
   alert("Text copied to clipboard: " + description);
 }
 
-document.getElementById("showPopupButton").addEventListener("click", function() {
+  document.getElementById("showPopupButton").addEventListener("click", function() {
     var popup = document.getElementById("popup");
-    popup.style.display = "block";
-    setTimeout(function() {
-        popup.style.display = "none";
-    }, 3000);
-});
-document.getElementById("showPopupButtonDailyBook").addEventListener("click", function() {
-    var popup = document.getElementById("popupDailyBook");
-    popup.style.display = "block";
-    setTimeout(function() {
-        popup.style.display = "none";
-    }, 3000);
-});
+    const loadingMessage = document.getElementById("loadingMessage");
+    const dotsElement = document.getElementById("dots");
+
+    loadingMessage.style.display = "inline"; // Show the loading message
+    popup.style.display = "block"; // Show the popup
+
+    let dotsCount = 0;
+    const interval = setInterval(() => {
+      dotsElement.textContent = ".".repeat(dotsCount);
+      dotsCount = (dotsCount + 1) % 4; // Loop dotsCount from 0 to 3
+    }, 200); // Change dots every 0.5 seconds (200 milliseconds)
+
+
+    setTimeout(() => {
+      clearInterval(interval);
+      dotsElement.textContent = ""; // Clear dots
+      loadingMessage.style.display = "none"; // Hide the loading message
+      popup.style.display = "none"; // Hide the popup
+    }, 5000); // Simulate loading for 5 seconds (5000 milliseconds)
+  });
+
+  document.getElementById("showPopupButtonDailyBook").addEventListener("click", function() {
+    var popup = document.getElementById("popup");
+    const loadingMessage = document.getElementById("loadingMessage");
+    const dotsElement = document.getElementById("dots");
+
+    loadingMessage.style.display = "inline"; // Show the loading message
+    popup.style.display = "block"; // Show the popup
+
+    let dotsCount = 0;
+    const interval = setInterval(() => {
+      dotsElement.textContent = ".".repeat(dotsCount);
+      dotsCount = (dotsCount + 1) % 4; // Loop dotsCount from 0 to 3
+    }, 200); // Change dots every 0.5 seconds (200 milliseconds)
+
+
+    setTimeout(() => {
+      clearInterval(interval);
+      dotsElement.textContent = ""; // Clear dots
+      loadingMessage.style.display = "none"; // Hide the loading message
+      popup.style.display = "none"; // Hide the popup
+    }, 5000); // Simulate loading for 5 seconds (5000 milliseconds)
+  });
+
 </script>
