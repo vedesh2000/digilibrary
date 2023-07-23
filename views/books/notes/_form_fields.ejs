@@ -17,23 +17,25 @@
     <label class="required" for="description">Description</label>
     <div style="position: relative;">
       <textarea name="description" id="description" class="description"  maxlength="2000"><%= chapter.description %></textarea>
-      <div style="position: absolute; bottom: 15px; right: 5px;" id="desc-character-count"></div>
+      <div style="position: absolute; bottom: -30px; right: 5px;" id="desc-character-count"></div>
     </div>
   </div>
 </div>
+<br/>
 <div class="form-row">
   <div class="form-item">
     <label class="required" for="markdown">Notes (<a href="/markdown.html" target="_blank">markdown</a>)</label>
     <div style="position: relative;">
       <textarea required name="notesMarkdown" id="markdown" maxlength="99999" spellcheck="true"><%= chapter.notesMarkdown %></textarea>
-      <div style="position: absolute; bottom: 15px; right: 5px;" id="character-count"></div>
+      <div style="position: absolute; bottom: -33px; right: 5px;" id="character-count"></div>
     </div>
   </div>
 </div>
 
-
-<button id="start-record-btn" title="Start Recording" >Start Voice Recognition</button>
-<button id="pause-record-btn" title="Pause Recording" >Pause Voice Recognition</button> 
+<br/>
+<br/>
+<button class="notes-button" id="start-record-btn" title="Start Recording" >Start Voice Recognition</button>
+<button class="notes-button" id="pause-record-btn" title="Pause Recording" >Pause Voice Recognition</button> 
 <p id="recording-instructions">Press the <strong>Start Recognition</strong> button and allow access.</p>
 
 <div id="permission-dialog" style="display: none;">
