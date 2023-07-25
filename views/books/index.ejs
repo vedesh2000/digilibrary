@@ -223,12 +223,12 @@
 </div>
 
 <div class="form-row form-row-end">
-  <button type="submit" class="btn btn-danger" onclick="resetForm()">Reset</button>
   <button class="btn btn-primary" type="submit">Search</button>
+  <button type="submit" class="btn btn-danger" onclick="resetForm()">Reset</button>
 </div>
 </form>
 <div>
-  <h4><%= books.length %> Results Found!</h4>
+  <h4><%= books.length %> Results Found in Page <%=current%> / <%= pages %> </h4>
   <br/>
 </div>
 <div class="cards-container">
@@ -241,53 +241,83 @@
           <img src="/book.png">
         <% } %>
         <div class="container">
-          <h4><b><%= book.title %></b></h4>
+          <%= book.title %>
         </div>
       </a>
     </div>
   <% }) %>
 </div>
 <br/>
-<%- include('../partials/deleteForm' , {url : "books/deleteAll" , buttonName: "Delete All Books"}) %>
-<br/>
 
 <% if (pages > 0) { %>
-  <ul class="pagination text-center">
+  <ul class="pagination pagination-lg text-center" id="pagination-list">
+    <% const queryString = new URLSearchParams(searchOptions).toString(); %>
+    <% const baseLink = "/files/books"; %>
+    <% const previousPageLink = current > 1 ? `${baseLink}?page=${current - 1}&${queryString}` : '#'; %>
+    <% const nextPageLink = current < pages ? `${baseLink}?page=${current + 1}&${queryString}` : '#'; %>
+    <% const firstPageLink = current > 1 ? `${baseLink}?page=1&${queryString}` : '#'; %>
+    <% const lastPageLink = current < pages ? `${baseLink}?page=${pages}&${queryString}` : '#'; %>
     <% if (current == 1) { %>
       <li class="disabled"><a>First</a></li>
     <% } else { %>
-      <li><a href="/files/books?page=1">First</a></li>
+      <li><a href="<%= firstPageLink %>">First</a></li>
     <% } %>
     <% if (current > 1) { %>
-      <li><a href="/files/books?page=<%= current - 1 %>">Previous</a></li>
+      <li><a href="<%= previousPageLink %>">Previous</a></li>
     <% } %>
     <% var i = (Number(current) > 5 ? Number(current) - 4 : 1) %>
     <% if (i !== 1) { %>
       <li class="disabled"><a>...</a></li>
     <% } %>
     <% for (; i <= (Number(current) + 4) && i <= pages; i++) { %>
+      <% const pageLink = `${baseLink}?page=${i}&${queryString}`; %>
       <% if (i == current) { %>
         <li class="active"><a><%= i %></a></li>
       <% } else { %>
-        <li><a href="/files/books?page=<%= i %>"><%= i %></a></li>
+        <li><a href="<%= pageLink %>"><%= i %></a></li>
       <% } %>
       <% if (i == Number(current) + 4 && i < pages) { %>
         <li class="disabled"><a>...</a></li>
       <% } %>
     <% } %>
     <% if (current < pages) { %>
-      <li><a href="/files/books?page=<%= current + 1 %>">Next</a></li>
+      <li><a href="<%= nextPageLink %>">Next</a></li>
     <% } %>
     <% if (current == pages) { %>
       <li class="disabled"><a>Last</a></li>
     <% } else { %>
-      <li><a href="/files/books?page=<%= pages %>">Last</a></li>
+      <li><a href="<%= lastPageLink %>">Last</a></li>
     <% } %>
   </ul>
 <% } %>
 
 
+
+
 <script>
+  // Function to update the pagination class based on window width
+  function updatePaginationClass() {
+    const paginationList = document.getElementById("pagination-list");
+    const windowWidth = window.innerWidth;
+  
+    if (windowWidth < 650) {
+      paginationList.classList.remove("pagination-lg");
+      paginationList.classList.add("pagination-sm");
+    } else {
+      paginationList.classList.remove("pagination-sm");
+      paginationList.classList.add("pagination-lg");
+    }
+  }
+  
+  // Initial setup when the page loads
+  updatePaginationClass();
+  
+  // Add event listener for window resize
+  window.addEventListener("resize", () => {
+    updatePaginationClass();
+  });
+
+  
   const slider = document.getElementById('percentageCompleted');
   const percentageValue = document.getElementById('percentageValue');
 
@@ -326,4 +356,6 @@
       document.getElementById("myForm").submit();
   }
   }
+
+
 </script>

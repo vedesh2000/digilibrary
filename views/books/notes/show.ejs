@@ -14,19 +14,22 @@
   <br/>
   <h3>Notes: </h3>
   <div class="description">
-    <button class="notes-button" onclick="copyText()">Copy Text</button>
+    <button class="notes-button" onclick="copyText()">Copy Notes</button>
+    <a href="edit/" style="margin-left: 10px; padding: 6px;" class="notes-button"><i class="fa fa-pen"></i></a>
     <br/>
-    <br/>
+    <hr/>
     <div id="audio"> 
     <label class="notes-button" for="speed">Playback Speed</label>
     <input type="number" name="speed" id="speed" min=".25" max="3" step=".25" value="1">
     <br/>
-    <br/>
+    <hr/>
     <div class="btn-group">
       <button class="notes-button" id="stop" onclick="stop();">Reset</button>
       <button class="notes-button" id="play" onclick="play();">Play</button>
       <button class="notes-button" id="pause" onclick="pause();"></button>
     </div>
+    <hr/>
+    <hr/>
     </div>
     <div id="notes">
       <%- chapter.sanitizedNotesMarkdown %>
@@ -42,11 +45,11 @@
 </div>
 
 <script>
-  // Function to copy the code snippet inside the code block
-  function copyCode() {
-    const codeElement = document.querySelector('.description code');
-    const copyButton = document.getElementById('copy-code-button');
+ function copyCode(event) {
+    const codeElement = event.target.parentElement;
+    const copyButton = event.target;
     codeElement.removeChild(copyButton);
+
     // Create a temporary textarea to copy the code
     const tempTextarea = document.createElement('textarea');
     tempTextarea.value = codeElement.innerText;
@@ -73,17 +76,18 @@
 
   // Wait for the DOM to load
   document.addEventListener('DOMContentLoaded', function() {
-    const codeElement = document.querySelector('.description code');
+    const codeElements = document.querySelectorAll('.description code');
 
-    // Create the "Copy Code" button
-    const copyButton = document.createElement('button');
-    copyButton.textContent = 'Copy Code';
-    copyButton.onclick = copyCode;
-    copyButton.id = 'copy-code-button';
-    copyButton.classList.add('copy-button');
+    // Create the "Copy Code" button for each code element
+    codeElements.forEach(function(codeElement) {
+      const copyButton = document.createElement('button');
+      copyButton.textContent = 'Copy Code';
+      copyButton.onclick = copyCode;
+      copyButton.classList.add('copy-button');
 
-    // Append the button to the code element
-    codeElement.appendChild(copyButton);
+      // Append the button to the code element
+      codeElement.appendChild(copyButton);
+    });
   });
 
 function copyText() {

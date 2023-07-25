@@ -12,8 +12,9 @@
 }
 
 .content {
-  margin-left: 0px; /* Width of the sidebar */
+  margin-left: 20px; /* Width of the sidebar */
   transition: margin-left 0.2s ease;
+  margin-right: 45px;
 }
 
 .toggle-button {
@@ -93,4 +94,5 @@
 
 .sidebar li a:hover {
   color: whitesmoke;
+  font-weight: bold;
 }
