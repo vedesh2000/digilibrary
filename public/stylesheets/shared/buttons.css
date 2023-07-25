@@ -136,3 +136,12 @@
 .dropdown-item:last-child {
   margin-bottom: 0;
 }
+
+
+.btn-primary:disabled 
+{
+  /* Styles for the disabled "Reset" button */
+  background-color: #ccc;
+  color: #888;
+  cursor: not-allowed;
+}
