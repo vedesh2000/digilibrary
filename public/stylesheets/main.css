@@ -26,7 +26,7 @@ body{
 }
 
 .page-header {
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 500;
 }
 
@@ -66,10 +66,11 @@ body{
 
 .card {
   overflow: hidden;
-  width: 150px;
-  height: 300px;
+  width: 125px;
+  height: 250px;
   margin: 10px;
   text-align: left;
+  font-size: small;
   box-shadow: 0 4px 8px 0 var(--color-text-light);
   transition: 0.3s;
   background-color: var(--color-background-light);
@@ -81,7 +82,7 @@ body{
 }
 
 .container {
-  padding: 2px 16px;
+  padding: 2px 10px;
 }
 .card img {
   width: 100%;
@@ -89,7 +90,7 @@ body{
 }
 
 .card i {
-  margin: 1.5rem;
+  margin: 15%;
   font-size: 4rem;
 }
 
@@ -108,7 +109,6 @@ body{
       0 0 100px var(--color-background-dark),
       0 0 150px var(--color-background-dark); */
   text-align: center;
-  font-size: large;
   margin: 10px;
   color: inherit; /* Inherit color from parent */
 }
@@ -190,7 +190,7 @@ width: 100%;
 }
 
 .description code {
-  font-family: cursive;
+  font-family: monospace;
   background-color: var(--color-text-light); /* Set the background color for the code */
   display: block; /* Ensure the code block takes up the entire width available */
   padding:  10px 5px 25px 10px; /* Add padding inside the code block */
@@ -210,6 +210,7 @@ width: 100%;
   width: 100%;
   border-radius: 5px;
   background-color: #afa8a8;
+  color: black;
 }
 
 .copy-button {
@@ -222,7 +223,6 @@ width: 100%;
   padding: 5px 10px;
   border-radius: 3px;
   cursor: pointer;
-  z-index: 100; /* Ensure the button is above the "Copied" message */
 }
 
 .notes-button {
@@ -234,7 +234,6 @@ width: 100%;
   padding: 5px 10px;
   border-radius: 3px;
   cursor: pointer;
-  z-index: 100; /* Ensure the button is above the "Copied" message */
 }
 .notes-button:disabled {
   /* Styles for the disabled "Reset" button */

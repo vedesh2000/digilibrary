@@ -10,14 +10,14 @@
           <img src="/book.png">
         <% } %>
         <div class="container">
-          <h4><b><%= book.title %></b></h4>
+          <%= book.title %>
         </div>
       </a>
     </div>
   <% }) %>
 </div>
 <% if (pages > 0) { %>
-  <ul class="pagination text-center">
+  <ul class="pagination pagination-lg text-center" id="pagination-list">
     <% if (current == 1) { %>
       <li class="disabled"><a>First</a></li>
     <% } else { %>
@@ -51,3 +51,26 @@
   </ul>
 <% } %>
 
+<script>
+  // Function to update the pagination class based on window width
+  function updatePaginationClass() {
+    const paginationList = document.getElementById("pagination-list");
+    const windowWidth = window.innerWidth;
+  
+    if (windowWidth < 650) {
+      paginationList.classList.remove("pagination-lg");
+      paginationList.classList.add("pagination-sm");
+    } else {
+      paginationList.classList.remove("pagination-sm");
+      paginationList.classList.add("pagination-lg");
+    }
+  }
+  
+  // Initial setup when the page loads
+  updatePaginationClass();
+  
+  // Add event listener for window resize
+  window.addEventListener("resize", () => {
+    updatePaginationClass();
+  });
+</script>

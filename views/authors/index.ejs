@@ -64,11 +64,12 @@
     </div>
   </div>
   <div class="form-row form-row-end">
-    <button type="submit" class="btn btn-danger" onclick="resetForm()">Reset</button>
     <button class="btn btn-primary" type="submit">Search</button>
+    <button type="submit" class="btn btn-danger" id="resetButton" onclick="resetForm()">Reset</button>
   </div>
 </form>
-<br>
+<h4><%= authors.length %> Results Found in Page <%=current%> / <%= pages %> </h4>
+<br/>
 <% authors.forEach(author => { %>
   <div class="author-row">
     <div class="author-name"><%= author.name %></div>
@@ -80,16 +81,15 @@
     </div>
   </div>
 <% }) %>
-
 <% if (pages > 0) { %>
-  <ul class="pagination text-center">
+  <ul class="pagination pagination-lg text-center" id="pagination-list">
     <% if (current == 1) { %>
       <li class="disabled"><a>First</a></li>
     <% } else { %>
-      <li><a href="/files/authors?page=1">First</a></li>
+      <li><a href="/files/authors?page=1&name=<%= searchOptions %>&sortBy=<%= sortBy %>&sort=<%= sort %>">First</a></li>
     <% } %>
     <% if (current > 1) { %>
-      <li><a href="/files/authors?page=<%= current - 1 %>">Previous</a></li>
+      <li><a href="/files/authors?page=<%= current - 1 %>&name=<%= searchOptions %>&sortBy=<%= sortBy %>&sort=<%= sort %>">Previous</a></li>
     <% } %>
     <% var i = (Number(current) > 5 ? Number(current) - 4 : 1) %>
     <% if (i !== 1) { %>
@@ -99,26 +99,48 @@
       <% if (i == current) { %>
         <li class="active"><a><%= i %></a></li>
       <% } else { %>
-        <li><a href="/files/authors?page=<%= i %>"><%= i %></a></li>
+        <li><a href="/files/authors?page=<%= i %>&name=<%= searchOptions %>&sortBy=<%= sortBy %>&sort=<%= sort %>"><%= i %></a></li>
       <% } %>
       <% if (i == Number(current) + 4 && i < pages) { %>
         <li class="disabled"><a>...</a></li>
       <% } %>
     <% } %>
     <% if (current < pages) { %>
-      <li><a href="/files/authors?page=<%= current + 1 %>">Next</a></li>
+      <li><a href="/files/authors?page=<%= current + 1 %>&name=<%= searchOptions %>&sortBy=<%= sortBy %>&sort=<%= sort %>">Next</a></li>
     <% } %>
     <% if (current == pages) { %>
       <li class="disabled"><a>Last</a></li>
     <% } else { %>
-      <li><a href="/files/authors?page=<%= pages %>">Last</a></li>
+      <li><a href="/files/authors?page=<%= pages %>&name=<%= searchOptions %>&sortBy=<%= sortBy %>&sort=<%= sort %>">Last</a></li>
     <% } %>
   </ul>
 <% } %>
 
 
 <script>
-  function resetForm() {
+// Function to update the pagination class based on window width
+function updatePaginationClass() {
+  const paginationList = document.getElementById("pagination-list");
+  const windowWidth = window.innerWidth;
+
+  if (windowWidth < 650) {
+    paginationList.classList.remove("pagination-lg");
+    paginationList.classList.add("pagination-sm");
+  } else {
+    paginationList.classList.remove("pagination-sm");
+    paginationList.classList.add("pagination-lg");
+  }
+}
+
+// Initial setup when the page loads
+updatePaginationClass();
+
+// Add event listener for window resize
+window.addEventListener("resize", () => {
+  updatePaginationClass();
+});
+
+function resetForm() {
   document.getElementById("asc").checked = true;
   document.getElementById("desc").checked = false;
   document.getElementById("sortByName").selected = true;

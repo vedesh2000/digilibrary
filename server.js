@@ -78,7 +78,6 @@ function getCurrentDateTime() {
 function hitURL() {
   // Replace 'YOUR_URL_HERE' with the URL you want to hit
   const url = 'https://digilibrary.onrender.com/';
-  console.log(url);
   // Replace this with your code to make the HTTP request to the URL (e.g., using fetch, XMLHttpRequest, etc.)
   // For simplicity, I'll use fetch in this example.
   fetch(url)
@@ -91,7 +90,7 @@ function hitURL() {
     })
     .then(data => {
       // Process the response data if needed
-      console.log('Response:', data);
+      // console.log('Response:', data);
     })
     .catch(error => {
       console.error('Error:', error);

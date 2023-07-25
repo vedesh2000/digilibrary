@@ -2,6 +2,23 @@
 <form action="/user/<%= user.id %>?_method=PUT" method="POST">
     <%- include('_form_fields_user' , {user: user}) %>
     <br>
-    <a class="btn btn-danger" href="/user/">Cancel</a>
-    <button class="btn btn-primary" type="submit">Update</button>
+    <a class="btn btn-danger" id="cancelButton">Cancel</a>
+    <button class="btn btn-primary" type="submit" id="saveButton">Update</button>
 </form>
+
+<script>
+    var initialUserName = document.getElementById('username').value;
+
+    // Add an event listener to the cancel button to display the alert when clicked
+    document.getElementById('cancelButton').addEventListener('click', function() {
+        var currentUserName = document.getElementById('username').value;
+        if (currentUserName !== initialUserName) {
+            var shouldCancel = confirm('Are you sure you want to cancel? Any unsaved changes will be lost.');
+            if (shouldCancel) {
+                window.location.href = '/user/';
+            }
+        } else {
+            window.location.href = '/user/';
+        }
+    });
+</script>

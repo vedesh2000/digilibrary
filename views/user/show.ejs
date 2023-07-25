@@ -36,16 +36,16 @@
     <canvas id="myBarChart" class="myChart"></canvas>
 </div>
 
-<div class="btn-row">
+<div class="btn-group">
     <a class="btn btn-primary" href="/user/<%= user.id %>/edit">Edit User</a>
     <% if(isPassword) { %>
       <a class="btn btn-primary" href="/user/<%= user.id %>/editPassword">Change Password</a>
     <% } else { %>
       <a class="btn btn-primary" href="/user/<%= user.id %>/editPassword">Set Password</a>
     <% } %>
+  <%- include('../partials/deleteForm' , {url : "books/deleteAll" , buttonName: "Delete All Books"}) %>
+  <%- include('../partials/deleteForm', { url: `/user/${user.id}`, buttonName: "Delete Account" }) %>
 </div>
-<br>
-<%- include('../partials/deleteForm', { url: `/user/${user.id}`, buttonName: "Delete account" }) %>
 
 
 <script>

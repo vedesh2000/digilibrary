@@ -1,6 +1,33 @@
 <h2 class="page-header">Edit Publisher/Platform</h2>
 <form action="/files/publishers/<%= publisher.id %>?_method=PUT" method="POST">
     <%- include('_form_fields') %>
-    <a class="btn btn-danger" href="/files/publishers/<%= publisher.id %>">Cancel</a>
-    <button class="btn btn-primary" type="submit">Update</button>
+    <div class="form-row form-row-end">
+        <a class="btn btn-danger" id="cancelButton">Cancel</a>
+        <button id="saveButton" class="btn btn-primary" type="submit" disabled>Update</button>
+    </div>
 </form>
+
+<script>
+    // Get the initial value of the PublisherName input field
+    var initialPublisherName = document.getElementById('publisherName').value;
+
+    // Add an event listener to the input field to enable the save button when the user makes changes
+    document.getElementById('publisherName').addEventListener('input', function() {
+        var currentPublisherName = this.value;
+        document.getElementById('saveButton').disabled = currentPublisherName === initialPublisherName || currentPublisherName.trim() === '';;
+    });
+
+    // Add an event listener to the cancel button to display the alert when clicked
+    document.getElementById('cancelButton').addEventListener('click', function() {
+        var currentPublisherName = document.getElementById('publisherName').value;
+        if (currentPublisherName !== initialPublisherName) {
+            var shouldCancel = confirm('Are you sure you want to cancel? Any unsaved changes will be lost.');
+            if (shouldCancel) {
+                window.location.href = '/files/publishers/<%= publisher.id %>';
+            }
+        }
+        else{
+            window.location.href = '/files/publishers/<%= publisher.id %>';
+        }
+    });
+</script>

@@ -20,6 +20,7 @@
     <script defer src="https://unpkg.com/filepond-plugin-image-resize/dist/filepond-plugin-image-resize.js"></script>
     <script defer src="/javascripts/fileUpload.js"></script>
     <script defer src="/javascripts/toggle.js"></script>
+    <script defer src="/javascripts/navTopBottom.js"></script>
     
     <script type="text/javascript">
     function googleTranslateElementInit() {
@@ -27,11 +28,22 @@
     }
     window.onload = googleTranslateElementInit;
     </script>
-
+    <a id="top"></a>
 
     <%- include('../partials/headers.ejs') %>
     <%- include('../partials/errorMessage')%>
     <%- body %>
+
+    <a id="bottom"></a>
+    <!-- "Go to Top" button -->
+    <div id="goToTop" style="position: fixed; bottom: 100px; right: 5px; display: none;">
+        <a href="#top" class="btn btn-primary"><i class="fas fa-chevron-up"></i></a>
+    </div>
+    
+    <!-- "Go to Bottom" button -->
+    <div id="goToBottom" style="position: fixed; bottom: 40px; right: 5px; display: none;">
+        <a href="#bottom" class="btn btn-primary"><i class="fas fa-chevron-down"></i></a>
+    </div>
 </body>
 
 </html>
