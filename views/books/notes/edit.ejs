@@ -1,12 +1,53 @@
 
 <div class="container">
-  <h1 class="mb-4">Edit chapter</h1>
-
+  <h1 class="mb-4">Edit Chapter</h1>
   <form action="?_method=PUT" method="POST">
     <%- include('_form_fields') %>
-    <div class="form-row form-row-end btn-row">
-      <a href="/files/books/<%= bookId%>/notes" class="btn btn-danger">Cancel</a>
-      <button type="submit" class="btn btn-primary">Save</button>
+    <div class="form-row form-row-end">
+      <a class="btn btn-danger" id="cancelButton">Cancel</a>
+      <button id="saveButton" type="submit" class="btn btn-primary" disabled>Save</button>
   </div>
   </form>
 </div>
+
+
+<script>
+
+  var initialChapterNumber = document.getElementById('chapterNumber').value;
+  var initialTitle = document.getElementById('title').value;
+  var initialDescription = document.getElementById('description').value;
+  var initialMarkdown = document.getElementById('markdown').value;
+
+  document.getElementById('chapterNumber').addEventListener('input', function() {
+    var currentChapterNumber = this.value;
+    document.getElementById('saveButton').disabled = currentChapterNumber === initialChapterNumber || currentChapterNumber.trim() === '';;
+  });
+  document.getElementById('title').addEventListener('input', function() {
+    var currentTitle = this.value;
+    document.getElementById('saveButton').disabled = currentTitle === initialTitle || currentTitle.trim() === '';;
+  });
+  document.getElementById('description').addEventListener('input', function() {
+    var currentDescription = this.value;
+    document.getElementById('saveButton').disabled = currentDescription === initialDescription || currentDescription.trim() === '';;
+  });
+  document.getElementById('markdown').addEventListener('input', function() {
+    var currentMarkdown = this.value;
+    document.getElementById('saveButton').disabled = currentMarkdown === initialMarkdown || currentMarkdown.trim() === '';;
+  });
+
+  document.getElementById('cancelButton').addEventListener('click', function() {
+    var currentChapterNumber = document.getElementById('chapterNumber').value;
+    var currentTitle = document.getElementById('title').value;
+    var currentDescription = document.getElementById('description').value;
+    var currentMarkdown = document.getElementById('markdown').value;
+        if (currentChapterNumber !== initialChapterNumber || currentTitle !== initialTitle || currentDescription !== initialDescription || currentMarkdown !== initialMarkdown) {
+            var shouldCancel = confirm('Are you sure you want to cancel? Any unsaved changes will be lost.');
+            if (shouldCancel) {
+                window.location.href = '/files/books/<%= bookId%>/notes/<%= chapterId%>/show';
+            }
+        }
+        else{
+            window.location.href = '/files/books/<%= bookId%>/notes/<%= chapterId%>/show';
+        }
+  });
+</script>
