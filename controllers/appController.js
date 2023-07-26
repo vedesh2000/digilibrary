@@ -11,6 +11,13 @@ const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_REDIRECT_URI
 );
 
+// Function to convert a string to title case
+function toTitleCase(str) {
+  return str.replace(/\w\S*/g, function (txt) {
+    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+  });
+}
+
 function checkPassword(inputtxt){
   var paswd=  /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{7,15}$/;
   if(inputtxt.match(paswd)) 
@@ -45,7 +52,7 @@ exports.authGoogle_callback = async (req, res) => {
     const givenName = data.given_name;
     const familyName = data.family_name;
     const username = `${givenName} ${familyName}`;
-
+    const titleCaseUserName = toTitleCase(username)
     // Check if the user already exists in your database
     let user = await User.findOne({ email: data.email });
 
@@ -56,14 +63,14 @@ exports.authGoogle_callback = async (req, res) => {
       user = new User({
         googleId: data.id,
         email: data.email,
-        username: username,
+        username: titleCaseUserName,
         createdAt: Date.now(),
         lastOpenedAt: Date.now(),
         confirmationCode: token,
         status: 'Active'
       });
       await user.save();
-      console.log(username + "User Created Successfully");
+      console.log(user.username + "User Created Successfully");
     }
 
     else if(user.password && !user.googleId){
@@ -219,9 +226,9 @@ exports.register_post = async (req, res) => {
   // Generating User token
   const token = jwt.sign({email: email}, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN});
-  
+  const titleCaseUserName = toTitleCase(username)
   user = new User({
-    username,
+    titleCaseUserName,
     email,
     password: hasdPsw,
     confirmationCode: token,
@@ -236,7 +243,7 @@ exports.register_post = async (req, res) => {
       const mailMsg = "Please confirm your email";
       const url = process.env.BASE_URL + "/api/auth/confirm/" + user.confirmationCode;
       mailStatus = await sendEmail(process.env.USER_EMAIL, process.env.PASSWORD, url, user.username, user.email, subject, mailMsg);
-      console.log(username + " User Created successfully");
+      console.log(user.username + " User Created successfully");
       }
     //Sending Mail
     if(mailStatus){

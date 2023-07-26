@@ -11,6 +11,12 @@ const User = require("../models/user");
 const imageMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg']
 router.use(express.json());
 
+// Function to convert a string to title case
+function toTitleCase(str) {
+    return str.replace(/\w\S*/g, function (txt) {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+  }
 
 // Initialize OpenAI API
 // const configuration = new Configuration({
@@ -615,7 +621,10 @@ router.put('/:id', isAuth, async (req, res) => {
         pagesCompleted = 0;
         percentageCompleted = 0;
     }
-        book.title = req.body.title
+    const title = req.body.title;
+    const titleCaseTitle = toTitleCase(title);
+
+        book.title = titleCaseTitle;
         book.author = req.body.author
         book.publisher = req.body.publisher
         book.type = req.body.type
@@ -783,8 +792,10 @@ router.post('/', isAuth, async (req, res) => {
         await newpublisher.save();
         publisher = newpublisher.id;
     }
+    const title = req.body.title;
+    const titleCaseTitle = toTitleCase(title);
     const book = new Book({
-        title: req.body.title,
+        title: titleCaseTitle,
         author: author,
         publisher: publisher,
         type: req.body.type,
