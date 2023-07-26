@@ -4,6 +4,15 @@ const routes = express.Router();
 const Publisher = require('../models/publisher');
 const User = require('../models/user');
 const {Book} = require('../models/book');
+
+
+// Function to convert a string to title case
+function toTitleCase(str) {
+    return str.replace(/\w\S*/g, function (txt) {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+  }
+
 //All publishers
 routes.get('/', isAuth, async (req, res) => {
     const email = req.session.email
@@ -43,9 +52,11 @@ routes.get('/new', isAuth, (req, res) => {
 //Create publisher
 routes.post('/', isAuth, async (req, res) => {
     const email = req.session.email;
+    const name = req.body.name;
+    const titleCaseName = toTitleCase(name);
     const publisher = new Publisher(
         { 
-            name: req.body.name,
+            name: titleCaseName,
             user: await User.findOne({email}),
             createdAt: new Date(),
             lastModifiedAt: new Date(),
@@ -109,7 +120,9 @@ routes.put('/:id', isAuth, async (req, res) => {
             res.redirect('/')
             return
         }
-        publisher.name = req.body.name
+        const name = req.body.name;
+        const titleCaseName = toTitleCase(name);
+        publisher.name = titleCaseName
         publisher.lastModifiedAt = new Date();
         publisher.version += 1;
     } catch {

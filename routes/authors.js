@@ -5,6 +5,15 @@ const Author = require('../models/author');
 const User = require('../models/user');
 const {Book} = require('../models/book');
 //All authors
+
+// Function to convert a string to title case
+function toTitleCase(str) {
+    return str.replace(/\w\S*/g, function (txt) {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+  }
+
+
 routes.get('/', isAuth, async (req, res) => {
     const email = req.session.email
     const user = await User.findOne({email})
@@ -18,10 +27,17 @@ routes.get('/', isAuth, async (req, res) => {
         let pageNumber = parseInt(req.query.page) || 1; // Get the requested page number from the query string
         const pageSize = 20; // Number of items to load per page
         let sortOptions = {};
-        if(sortBy)
+        let authors;
+        let queryResult;
+        if(sortBy){
             sortOptions[sortBy] = sort;
-            const queryResult = await Author.find(searchOptions).sort(sortOptions).exec();
-            const authors = queryResult.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+            queryResult = await Author.find(searchOptions).sort(sortOptions).exec();
+            authors = queryResult.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+        }
+        else{
+            queryResult = await Author.find(searchOptions).sort({name : 1}).exec();
+            authors = queryResult.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+        }
         res.render('authors/index',
             {
                 authors: authors,
@@ -33,7 +49,7 @@ routes.get('/', isAuth, async (req, res) => {
             })
     } catch(err) {
         console.log(err);
-        res.redirect('/')
+        res.redirect('/files')
     }
 })
 //New author
@@ -43,9 +59,11 @@ routes.get('/new', isAuth, (req, res) => {
 //Create Author
 routes.post('/', isAuth, async (req, res) => {
     const email = req.session.email;
+    const name = req.body.name;
+    const titleCaseName = toTitleCase(name);
     const author = new Author(
         { 
-            name: req.body.name,
+            name: titleCaseName,
             user: await User.findOne({email}),
             createdAt: new Date(),
             lastModifiedAt: new Date(),
@@ -109,7 +127,9 @@ routes.put('/:id', isAuth, async (req, res) => {
             res.redirect('/')
             return
         }
-        author.name = req.body.name
+        const name = req.body.name;
+        const titleCaseName = toTitleCase(name);
+        author.name = titleCaseName
         author.lastModifiedAt = new Date();
         author.version += 1;
     } catch {

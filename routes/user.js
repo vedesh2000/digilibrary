@@ -7,6 +7,14 @@ const {Book} = require('../models/book')
 const Author = require('../models/author')
 const imageMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg']
 
+// Function to convert a string to title case
+function toTitleCase(str) {
+    return str.replace(/\w\S*/g, function (txt) {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+  }
+
+
 routes.get('/', isAuth, async (req, res) => {
     try {
         const user = await User.findOne({email: req.session.email});
@@ -122,7 +130,9 @@ routes.put('/:id', isAuth, async (req, res) => {
         //console.log(req.url);
         user = await User.findById(req.params.id)
         // console.log(req.body);
-        user.username = req.body.name
+        const name = req.body.name;
+        const titleCaseName = toTitleCase(name);
+        user.username = titleCaseName
         if (req.body.cover != null && req.body.cover !== '') {
             saveCover(user, req.body.cover)
         }
