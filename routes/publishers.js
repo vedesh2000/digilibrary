@@ -21,16 +21,23 @@ routes.get('/', isAuth, async (req, res) => {
     const sortBy = req.query.sortBy;
     const sort = req.query.sort;
     if (req.query.name != null && req.query.name != '') {
-        searchOptions.name = new RegExp(req.query.name, 'i')
+        searchOptions.name = new RegExp('.*' + req.query.name.split('').join('.{0,2}') + '.*', 'i');
     }
     try {
         let pageNumber = parseInt(req.query.page) || 1; // Get the requested page number from the query string
         const pageSize = 20; // Number of items to load per page
         let sortOptions = {};
-        if(sortBy)
+        let queryResult
+        let publishers
+        if(sortBy){
             sortOptions[sortBy] = sort;
-            const queryResult = await Publisher.find(searchOptions).sort(sortOptions).exec();
-            const publishers = queryResult.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+            queryResult = await Publisher.find(searchOptions).sort(sortOptions).exec();
+            publishers = queryResult.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+        }
+        else{
+            queryResult = await Publisher.find(searchOptions).sort({name : 1}).exec();
+            publishers = queryResult.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+        }
         res.render('publishers/index',
             {
                 publishers: publishers,

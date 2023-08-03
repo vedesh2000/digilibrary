@@ -371,7 +371,7 @@ exports.dashboard_get = async (req, res) => {
       .exec();
 
     const books = dbBooks.map((book) => {
-      return { id: book.id, coverImagePath: book.coverImagePath, title: book.title };
+      return { id: book.id, coverImagePath: book.coverImagePath, title: book.title, isDailyBook: book.isDailyBook, isFavourite: book.isFavourite };
     });
 
     res.render('index', { user: user, books: books, current: pageNumber, pages: Math.ceil(allBooks.length / pageSize) });

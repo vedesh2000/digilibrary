@@ -64,6 +64,7 @@
   width: 12rem;
 }
 .book-image:hover{
+  cursor: zoom-in;
   position: center;
   height: 23rem; 
   width: 17.5rem;

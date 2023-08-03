@@ -20,14 +20,48 @@
           <a href="/files/books/<%= book.id %>">
             <% if (book.coverImagePath) { %>
               <img src="<%= book.coverImagePath %>">
-            <% } else { %>
-              <img src="/book.png">
-            <% } %>
-            <div class="container">
-              <%= book.title %>
-            </div>
-          </a>
-        </div>
+              <% } else { %>
+                <img src="/book.png">
+                <% } %>
+              </a>
+              <!-- Buttons container -->
+              <div class="buttons-container">
+                <a href="/files/books/<%= book.id %>/edit">
+                  <i style="color: blue; background-color: aliceblue; border-radius: 50%; font-size: 10px; margin: 3px; padding: 4px;" class="fa fa-pen"></i>
+                </a>
+                <a href="/files/books/<%= book.id %>/notes">
+                  <i style="color: rgb(156, 103, 4); background-color: aliceblue; border-radius: 50%; font-size: 10px; margin: 3px; padding: 4px;" class="fa fa-note-sticky"></i>
+                </a>
+                <!-- <form method="POST" action="/files/books/<%= book.id %>/addOrRemoveDailyReadBook?_method=POST"> -->
+                  <button style="margin: 0px; padding: 0px;" onclick="addOrRemoveDailyReadBook('<%= book.id %>')" class="theme-button">
+                    <% if(book.isDailyBook){ %>
+                    <i id="dailyReadButton<%= book.id  %>" style="color: orange; background-color: aliceblue; border-radius: 50%; font-size: 10px; margin: 4px; padding: 5px;" class="fa fa-book"></i>
+                    <% } else { %>
+                    <i id="dailyReadButton<%= book.id  %>" style="background-color: aliceblue; border-radius: 50%; font-size: 10px; margin: 4px; padding: 5px;" class="fa fa-book"></i>
+                    <% } %> 
+                  </button>
+                  <button style="margin: 0px; padding: 0px;" onclick="addOrRemoveFavourite('<%= book.id %>')" class="theme-button">
+                    <% if(book.isFavourite){ %>
+                    <i id="favouriteButton<%= book.id  %>" style="color: red; background-color: aliceblue; border-radius: 50%; font-size: 10px; margin: 3px; padding: 5px;" class="fa fa-heart"></i>
+                    <% } else { %>
+                    <i id="favouriteButton<%= book.id  %>" style="background-color: aliceblue; border-radius: 50%; font-size: 10px; margin: 3px; padding: 5px;" class="fa fa-heart"></i>
+                    <% } %>
+                  </button>
+                  <button style="margin: 0px; padding: 0px;" class="theme-button" onclick="deleteBook('<%= book.id %>')">
+                    <i style="color: black; background-color: aliceblue; border-radius: 50%; font-size: 10px; margin: 4px; padding: 5px;" class="fa fa-trash"></i>
+                  </button>
+              </div>
+                <a href="/files/books/<%= book.id %>">
+                <div class="container">
+                  <div style="height: 90px; width: 100%;"><%= book.title %></div>
+                </div>
+              </div>
+            </a>
       <% }) %>
     </div>
+    <br/>
 <% } %>
+
+
+
+<script defer src="/javascripts/cardButtons.js"></script>

@@ -64,16 +64,6 @@ app.use('/user',userRouter)
 app.use('/files/books', booksRouter)
 app.listen(process.env.PORT || 3000)
 
-function getCurrentDateTime() {
-  const now = new Date();
-  const day = now.getDate().toString().padStart(2, '0');
-  const month = (now.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-based, so add 1
-  const year = now.getFullYear().toString();
-  const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-
-  return `${day}-${month}-${year} ${time}`;
-}
-
 //code to hit digilibrary for every 10mins 
 function hitURL() {
   // Replace 'YOUR_URL_HERE' with the URL you want to hit
@@ -85,8 +75,7 @@ function hitURL() {
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-      const currentDateTime = getCurrentDateTime();
-      return `hit ${currentDateTime}`;
+      return `hit`;
     })
     .then(data => {
       // Process the response data if needed
@@ -97,8 +86,8 @@ function hitURL() {
     });
 }
 
-// Set an initial delay of 10 minutes (600,000 milliseconds) before the first request
-const intervalTime = 10 * 60 * 1000; // 10 minutes in milliseconds
+// Set an initial delay of 7 minutes (600,000 milliseconds) before the first request
+const intervalTime = 7 * 60 * 1000; // 10 minutes in milliseconds
 
 // Call the hitURL() function immediately (for the first time)
 hitURL();
