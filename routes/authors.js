@@ -21,7 +21,7 @@ routes.get('/', isAuth, async (req, res) => {
     const sortBy = req.query.sortBy;
     const sort = req.query.sort;
     if (req.query.name != null && req.query.name != '') {
-        searchOptions.name = new RegExp(req.query.name, 'i')
+        searchOptions.name = new RegExp('.*' + req.query.name.split('').join('.{0,2}') + '.*', 'i');
     }
     try {
         let pageNumber = parseInt(req.query.page) || 1; // Get the requested page number from the query string

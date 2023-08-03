@@ -150,9 +150,17 @@ router.get('/', isAuth, async (req, res) => {
         let pageNumber = parseInt(req.query.page) || 1; // Get the requested page number from the query string
         const pageSize = 20; // Number of items to load per page
         let sortOptions = {};
-        sortOptions[sortBy] = sort;
-        const queryResult = await query.sort(sortOptions).exec();
-        const books = queryResult;
+        let queryResult
+        let books
+        if(sortBy){
+            sortOptions[sortBy] = sort;
+            queryResult = await query.sort(sortOptions).exec();
+            books = queryResult;
+        }
+        else{
+            queryResult = await query.sort({title : 1}).exec();
+            books = queryResult;
+        }
         let filteredBooks = books;
         if (req.query.notes != null && req.query.notes != '') {
             let queryChapters = [];
@@ -230,9 +238,17 @@ router.get('/favourites', isAuth, async (req, res) => {
         let pageNumber = parseInt(req.query.page) || 1; // Get the requested page number from the query string
         const pageSize = 20; // Number of items to load per page
         let sortOptions = {};
-        sortOptions[sortBy] = sort;
-        const queryResult = await query.sort(sortOptions).exec();
-        const books = queryResult;
+        let queryResult
+        let books
+        if(sortBy){
+            sortOptions[sortBy] = sort;
+            queryResult = await query.sort(sortOptions).exec();
+            books = queryResult;
+        }
+        else{
+            queryResult = await query.sort({title : 1}).exec();
+            books = queryResult;
+        }
         let filteredBooks = books;
         if (req.query.notes != null && req.query.notes != '') {
             let queryChapters = [];
@@ -311,9 +327,17 @@ router.get('/dailyBooks', isAuth, async (req, res) => {
         let pageNumber = parseInt(req.query.page) || 1; // Get the requested page number from the query string
         const pageSize = 20; // Number of items to load per page
         let sortOptions = {};
-        sortOptions[sortBy] = sort;
-        const queryResult = await query.sort(sortOptions).exec();
-        const books = queryResult;
+        let queryResult
+        let books
+        if(sortBy){
+            sortOptions[sortBy] = sort;
+            queryResult = await query.sort(sortOptions).exec();
+            books = queryResult;
+        }
+        else{
+            queryResult = await query.sort({title : 1}).exec();
+            books = queryResult;
+        }
         let filteredBooks = books;
         if (req.query.notes != null && req.query.notes != '') {
             let queryChapters = [];
@@ -705,31 +729,27 @@ router.delete('/deleteAll', isAuth, async (req, res) => {
         }
     }
 })
-//delete book
+// delete book
 router.delete('/:id', isAuth, async (req, res) => {
-    let book
     try {
-        book = await Book.findById(req.params.id)
-        const user = await User.findById(book.user)
-        if (req.session.email != user.email) {
-            res.redirect('/')
-            return
+        const book = await Book.findById(req.params.id);
+        const user = await User.findById(book.user);
+
+        if (req.session.email !== user.email) {
+            return res.status(403).json({ errorMessage: "Unauthorized" });
         }
-        await book.deleteOne()
-        res.redirect('/files/books')
+
+        await book.deleteOne();
+
+        // Respond with success message as JSON
+        res.json({ successMessage: "Book deleted successfully" });
+    } catch (error) {
+        console.log(error);
+        // Respond with an error message as JSON
+        res.status(500).json({ errorMessage: "Could not remove Book" });
     }
-    catch (error) {
-        console.log(error)
-        if (book != null) {
-            res.render(`books/show`, {
-                book: book,
-                errorMessage: 'Could not remove Book'
-            })
-        } else {
-            res.redirect('/files/books')
-        }
-    }
-})
+});
+
 //new book route
 router.post('/', isAuth, async (req, res) => {
     const email = req.session.email
@@ -854,47 +874,49 @@ router.post('/:id/newNotes', isAuth, async (req, res) => {
 })
 //add to favorites
 router.post('/:id/addOrRemoveFav', isAuth, async (req, res) => {
-    let book
     try {
-        book = await Book.findById(req.params.id)
-        const user = await User.findById(book.user)
-        if (req.session.email != user.email) {
-            res.redirect('/')
-            return
+        const book = await Book.findById(req.params.id);
+        const user = await User.findById(book.user);
+
+        if (req.session.email !== user.email) {
+            return res.status(403).json({ errorMessage: "Unauthorized" });
         }
-        
-        book.isFavourite = !(book.isFavourite);
+
+        book.isFavourite = !book.isFavourite;
         book.lastModifiedAt = new Date();
-        book.version += 1;
-        await book.save()
-        res.redirect(`/files/books/${req.params.id}`);
-    }
-    catch (error) {
-        console.log(error)
-        res.render("books/show", { book: book, errorMessage: "Error adding to Favourites"})
+        await book.save();
+
+        // Respond with updated book data as JSON
+        res.json({ book });
+    } catch (error) {
+        console.log(error);
+        // Respond with an error message as JSON
+        res.status(500).json({ errorMessage: "Error adding to Favourites" });
     }
 })
-//add to dailybook
+// add to dailyReadbook
 router.post('/:id/addOrRemoveDailyReadBook', isAuth, async (req, res) => {
-    let book
     try {
-        book = await Book.findById(req.params.id)
-        const user = await User.findById(book.user)
-        if (req.session.email != user.email) {
-            res.redirect('/')
-            return
+        const book = await Book.findById(req.params.id);
+        const user = await User.findById(book.user);
+
+        if (req.session.email !== user.email) {
+            return res.status(403).json({ errorMessage: "Unauthorized" });
         }
-        
-        book.isDailyBook = !(book.isDailyBook);
+
+        book.isDailyBook = !book.isDailyBook;
         book.lastModifiedAt = new Date();
-        await book.save()
-        res.redirect(`/files/books/${req.params.id}`);
+        await book.save();
+
+        // Respond with updated book data as JSON
+        res.json({ book });
+    } catch (error) {
+        console.log(error);
+        // Respond with an error message as JSON
+        res.status(500).json({ errorMessage: "Error adding to dailyReadbooks" });
     }
-    catch (error) {
-        console.log(error)
-        res.render("books/show", { book: book, errorMessage: "Error adding to dailyReadbooks"})
-    }
-})
+});
+
 async function renderNewPage(req, res, book, hasError = false) {
     renderFormPage(req, res, book, 'new', hasError)
 }

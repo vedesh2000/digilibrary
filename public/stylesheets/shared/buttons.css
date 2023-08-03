@@ -145,3 +145,18 @@
   color: #888;
   cursor: not-allowed;
 }
+
+.buttons-container {
+  display: flex;
+  align-items: center;
+}
+
+.buttons-container a:hover {
+  border-radius: 50%;
+  background-color: var(--color-text-light);
+}
+.buttons-container button:hover {
+  border-radius: 50%;
+}
+
+
