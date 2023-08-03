@@ -2,8 +2,10 @@
 <form action="/user/<%= user.id %>?_method=PUT" method="POST">
     <%- include('_form_fields_user' , {user: user}) %>
     <br>
-    <a class="btn btn-danger" id="cancelButton">Cancel</a>
-    <button class="btn btn-primary" type="submit" id="saveButton">Update</button>
+    <div class="form-row form-row-end">
+        <a class="btn btn-danger" id="cancelButton">Cancel</a>
+        <button class="btn btn-primary" type="submit" id="saveButton">Update</button>
+    </div>
 </form>
 
 <script>
