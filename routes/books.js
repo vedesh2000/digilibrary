@@ -4,7 +4,8 @@ const isAuth = require("../middleware/is-auth");
 // const generateMCQs = require("../controllers/generateMcqs");
 const updateRecentSearches = require('../middleware/updateRecentSearches');
 const router = express.Router()
-const { Chapter, Book } = require("../models/book");
+const Book = require("../models/book");
+const Chapter = require("../models/chapter");
 const Author = require("../models/author")
 const Publisher = require("../models/publisher")
 const User = require("../models/user");
@@ -421,7 +422,11 @@ router.get('/:id/notes', isAuth, async (req, res) => {
             res.redirect('/')
             return
         }
-        let queryChapters = book.chapterNotes;
+
+        // Find chapters related to the book based on parentId and sort them
+        const queryChapters = await Chapter.find({ parentId: book.id })
+        .sort({ chapterNumber: 1, subChapterNumber: 1 }); // 1 for ascending order
+
         //adding fuzzy as 2 if req add Levenshtein distance to handle wrong spells
         if (req.query.notes != null && req.query.notes != '') {
         queryChapters = queryChapters.filter(query => {
@@ -445,11 +450,14 @@ router.get('/:id/notes/new', isAuth, async (req, res) => {
             res.redirect('/')
             return
         }
-        const largestChapterNumber = book.chapterNotes.reduce((maxChapterNumber, chapter) => {
+        // Find chapters related to the book based on parentId
+        let queryChapters = await Chapter.find({ parentId: book.id });
+
+        const largestChapterNumber = queryChapters.reduce((maxChapterNumber, chapter) => {
             return chapter.chapterNumber > maxChapterNumber ? chapter.chapterNumber : maxChapterNumber;
         }, 0);
         // console.log(largestChapterNumber);
-        res.render("books/notes/new", {bookId: req.params.id, chapter: new Chapter({chapterNumber: largestChapterNumber+1})});
+        res.render("books/notes/new", {bookId: req.params.id, chapter: new Chapter({chapterNumber: largestChapterNumber+1, parentType: 'book', parentId: book.id})});
 
     } catch (err) {
         console.log(err);
@@ -465,14 +473,7 @@ router.get('/:bookId/notes/:chapterId/show', isAuth, async (req, res) => {
             res.redirect('/')
             return
         }
-        let chapterObj = {}
-        book.chapterNotes.forEach(chapter => {
-            if (chapter.id === req.params.chapterId){
-                // console.log(chapter);
-                chapterObj = chapter;
-                return 
-            }
-        });
+        const chapterObj = await Chapter.findById(req.params.chapterId);
 
         if(chapterObj === null)
             return res.render("books/notes/index", {title: book.title, bookId: req.params.bookId , chapters: book.chapterNotes, errorMessage: "Notes not found"});
@@ -516,15 +517,8 @@ router.get('/:bookId/notes/:chapterId/edit', isAuth, async (req, res) => {
             res.redirect('/')
             return
         }
-        let chapterObj = {}
-        book.chapterNotes.forEach(chapter => {
-            if (chapter.id === req.params.chapterId){
-                // console.log(chapter);
-                chapterObj = chapter
-                return
-            }
-        });
-        
+        const chapterObj = await Chapter.findById(req.params.chapterId);
+
         if(chapterObj === null)
             return res.render("books/notes/index", { title: book.title, bookId: req.params.bookId , chapters: book.chapterNotes, errorMessage: "Notes not found"});
         
@@ -576,22 +570,20 @@ router.put('/:bookId/notes/:chapterId/edit', isAuth, async (req, res) => {
             res.redirect('/')
             return
         }
-        let chapterObj = {}
-        book.chapterNotes.forEach(chapter => {
-            if (chapter.id === req.params.chapterId){
-                // console.log(chapter);
-                chapter.chapterNumber = req.body.chapterNumber;
-                chapter.title = req.body.title;
-                chapter.description = req.body.description
-                chapter.notesMarkdown = req.body.notesMarkdown
-                chapterObj = chapter
-                return
-            }
-        });
         
+        let chapterObj = await Chapter.findById(req.params.chapterId);
         if(chapterObj === null)
             return res.render("books/notes/index", { title: book.title, bookId: req.params.bookId , chapters: book.chapterNotes, errorMessage: "Notes not found Please create New chapter"});
         
+        chapterObj.chapterNumber = req.body.chapterNumber;
+        chapterObj.subChapterNumber = req.body.chapterNumber;
+        chapterObj.title = req.body.title;
+        chapterObj.description = req.body.description
+        chapterObj.notesMarkdown = req.body.notesMarkdown
+        chapterObj.version += 1
+        chapterObj.lastModifiedAt = new Date();
+        await chapterObj.save();
+    
         book.lastModifiedAt = new Date();
         book.version += 1;
         await book.save()
@@ -689,12 +681,8 @@ router.delete('/:bookId/notes/:chapterId/delete', isAuth, async (req, res) => {
             return;
         }
         
-        const chapterIndex = book.chapterNotes.findIndex((chapter) => chapter.id === req.params.chapterId);
-        if (chapterIndex === -1) {
-            return res.render("books/notes/index", { title: book.title, bookId: req.params.bookId, chapters: book.chapterNotes, errorMessage: "Chapter not found" });
-        }
-
-        book.chapterNotes.splice(chapterIndex, 1); // Remove the chapter from the array
+        const chapter = await Chapter.findById(req.params.chapterId);
+        await chapter.deleteOne();
         book.lastModifiedAt = new Date();
         book.version += 1;
         await book.save();
@@ -857,15 +845,23 @@ router.post('/:id/newNotes', isAuth, async (req, res) => {
         }
         let chapter = new Chapter({
             chapterNumber: req.body.chapterNumber,
+            subChapterNumber: req.body.chapterNumber,
             title: req.body.title,
             description: req.body.description,
-            notesMarkdown: req.body.notesMarkdown
+            notesMarkdown: req.body.notesMarkdown,
+            user: user.id,
+            lastModifiedAt: new Date(),
+            lastOpenedAt: new Date(),
+            createdAt: new Date(),
+            version: 1,
+            parentType: 'book',
+            parentId: book.id
         })
-        book.chapterNotes.push(chapter);
+        const newChapter = await chapter.save();
         book.lastModifiedAt = new Date();
         book.version += 1;
         await book.save()
-        res.redirect('notes')
+        return res.render("books/notes/show", {title: book.title, bookId: req.params.bookId , chapter: newChapter , ownerName: user.username});
     }
     catch (error) {
         console.log(error)

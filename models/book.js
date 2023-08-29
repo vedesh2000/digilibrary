@@ -99,26 +99,6 @@ const allLanguages = [
     'zulu'
   ];
 
-const chapterSchema = new mongoose.Schema({
-    chapterNumber: {
-        type: Number,
-        default:1,
-        min:1
-    },
-    title: {
-      type: String,
-      required: true
-    },
-    description: {
-        type: String
-    },
-    notesMarkdown: {
-      type: String
-    },
-    sanitizedNotesMarkdown: {
-        type: String
-    }
-  });
 
 const bookSchema = mongoose.Schema({
     title: {
@@ -136,11 +116,17 @@ const bookSchema = mongoose.Schema({
         type: Date,
         required: true
     },
-    chapterNotes: {
-        type: [chapterSchema],
-        default : [],
-        // required: true,
-    },
+    // chapterNotes: {
+    //     type: [chapterSchema],
+    //     default : [],
+    //     // required: true,
+    // },
+    // chapterNotes: [
+    //     {
+    //         type: mongoose.Schema.Types.ObjectId,
+    //         ref: 'Chapter',
+    //     },
+    // ],
     pageCount: {
         type: Number,
         required: true,
@@ -251,17 +237,8 @@ bookSchema.pre('validate' , function(next){
     next();
 })
 
-chapterSchema.pre('validate' , function (next) {
-    if(this.notesMarkdown){
-        this.sanitizedNotesMarkdown = domPurify.sanitize(marked.parse(this.notesMarkdown));
-    }
-    next();
-})
 
-const Chapter = mongoose.model('Chapter', chapterSchema);
+
 const Book = mongoose.model('Book', bookSchema);
 
-module.exports = {
-  Chapter,
-  Book
-};
+module.exports = Book;

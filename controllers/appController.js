@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs");
 const User = require("../models/user");
-const { Book } = require("../models/book");
+const Book = require("../models/book");
 const sendEmail = require("./sendEmail")
 const jwt = require('jsonwebtoken');
 const { google } = require('googleapis');
