@@ -3,8 +3,10 @@ const isAuth = require("../middleware/is-auth");
 const routes = express.Router();
 const bcrypt = require("bcryptjs");
 const User = require('../models/user');
-const {Book} = require('../models/book')
+const Book = require('../models/book')
 const Author = require('../models/author')
+const Publisher = require('../models/publisher')
+const Chapter = require('../models/chapter')
 const imageMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg']
 
 // Function to convert a string to title case
@@ -159,10 +161,13 @@ routes.put('/:id', isAuth, async (req, res) => {
 
 routes.delete('/:id', isAuth, async (req, res) => {
     const user = await User.findOne({email: req.session.email});
-    const books = await Book.find({ user: user });
+
     try {
         const username = user.username;
-
+        await Chapter.deleteMany({ user: user })
+        await Book.deleteMany({ user: user })
+        await Author.deleteMany({ user: user })
+        await Publisher.deleteMany({ user: user })
         await user.deleteOne()
         //clearing session
         req.session.destroy((err) => {

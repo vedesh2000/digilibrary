@@ -12,6 +12,7 @@ marked("# heading");
 const createDomPurify = require('dompurify');
 const { JSDOM } = require('jsdom');
 const domPurify = createDomPurify(new JSDOM().window);
+const Chapter = require("./chapter")
 // all Languages
 const allLanguages = [
     'afrikaans',
@@ -237,6 +238,20 @@ bookSchema.pre('validate' , function(next){
     next();
 })
 
+bookSchema.pre('deleteOne', { document: true }, function(next)  {
+    Chapter.find({parentId: this.id})
+    .then((chapters) => {
+        // console.log(chapters.length)
+        if(chapters.length > 0){
+            next(new Error('This Book still has chapters'))
+        }else{
+            next()
+        }
+    })
+    .catch((err) => {
+            next(err)
+    });
+})
 
 
 const Book = mongoose.model('Book', bookSchema);

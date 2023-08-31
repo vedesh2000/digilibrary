@@ -476,8 +476,8 @@ router.get('/:bookId/notes/:chapterId/show', isAuth, async (req, res) => {
         const chapterObj = await Chapter.findById(req.params.chapterId);
 
         if(chapterObj === null)
-            return res.render("books/notes/index", {title: book.title, bookId: req.params.bookId , chapters: book.chapterNotes, errorMessage: "Notes not found"});
-
+            return res.render("books/notes/index", {title: book.title, bookId: req.params.bookId , chapters: book.chapterNotes, ownerName: user.username , errorMessage: "Notes not found"});
+        // console.log(req.params.bookId);
         return res.render("books/notes/show", {title: book.title, bookId: req.params.bookId , chapter: chapterObj , ownerName: user.username});
 
 
@@ -702,6 +702,7 @@ router.delete('/deleteAll', isAuth, async (req, res) => {
     const user = await User.findOne({ email })
     let book
     try {
+        await Chapter.deleteMany({ user: user })
         await Book.deleteMany({ user: user })
         res.redirect('/files/books')
     }
@@ -734,7 +735,7 @@ router.delete('/:id', isAuth, async (req, res) => {
     } catch (error) {
         console.log(error);
         // Respond with an error message as JSON
-        res.status(500).json({ errorMessage: "Could not remove Book" });
+        res.status(500).json({ errorMessage: "Could not remove Book as \n"+ error });
     }
 });
 
@@ -861,7 +862,7 @@ router.post('/:id/newNotes', isAuth, async (req, res) => {
         book.lastModifiedAt = new Date();
         book.version += 1;
         await book.save()
-        return res.render("books/notes/show", {title: book.title, bookId: req.params.bookId , chapter: newChapter , ownerName: user.username});
+        return res.render("books/notes/show", {title: book.title, bookId: book.id , chapter: newChapter , ownerName: user.username});
     }
     catch (error) {
         console.log(error)
