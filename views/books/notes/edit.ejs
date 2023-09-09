@@ -1,7 +1,7 @@
 
 <div class="container">
   <h1 class="mb-4">Edit Chapter</h1>
-  <form action="?_method=PUT" method="POST">
+  <form action="/files/notes/<%= chapterId %>/edit?_method=PUT" method="POST">
     <%- include('_form_fields') %>
     <div class="form-row form-row-end">
       <a class="btn btn-danger" id="cancelButton">Cancel</a>
@@ -43,11 +43,11 @@
         if (currentChapterNumber !== initialChapterNumber || currentTitle !== initialTitle || currentDescription !== initialDescription || currentMarkdown !== initialMarkdown) {
             var shouldCancel = confirm('Are you sure you want to cancel? Any unsaved changes will be lost.');
             if (shouldCancel) {
-                window.location.href = '/files/books/<%= bookId%>/notes/<%= chapterId%>/show';
+                window.location.href = '/files/notes/<%= chapterId%>';
             }
         }
         else{
-            window.location.href = '/files/books/<%= bookId%>/notes/<%= chapterId%>/show';
+            window.location.href = '/files/notes/<%= chapterId%>';
         }
   });
 </script>

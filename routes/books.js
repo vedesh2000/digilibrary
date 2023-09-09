@@ -464,28 +464,63 @@ router.get('/:id/notes/new', isAuth, async (req, res) => {
         res.redirect('/')
     }
 });
+//new notes post route
+// router.post('/:id/newNotes', isAuth, async (req, res) => {
+//     let book
+//     try {
+//         book = await Book.findById(req.params.id)
+//         const user = await User.findById(book.user)
+//         if (req.session.email != user.email) {
+//             res.redirect('/')
+//             return
+//         }
+//         let chapter = new Chapter({
+//             chapterNumber: req.body.chapterNumber,
+//             subChapterNumber: req.body.chapterNumber,
+//             title: req.body.title,
+//             description: req.body.description,
+//             notesMarkdown: req.body.notesMarkdown,
+//             user: user.id,
+//             lastModifiedAt: new Date(),
+//             lastOpenedAt: new Date(),
+//             createdAt: new Date(),
+//             version: 1,
+//             parentType: 'book',
+//             parentId: book.id
+//         })
+//         const newChapter = await chapter.save();
+//         book.lastModifiedAt = new Date();
+//         book.version += 1;
+//         await book.save()
+//         return res.render("books/notes/show", {title: book.title, bookId: book.id , chapter: newChapter , ownerName: user.username});
+//     }
+//     catch (error) {
+//         console.log(error)
+//         res.render("books/notes/index", { title: book.title, bookId: book.id, chapters: book.chapterNotes, errorMessage: "Error creating notes"})
+//     }
+// })
 //show notes
-router.get('/:bookId/notes/:chapterId/show', isAuth, async (req, res) => {
-    try {
-        const book = await Book.findById(req.params.bookId)
-        const user = await User.findById(book.user)
-        if (req.session.email != user.email) {
-            res.redirect('/')
-            return
-        }
-        const chapterObj = await Chapter.findById(req.params.chapterId);
+// router.get('/:chapterId', isAuth, async (req, res) => {
+//     try {
+//         const book = await Book.findById(req.params.bookId)
+//         const user = await User.findById(book.user)
+//         if (req.session.email != user.email) {
+//             res.redirect('/')
+//             return
+//         }
+//         const chapterObj = await Chapter.findById(req.params.chapterId);
 
-        if(chapterObj === null)
-            return res.render("books/notes/index", {title: book.title, bookId: req.params.bookId , chapters: book.chapterNotes, ownerName: user.username , errorMessage: "Notes not found"});
-        // console.log(req.params.bookId);
-        return res.render("books/notes/show", {title: book.title, bookId: req.params.bookId , chapter: chapterObj , ownerName: user.username});
+//         if(chapterObj === null)
+//             return res.render("books/notes/index", {title: book.title, bookId: req.params.bookId , chapters: book.chapterNotes, ownerName: user.username , errorMessage: "Notes not found"});
+//         // console.log(req.params.bookId);
+//         return res.render("books/notes/show", {title: book.title, bookId: req.params.bookId , chapter: chapterObj , ownerName: user.username});
 
 
-    } catch (err) {
-        console.log(err);
-        res.redirect('/')
-    }
-});
+//     } catch (err) {
+//         console.log(err);
+//         res.redirect('/')
+//     }
+// });
 //chatgpt integration
 // router.post("/:bookId/notes/:chapterId/show/generate-prompt", async (req, res) => {
 //     const prompt = req.body.prompt;
@@ -508,28 +543,28 @@ router.get('/:bookId/notes/:chapterId/show', isAuth, async (req, res) => {
 //             res.status(500).json({ error: "Failed to generate prompt." });
 //         }
 //     });
-//edit notes
-router.get('/:bookId/notes/:chapterId/edit', isAuth, async (req, res) => {
-    try {
-        const book = await Book.findById(req.params.bookId)
-        const user = await User.findById(book.user)
-        if (req.session.email != user.email) {
-            res.redirect('/')
-            return
-        }
-        const chapterObj = await Chapter.findById(req.params.chapterId);
+// //edit notes
+// router.get('/:chapterId/edit', isAuth, async (req, res) => {
+//     try {
+//         const book = await Book.findById(req.params.bookId)
+//         const user = await User.findById(book.user)
+//         if (req.session.email != user.email) {
+//             res.redirect('/')
+//             return
+//         }
+//         const chapterObj = await Chapter.findById(req.params.chapterId);
 
-        if(chapterObj === null)
-            return res.render("books/notes/index", { title: book.title, bookId: req.params.bookId , chapters: book.chapterNotes, errorMessage: "Notes not found"});
+//         if(chapterObj === null)
+//             return res.render("books/notes/index", { title: book.title, bookId: req.params.bookId , chapters: book.chapterNotes, errorMessage: "Notes not found"});
         
-        return res.render("books/notes/edit", {bookId: req.params.bookId, chapterId: req.params.chapterId , chapter: chapterObj});
+//         return res.render("books/notes/edit", {bookId: req.params.bookId, chapterId: req.params.chapterId , chapter: chapterObj});
         
 
-    } catch (err) {
-        console.log(err);
-        res.redirect('/')
-    }
-});
+//     } catch (err) {
+//         console.log(err);
+//         res.redirect('/')
+//     }
+// });
 // // generate MCQs page
 // router.get('/:bookId/notes/:chapterId/mcqTest', isAuth, async (req, res) => {
 //     try {
@@ -561,43 +596,43 @@ router.get('/:bookId/notes/:chapterId/edit', isAuth, async (req, res) => {
 //     }
 // });
 //update notes
-router.put('/:bookId/notes/:chapterId/edit', isAuth, async (req, res) => {
-    let book
-    try {
-        book = await Book.findById(req.params.bookId)
-        const user = await User.findById(book.user)
-        if (req.session.email != user.email) {
-            res.redirect('/')
-            return
-        }
+// router.put('/:bookId/notes/:chapterId/edit', isAuth, async (req, res) => {
+//     let book
+//     try {
+//         book = await Book.findById(req.params.bookId)
+//         const user = await User.findById(book.user)
+//         if (req.session.email != user.email) {
+//             res.redirect('/')
+//             return
+//         }
         
-        let chapterObj = await Chapter.findById(req.params.chapterId);
-        if(chapterObj === null)
-            return res.render("books/notes/index", { title: book.title, bookId: req.params.bookId , chapters: book.chapterNotes, errorMessage: "Notes not found Please create New chapter"});
+//         let chapterObj = await Chapter.findById(req.params.chapterId);
+//         if(chapterObj === null)
+//             return res.render("books/notes/index", { title: book.title, bookId: req.params.bookId , chapters: book.chapterNotes, errorMessage: "Notes not found Please create New chapter"});
         
-        chapterObj.chapterNumber = req.body.chapterNumber;
-        chapterObj.subChapterNumber = req.body.chapterNumber;
-        chapterObj.title = req.body.title;
-        chapterObj.description = req.body.description
-        chapterObj.notesMarkdown = req.body.notesMarkdown
-        chapterObj.version += 1
-        chapterObj.lastModifiedAt = new Date();
-        await chapterObj.save();
+//         chapterObj.chapterNumber = req.body.chapterNumber;
+//         chapterObj.subChapterNumber = req.body.chapterNumber;
+//         chapterObj.title = req.body.title;
+//         chapterObj.description = req.body.description
+//         chapterObj.notesMarkdown = req.body.notesMarkdown
+//         chapterObj.version += 1
+//         chapterObj.lastModifiedAt = new Date();
+//         await chapterObj.save();
     
-        book.lastModifiedAt = new Date();
-        book.version += 1;
-        await book.save()
-        res.redirect(`/files/books/${req.params.bookId}/notes/${req.params.chapterId}/show`)
-    }
-    catch (error) {
-        console.log(error)
-        if (book == null) {
-            res.redirect('/')
-        } else {
-            renderEditPage(req, res, book, true)
-        }
-    }
-})
+//         book.lastModifiedAt = new Date();
+//         book.version += 1;
+//         await book.save()
+//         res.redirect(`/files/books/${req.params.bookId}/notes/${req.params.chapterId}/show`)
+//     }
+//     catch (error) {
+//         console.log(error)
+//         if (book == null) {
+//             res.redirect('/')
+//         } else {
+//             renderEditPage(req, res, book, true)
+//         }
+//     }
+// })
 //Update book
 router.put('/:id', isAuth, async (req, res) => {
     let book
@@ -671,31 +706,32 @@ router.put('/:id', isAuth, async (req, res) => {
     }
 })
 //delete notes
-router.delete('/:bookId/notes/:chapterId/delete', isAuth, async (req, res) => {
-    let book;
-    try {
-        book = await Book.findById(req.params.bookId);
-        const user = await User.findById(book.user);
-        if (req.session.email !== user.email) {
-            res.redirect('/');
-            return;
-        }
+// router.delete('/:bookId/notes/:chapterId/delete', isAuth, async (req, res) => {
+//     let book;
+//     try {
+//         const chapterObj = await Chapter.findById(req.params.chapterId);
+//         // if(chapterObj.parentType === 'book')
+//         book = await Book.findById(chapterObj.parentId);
+//         const user = await User.findById(book.user);
+//         if (req.session.email !== user.email) {
+//             res.redirect('/');
+//             return;
+//         }
         
-        const chapter = await Chapter.findById(req.params.chapterId);
-        await chapter.deleteOne();
-        book.lastModifiedAt = new Date();
-        book.version += 1;
-        await book.save();
-        res.redirect(`/files/books/${req.params.bookId}/notes`);
-    } catch (error) {
-        console.log(error);
-        if (book == null) {
-            res.redirect('/');
-        } else {
-            renderEditPage(req, res, book, true);
-        }
-    }
-});
+//         await chapterObj.deleteOne();
+//         book.lastModifiedAt = new Date();
+//         book.version += 1;
+//         await book.save();
+//         res.redirect(`/files/books/${req.params.bookId}/notes`);
+//     } catch (error) {
+//         console.log(error);
+//         if (book == null) {
+//             res.redirect('/');
+//         } else {
+//             renderEditPage(req, res, book, true);
+//         }
+//     }
+// });
 // delete all books
 router.delete('/deleteAll', isAuth, async (req, res) => {
     const email = req.session.email;
@@ -834,41 +870,7 @@ router.post('/', isAuth, async (req, res) => {
         renderNewPage(req, res, book, true)
     }
 })
-//new notes post route
-router.post('/:id/newNotes', isAuth, async (req, res) => {
-    let book
-    try {
-        book = await Book.findById(req.params.id)
-        const user = await User.findById(book.user)
-        if (req.session.email != user.email) {
-            res.redirect('/')
-            return
-        }
-        let chapter = new Chapter({
-            chapterNumber: req.body.chapterNumber,
-            subChapterNumber: req.body.chapterNumber,
-            title: req.body.title,
-            description: req.body.description,
-            notesMarkdown: req.body.notesMarkdown,
-            user: user.id,
-            lastModifiedAt: new Date(),
-            lastOpenedAt: new Date(),
-            createdAt: new Date(),
-            version: 1,
-            parentType: 'book',
-            parentId: book.id
-        })
-        const newChapter = await chapter.save();
-        book.lastModifiedAt = new Date();
-        book.version += 1;
-        await book.save()
-        return res.render("books/notes/show", {title: book.title, bookId: book.id , chapter: newChapter , ownerName: user.username});
-    }
-    catch (error) {
-        console.log(error)
-        res.render("books/notes/index", { title: book.title, bookId: book.id, chapters: book.chapterNotes, errorMessage: "Error creating notes"})
-    }
-})
+
 //add to favorites
 router.post('/:id/addOrRemoveFav', isAuth, async (req, res) => {
     try {
