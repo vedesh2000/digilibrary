@@ -2,22 +2,13 @@ const express = require("express")
 // const { Configuration, OpenAIApi } = require("openai");
 const isAuth = require("../middleware/is-auth");
 // const generateMCQs = require("../controllers/generateMcqs");
-const updateRecentSearches = require('../middleware/updateRecentSearches');
 const router = express.Router()
 const Book = require("../models/book");
 const Chapter = require("../models/chapter");
-const Author = require("../models/author")
-const Publisher = require("../models/publisher")
 const User = require("../models/user");
-const imageMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg']
 router.use(express.json());
 
-// Function to convert a string to title case
-function toTitleCase(str) {
-    return str.replace(/\w\S*/g, function (txt) {
-      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-    });
-  }
+
 
 // Initialize OpenAI API
 // const configuration = new Configuration({
@@ -44,9 +35,9 @@ router.get('/:chapterId', isAuth, async (req, res) => {
         }
 
         if(chapterObj === null)
-            return res.render("books/notes/index", {title: parentObj.title, bookId: parentId , chapters: chapterObj, ownerName: user.username , errorMessage: "Notes not found"});
+            return res.render("notes/index", {title: parentObj.title, bookId: parentId , chapters: chapterObj, ownerName: user.username , errorMessage: "Notes not found"});
         // console.log(req.params.bookId);
-        return res.render("books/notes/show", {title: parentObj.title, bookId: parentId , chapter: chapterObj , ownerName: user.username});
+        return res.render("notes/show", {title: parentObj.title, bookId: parentId , chapter: chapterObj , ownerName: user.username});
 
 
     } catch (err) {
@@ -72,9 +63,9 @@ router.get('/:chapterId/edit', isAuth, async (req, res) => {
         }
 
         if(chapterObj === null)
-            return res.render("books/notes/index", {title: parentObj.title, bookId: parentId , chapters: chapterObj, ownerName: user.username , errorMessage: "Notes not found"});
+            return res.render("notes/index", {title: parentObj.title, bookId: parentId , chapters: chapterObj, ownerName: user.username , errorMessage: "Notes not found"});
         // console.log(req.params.bookId);
-        return res.render("books/notes/edit", {bookId: parentId , chapter: chapterObj , chapterId: req.params.chapterId});
+        return res.render("notes/edit", {bookId: parentId , chapter: chapterObj , chapterId: req.params.chapterId});
 
 
     } catch (err) {
@@ -85,7 +76,6 @@ router.get('/:chapterId/edit', isAuth, async (req, res) => {
 //update notes
 router.put('/:chapterId/edit', isAuth, async (req, res) => {
     let book
-    console.log("Editing notes");
     try {
         let chapterObj = await Chapter.findById(req.params.chapterId);
         // if(chapterObj.parentType === 'book')
@@ -97,10 +87,10 @@ router.put('/:chapterId/edit', isAuth, async (req, res) => {
         }
         
         if(chapterObj === null)
-        return res.render("books/notes/index", { title: book.title, bookId: req.params.bookId , chapters: book.chapterNotes, errorMessage: "Notes not found Please create New chapter"});
+        return res.render("notes/index", { title: book.title, bookId: req.params.bookId , chapters: book.chapterNotes, errorMessage: "Notes not found Please create New chapter"});
     
     chapterObj.chapterNumber = req.body.chapterNumber;
-    chapterObj.subChapterNumber = req.body.chapterNumber;
+    chapterObj.subChapterNumber = req.body.subChapterNumber;
     chapterObj.title = req.body.title;
     chapterObj.description = req.body.description
     chapterObj.notesMarkdown = req.body.notesMarkdown
@@ -111,7 +101,6 @@ router.put('/:chapterId/edit', isAuth, async (req, res) => {
         book.lastModifiedAt = new Date();
         book.version += 1;
         await book.save()
-        console.log("Edited notes");
         return res.redirect(`/files/notes/${req.params.chapterId}`)
     }
     //todo catch
@@ -125,7 +114,6 @@ router.put('/:chapterId/edit', isAuth, async (req, res) => {
     }
 })
 router.delete('/:chapterId/delete', isAuth, async (req, res) => {
-    console.log("Deleting Notes");
     let book;
     try {
         const chapterObj = await Chapter.findById(req.params.chapterId);
@@ -138,11 +126,9 @@ router.delete('/:chapterId/delete', isAuth, async (req, res) => {
         }
         
         await chapterObj.deleteOne();
-        console.log("Deleted Notes");
         book.lastModifiedAt = new Date();
         book.version += 1;
         await book.save();
-        console.log("Updated book Notes");
         // if(chapterObj.parentType === 'book')
         res.redirect(`/files/books/${chapterObj.parentId}/notes`);
     } catch (error) {
@@ -157,7 +143,6 @@ router.delete('/:chapterId/delete', isAuth, async (req, res) => {
 //new notes post route
 router.post('/', isAuth, async (req, res) => {
     let book
-    console.log("Creating note");
     try {
         // if(req.body.parentType === 'book')
         book = await Book.findById(req.body.parentId)
@@ -168,7 +153,7 @@ router.post('/', isAuth, async (req, res) => {
         }
         let chapter = new Chapter({
             chapterNumber: req.body.chapterNumber,
-            subChapterNumber: req.body.chapterNumber,
+            subChapterNumber: req.body.subChapterNumber,
             title: req.body.title,
             description: req.body.description,
             notesMarkdown: req.body.notesMarkdown,
@@ -181,15 +166,14 @@ router.post('/', isAuth, async (req, res) => {
             parentId: book.id
         })
         const newChapter = await chapter.save();
-        console.log("Created note");
         book.lastModifiedAt = new Date();
         book.version += 1;
         await book.save()
-        return res.render("books/notes/show", {title: book.title, bookId: book.id , chapter: newChapter , ownerName: user.username});
+        return res.render("notes/show", {title: book.title, bookId: book.id , chapter: newChapter , ownerName: user.username});
     }
     catch (error) {
         console.log(error)
-        res.render("books/notes/index", { title: book.title, bookId: book.id, chapters: book.chapterNotes, errorMessage: "Error creating notes"})
+        res.render("notes/index", { title: book.title, bookId: book.id, chapters: book.chapterNotes, errorMessage: "Error creating notes"})
     }
 })
 // // generate MCQs page
@@ -211,10 +195,10 @@ router.post('/', isAuth, async (req, res) => {
 //         });
         
 //         if(chapterObj === null)
-//             return res.render("books/notes/index", { title: book.title, bookId: req.params.bookId , chapters: book.chapterNotes, errorMessage: "Notes not found"});
+//             return res.render("notes/index", { title: book.title, bookId: req.params.bookId , chapters: book.chapterNotes, errorMessage: "Notes not found"});
         
 //         console.log(generateMCQs(chapterObj.notesMarkdown , 10));
-//         return res.render("books/notes/mcqTest" , {MCQs: generateMCQs(chapterObj.notesMarkdown , 10)});
+//         return res.render("notes/mcqTest" , {MCQs: generateMCQs(chapterObj.notesMarkdown , 10)});
         
 
 //     } catch (err) {

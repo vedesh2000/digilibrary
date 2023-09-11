@@ -16,11 +16,13 @@ const chapterSchema = new mongoose.Schema({
     chapterNumber: {
         type: Number,
         default: 1,
+        required: true,
         min: 1,
     },
     subChapterNumber: {
         type: Number,
         default: 1,
+        required: true,
         min: 1,
     },
     title: {
@@ -29,12 +31,15 @@ const chapterSchema = new mongoose.Schema({
     },
     description: {
         type: String,
+        required: true,
     },
     notesMarkdown: {
         type: String,
+        required: true,
     },
     sanitizedNotesMarkdown: {
         type: String,
+        required: true,
     },
     user: {
         type: mongoose.Schema.Types.ObjectId,
@@ -70,7 +75,7 @@ const chapterSchema = new mongoose.Schema({
     },
     parentType: {
         type: String, 
-        enum: ['book', 'thread', 'post', 'self'],
+        enum: ['book', 'thread', 'self'],
         default: 'book',
         required: true
     }

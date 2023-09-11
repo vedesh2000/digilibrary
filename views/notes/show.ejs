@@ -5,6 +5,8 @@
   <hr>
   <h2>Chapter Number: <%= chapter.chapterNumber %></h2>
   <hr>
+  <h3>Sub Chapter Number: <%= chapter.subChapterNumber %></h3>
+  <hr>
   <h3>Title: <%= chapter.title %></h3>
   <hr>
   <h3>Description: </h3>
@@ -15,7 +17,7 @@
   <h3>Notes: </h3>
   <div class="description">
     <button class="notes-button" onclick="copyText()">Copy Notes</button>
-    <a href="edit/" style="margin-left: 10px; padding: 6px;" class="notes-button"><i class="fa fa-pen"></i></a>
+    <a href="/files/notes/<%= chapter.id %>/edit" style="margin-left: 10px; padding: 6px;" class="notes-button"><i class="fa fa-pen"></i></a>
     <br/>
     <hr/>
     <div id="audio"> 
@@ -39,7 +41,7 @@
   <br>
   <div class="btn-group">
     <a href="/files/books/<%= bookId%>/notes" class="btn btn-primary">All Chapters</a>
-    <a href="edit/" class="btn btn-primary">Edit Notes</a>
+    <a href="/files/notes/<%= chapter.id %>/edit" class="btn btn-primary">Edit Notes</a>
     <a class="btn btn-primary" onclick="generatePDF()" id="downloadButton" >Get Notes PDF</a>
     </div>
 </div>

@@ -8,16 +8,23 @@
 </div>
 <div class="form-row">
   <div class="form-item">
-    <label class="required" for="parentType">parentType</label>
-    <input required value="<%= chapter.parentType %>" type="text" name="parentType" id="parentType"  maxlength="200">
+    <label class="required" for="subChapterNumber">Sub Chapter Number</label>
+    <input required value="<%= chapter.subChapterNumber %>" min="1" max="10000" type="number" name="subChapterNumber" id="subChapterNumber">
   </div>
 </div>
 <div class="form-row">
   <div class="form-item">
-    <label class="required" for="parentId">parentId</label>
-    <input required value="<%= chapter.parentId %>" type="text" name="parentId" id="parentId"  maxlength="200">
+    <label class="required" for="parentType">Parent Type</label>
+    <input required value="<%= chapter.parentType %>" type="text" name="parentType" id="parentType"  maxlength="200" readonly>
   </div>
 </div>
+<div class="form-row">
+  <div class="form-item">
+    <label class="required" for="parentId">Parent Id</label>
+    <input required value="<%= chapter.parentId %>" type="text" name="parentId" id="parentId" maxlength="200" readonly>
+  </div>
+</div>
+
 <div class="form-row">
   <div class="form-item">
     <label class="required" for="title">Title</label>
