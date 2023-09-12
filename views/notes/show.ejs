@@ -16,7 +16,7 @@
   <br/>
   <h3>Notes: </h3>
   <div class="description">
-    <button class="notes-button" onclick="copyText()">Copy Notes</button>
+    <button class="notes-button" onclick="copyText()" id="copy-code-button">Copy Notes</button>
     <a href="/files/notes/<%= chapter.id %>/edit" style="margin-left: 10px; padding: 6px;" class="notes-button"><i class="fa fa-pen"></i></a>
     <br/>
     <hr/>
@@ -48,6 +48,7 @@
 
 <script>
  function copyCode(event) {
+  //todo remove copy code text from copied test
     const codeElement = event.target.parentElement;
     const copyButton = event.target;
     codeElement.removeChild(copyButton);
@@ -92,34 +93,66 @@
     });
   });
 
-function copyText() {
+  function copyText() {
   // Get the content of the div
-  const copyButton = document.getElementById('copy-code-button');
-  const codeElement = document.querySelector('.description code');
-  codeElement.removeChild(copyButton);
   var description = document.getElementById("notes").innerText;
 
-  // Create a temporary textarea element
+  // Create a new textarea element
   var textarea = document.createElement("textarea");
   textarea.value = description;
 
   // Append the textarea to the document
   document.body.appendChild(textarea);
 
-  // Select the text in the textarea
+  // Select the text inside the textarea
   textarea.select();
-  textarea.setSelectionRange(0, 99999); // For mobile devices
 
-  // Copy the text to the clipboard
-  document.execCommand("copy");
-
-  // Remove the temporary textarea
-  document.body.removeChild(textarea);
-  //Add removed copy button 
-  codeElement.appendChild(copyButton);
-  // Alert the user
-  alert("Text copied to clipboard: " + description);
+  try {
+    // Use the Clipboard API to copy the text
+    document.execCommand("copy");
+    // alert("Text copied to clipboard: " + description);
+    // Show the "Copied" message for a brief period
+    const copyButton = document.getElementById('copy-code-button');
+    copyButton.textContent = 'Copied!';
+    setTimeout(function() {
+      copyButton.textContent = 'Copy Code';
+    }, 1000);
+  } catch (err) {
+    console.error("Unable to copy text to clipboard: " + err);
+  } finally {
+    // Remove the temporary textarea
+    document.body.removeChild(textarea);
+  }
 }
+
+// function copyText() {
+//   // Get the content of the div
+//   const copyButton = document.getElementById('copy-code-button');
+//   const codeElement = document.querySelector('.description code');
+//   codeElement.removeChild(copyButton);
+//   var description = document.getElementById("notes").innerText;
+
+//   // Create a temporary textarea element
+//   var textarea = document.createElement("textarea");
+//   textarea.value = description;
+
+//   // Append the textarea to the document
+//   document.body.appendChild(textarea);
+
+//   // Select the text in the textarea
+//   textarea.select();
+//   textarea.setSelectionRange(0, 99999); // For mobile devices
+
+//   // Copy the text to the clipboard
+//   document.execCommand("copy");
+
+//   // Remove the temporary textarea
+//   document.body.removeChild(textarea);
+//   //Add removed copy button 
+//   codeElement.appendChild(copyButton);
+//   // Alert the user
+//   alert("Text copied to clipboard: " + description);
+// }
 //Speech/////////////////////////////////////////////////////////////////////////////////////
 
 var pauseButton = document.getElementById("pause");

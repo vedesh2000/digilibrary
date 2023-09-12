@@ -12,18 +12,9 @@
     <input required value="<%= chapter.subChapterNumber %>" min="1" max="10000" type="number" name="subChapterNumber" id="subChapterNumber">
   </div>
 </div>
-<div class="form-row">
-  <div class="form-item">
-    <label class="required" for="parentType">Parent Type</label>
-    <input required value="<%= chapter.parentType %>" type="text" name="parentType" id="parentType"  maxlength="200" readonly>
-  </div>
-</div>
-<div class="form-row">
-  <div class="form-item">
-    <label class="required" for="parentId">Parent Id</label>
-    <input required value="<%= chapter.parentId %>" type="text" name="parentId" id="parentId" maxlength="200" readonly>
-  </div>
-</div>
+
+<input type="hidden" name="parentType" id="parentType" value="<%= chapter.parentType %>">
+<input type="hidden" name="parentId" id="parentId" value="<%= chapter.parentId %>">
 
 <div class="form-row">
   <div class="form-item">
@@ -45,7 +36,7 @@
   <div class="form-item">
     <label class="required" for="markdown">Notes (<a href="/markdown.html" target="_blank">markdown</a>)</label>
     <div style="position: relative;">
-      <textarea required name="notesMarkdown" id="markdown" maxlength="99999" spellcheck="true"><%= chapter.notesMarkdown %></textarea>
+      <textarea required name="notesMarkdown" id="markdown" maxlength="99999" spellcheck="true" class="description"><%= chapter.notesMarkdown %></textarea>
       <div style="position: absolute; bottom: -33px; right: 5px;" id="character-count"></div>
     </div>
   </div>

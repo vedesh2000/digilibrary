@@ -418,7 +418,8 @@ router.get('/:id/notes', isAuth, async (req, res) => {
             res.redirect('/')
             return
         }
-
+        book.lastOpenedAt = new Date()
+        await book.save();
         // Find chapters related to the book based on parentId and sort them
         let queryChapters = await Chapter.find({ parentId: book.id })
         .sort({ chapterNumber: 1, subChapterNumber: 1 }); // 1 for ascending order
@@ -430,7 +431,15 @@ router.get('/:id/notes', isAuth, async (req, res) => {
             return fuzzyRegex.test(query.notesMarkdown) || fuzzyRegex.test(query.description) || fuzzyRegex.test(query.title);
         });
         }
-        const sortedNotes = queryChapters.sort((a, b) => a.chapterNumber - b.chapterNumber);
+        // sorting chapters based on chapter number ans sub chapter number
+        const sortedNotes = queryChapters.sort((a, b) => {
+            if (a.chapterNumber === b.chapterNumber) {
+              return a.subChapterNumber - b.subChapterNumber;
+            } else {
+              return a.chapterNumber - b.chapterNumber;
+            }
+          });
+          
         res.render("notes/index", {title: book.title, bookId: book.id, chapters: sortedNotes , searchOptions: req.query, ownerName: user.username});
     } catch(err) {
         console.log(err);

@@ -14,6 +14,10 @@
     var currentChapterNumber = this.value;
     document.getElementById('saveButton').disabled = currentChapterNumber.trim() === '';;
   });
+  document.getElementById('subChapterNumber').addEventListener('input', function() {
+    var currentSubChapterNumber = this.value;
+    document.getElementById('saveButton').disabled = currentSubChapterNumber.trim() === '';;
+  });
   document.getElementById('title').addEventListener('input', function() {
     var currentTitle = this.value;
     document.getElementById('saveButton').disabled = currentTitle.trim() === '';;

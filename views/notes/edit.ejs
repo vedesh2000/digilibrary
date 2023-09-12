@@ -14,6 +14,7 @@
 <script>
 
   var initialChapterNumber = document.getElementById('chapterNumber').value;
+  var initialSubChapterNumber = document.getElementById('subChapterNumber').value;
   var initialTitle = document.getElementById('title').value;
   var initialDescription = document.getElementById('description').value;
   var initialMarkdown = document.getElementById('markdown').value;
@@ -21,6 +22,10 @@
   document.getElementById('chapterNumber').addEventListener('input', function() {
     var currentChapterNumber = this.value;
     document.getElementById('saveButton').disabled = currentChapterNumber === initialChapterNumber || currentChapterNumber.trim() === '';;
+  });
+  document.getElementById('subChapterNumber').addEventListener('input', function() {
+    var currentSubChapterNumber = this.value;
+    document.getElementById('saveButton').disabled = currentSubChapterNumber === initialSubChapterNumber || currentSubChapterNumber.trim() === '';;
   });
   document.getElementById('title').addEventListener('input', function() {
     var currentTitle = this.value;
