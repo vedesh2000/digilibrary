@@ -12,6 +12,7 @@ marked("# heading");
 const createDomPurify = require('dompurify');
 const { JSDOM } = require('jsdom');
 const domPurify = createDomPurify(new JSDOM().window);
+const Chapter = require("./chapter")
 // all Languages
 const allLanguages = [
     'afrikaans',
@@ -99,26 +100,6 @@ const allLanguages = [
     'zulu'
   ];
 
-const chapterSchema = new mongoose.Schema({
-    chapterNumber: {
-        type: Number,
-        default:1,
-        min:1
-    },
-    title: {
-      type: String,
-      required: true
-    },
-    description: {
-        type: String
-    },
-    notesMarkdown: {
-      type: String
-    },
-    sanitizedNotesMarkdown: {
-        type: String
-    }
-  });
 
 const bookSchema = mongoose.Schema({
     title: {
@@ -135,11 +116,6 @@ const bookSchema = mongoose.Schema({
     publishDate: {
         type: Date,
         required: true
-    },
-    chapterNotes: {
-        type: [chapterSchema],
-        default : [],
-        // required: true,
     },
     pageCount: {
         type: Number,
@@ -251,17 +227,22 @@ bookSchema.pre('validate' , function(next){
     next();
 })
 
-chapterSchema.pre('validate' , function (next) {
-    if(this.notesMarkdown){
-        this.sanitizedNotesMarkdown = domPurify.sanitize(marked.parse(this.notesMarkdown));
-    }
-    next();
+bookSchema.pre('deleteOne', { document: true }, function(next)  {
+    Chapter.find({parentId: this.id})
+    .then((chapters) => {
+        // console.log(chapters.length)
+        if(chapters.length > 0){
+            next(new Error('This Book still has chapters'))
+        }else{
+            next()
+        }
+    })
+    .catch((err) => {
+            next(err)
+    });
 })
 
-const Chapter = mongoose.model('Chapter', chapterSchema);
+
 const Book = mongoose.model('Book', bookSchema);
 
-module.exports = {
-  Chapter,
-  Book
-};
+module.exports = Book;

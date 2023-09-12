@@ -233,6 +233,7 @@
         console.error('Error deleting book');
         const errorData = await response.json();
         console.error('Error message:', errorData.errorMessage);
+        alert('Error message: ' + errorData.errorMessage);
       }
     } catch (error) {
       console.error('Error deleting book:', error);

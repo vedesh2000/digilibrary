@@ -1,5 +1,11 @@
 <h2 class="page-header">Search in <%= booksField  %></h2>
+<% if(booksField === 'All Books') { %>
 <form action = "/files/books" method="GET" id="myForm">
+<% } else if(booksField === 'Favourite Books') { %>
+<form action = "/files/books/favourites" method="GET" id="myForm">
+<% } else if(booksField === 'Daily Books') { %>
+<form action = "/files/books/dailyBooks" method="GET" id="myForm">
+  <% } %>
   <div class="form-row">
     <div class="form-item">
       <label>Title</label>

@@ -201,7 +201,7 @@ width: 100%;
 }
 
 .description code::before {
-  content: " Code Snippet";
+  content: " Code";
   display: block;
   font-size: 1rem;
   font-weight: bold;

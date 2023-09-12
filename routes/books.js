@@ -1,10 +1,10 @@
 const express = require("express")
-// const { Configuration, OpenAIApi } = require("openai");
 const isAuth = require("../middleware/is-auth");
 // const generateMCQs = require("../controllers/generateMcqs");
 const updateRecentSearches = require('../middleware/updateRecentSearches');
 const router = express.Router()
-const { Chapter, Book } = require("../models/book");
+const Book = require("../models/book");
+const Chapter = require("../models/chapter");
 const Author = require("../models/author")
 const Publisher = require("../models/publisher")
 const User = require("../models/user");
@@ -17,12 +17,6 @@ function toTitleCase(str) {
       return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
     });
   }
-
-// Initialize OpenAI API
-// const configuration = new Configuration({
-//     apiKey: process.env.OPENAI_API_KEY,
-//   });
-//   const openai = new OpenAIApi(configuration);
 
 // all Languages
 const allLanguages = [
@@ -151,33 +145,34 @@ router.get('/', isAuth, async (req, res) => {
         const pageSize = 20; // Number of items to load per page
         let sortOptions = {};
         let queryResult
-        let books
         if(sortBy){
             sortOptions[sortBy] = sort;
             queryResult = await query.sort(sortOptions).exec();
-            books = queryResult;
         }
         else{
             queryResult = await query.sort({title : 1}).exec();
-            books = queryResult;
         }
-        let filteredBooks = books;
+        let filteredBooks = queryResult;
         if (req.query.notes != null && req.query.notes != '') {
             let queryChapters = [];
             for (const book of queryResult) {
-                queryChapters = queryChapters.concat(book.chapterNotes);
+                const chaptersInBook = await Chapter.find({user: book.user, parentId: book.id });
+                queryChapters = queryChapters.concat(chaptersInBook);
             }
-
-            queryChapters = queryChapters.filter(query => {
-              const fuzzyRegex = new RegExp('.*' + req.query.notes.split('').join('.{0,2}') + '.*', 'i');
-              return fuzzyRegex.test(query.notesMarkdown) || fuzzyRegex.test(query.description);
+            queryChapters = queryChapters.filter(queryChapter => {
+                const fuzzyRegex = new RegExp('.*' + req.query.notes.split('').join('.{0,2}') + '.*', 'i');
+                return fuzzyRegex.test(queryChapter.notesMarkdown) || fuzzyRegex.test(queryChapter.description) || fuzzyRegex.test(query.title);
             });
-
-            filteredBooks = books.filter(book => {
-                const bookChapters = book.chapterNotes;
-                return bookChapters.some(chapter => queryChapters.includes(chapter));
+            
+            filteredBooks = filteredBooks.filter(book => {
+                return queryChapters.some(queryChapter => {
+                    // console.log(queryChapter.parentId.equals(book.id));
+                   return queryChapter.parentId.equals(book.id)
+                });
             });
+            // console.log(filteredBooks);,  
           }
+          
 
           filteredBooks = filteredBooks.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
         res.render('books/index', {
@@ -239,32 +234,32 @@ router.get('/favourites', isAuth, async (req, res) => {
         const pageSize = 20; // Number of items to load per page
         let sortOptions = {};
         let queryResult
-        let books
         if(sortBy){
             sortOptions[sortBy] = sort;
             queryResult = await query.sort(sortOptions).exec();
-            books = queryResult;
         }
         else{
             queryResult = await query.sort({title : 1}).exec();
-            books = queryResult;
         }
-        let filteredBooks = books;
+        let filteredBooks = queryResult;
         if (req.query.notes != null && req.query.notes != '') {
             let queryChapters = [];
             for (const book of queryResult) {
-                queryChapters = queryChapters.concat(book.chapterNotes);
+                const chaptersInBook = await Chapter.find({user: book.user, parentId: book.id });
+                queryChapters = queryChapters.concat(chaptersInBook);
             }
-
-            queryChapters = queryChapters.filter(query => {
-              const fuzzyRegex = new RegExp('.*' + req.query.notes.split('').join('.{0,2}') + '.*', 'i');
-              return fuzzyRegex.test(query.notesMarkdown) || fuzzyRegex.test(query.description);
+            queryChapters = queryChapters.filter(queryChapter => {
+                const fuzzyRegex = new RegExp('.*' + req.query.notes.split('').join('.{0,2}') + '.*', 'i');
+                return fuzzyRegex.test(queryChapter.notesMarkdown) || fuzzyRegex.test(queryChapter.description) || fuzzyRegex.test(query.title);
             });
-
-            filteredBooks = books.filter(book => {
-                const bookChapters = book.chapterNotes;
-                return bookChapters.some(chapter => queryChapters.includes(chapter));
+            
+            filteredBooks = filteredBooks.filter(book => {
+                return queryChapters.some(queryChapter => {
+                    // console.log(queryChapter.parentId.equals(book.id));
+                   return queryChapter.parentId.equals(book.id)
+                });
             });
+            // console.log(filteredBooks);,  
           }
 
           filteredBooks = filteredBooks.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
@@ -294,7 +289,7 @@ router.get('/dailyBooks', isAuth, async (req, res) => {
     const recentSearches = user.recentSearches;
     let searchOptions = { user: user , isDailyBook: true}
     let query = Book.find(searchOptions)
-    let booksField = "Dialy Books";
+    let booksField = "Daily Books";
     //adding fuzzy as 2 if req add Levenshtein distance to handle wrong spells
     if (req.query.title != null && req.query.title != '') {
         const fuzzyRegex = new RegExp('.*' + req.query.title.split('').join('.{0,2}') + '.*', 'i');
@@ -328,7 +323,6 @@ router.get('/dailyBooks', isAuth, async (req, res) => {
         const pageSize = 20; // Number of items to load per page
         let sortOptions = {};
         let queryResult
-        let books
         if(sortBy){
             sortOptions[sortBy] = sort;
             queryResult = await query.sort(sortOptions).exec();
@@ -338,22 +332,25 @@ router.get('/dailyBooks', isAuth, async (req, res) => {
             queryResult = await query.sort({title : 1}).exec();
             books = queryResult;
         }
-        let filteredBooks = books;
+        let filteredBooks = queryResult;
         if (req.query.notes != null && req.query.notes != '') {
             let queryChapters = [];
             for (const book of queryResult) {
-                queryChapters = queryChapters.concat(book.chapterNotes);
+                const chaptersInBook = await Chapter.find({user: book.user, parentId: book.id });
+                queryChapters = queryChapters.concat(chaptersInBook);
             }
-
-            queryChapters = queryChapters.filter(query => {
-              const fuzzyRegex = new RegExp('.*' + req.query.notes.split('').join('.{0,2}') + '.*', 'i');
-              return fuzzyRegex.test(query.notesMarkdown) || fuzzyRegex.test(query.description);
+            queryChapters = queryChapters.filter(queryChapter => {
+                const fuzzyRegex = new RegExp('.*' + req.query.notes.split('').join('.{0,2}') + '.*', 'i');
+                return fuzzyRegex.test(queryChapter.notesMarkdown) || fuzzyRegex.test(queryChapter.description) || fuzzyRegex.test(query.title);
             });
-
-            filteredBooks = books.filter(book => {
-                const bookChapters = book.chapterNotes;
-                return bookChapters.some(chapter => queryChapters.includes(chapter));
+            
+            filteredBooks = filteredBooks.filter(book => {
+                return queryChapters.some(queryChapter => {
+                    // console.log(queryChapter.parentId.equals(book.id));
+                   return queryChapter.parentId.equals(book.id)
+                });
             });
+            // console.log(filteredBooks);,  
           }
 
           filteredBooks = filteredBooks.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
@@ -421,16 +418,20 @@ router.get('/:id/notes', isAuth, async (req, res) => {
             res.redirect('/')
             return
         }
-        let queryChapters = book.chapterNotes;
+
+        // Find chapters related to the book based on parentId and sort them
+        let queryChapters = await Chapter.find({ parentId: book.id })
+        .sort({ chapterNumber: 1, subChapterNumber: 1 }); // 1 for ascending order
+
         //adding fuzzy as 2 if req add Levenshtein distance to handle wrong spells
         if (req.query.notes != null && req.query.notes != '') {
         queryChapters = queryChapters.filter(query => {
             const fuzzyRegex = new RegExp('.*' + req.query.notes.split('').join('.{0,2}') + '.*', 'i');
-            return fuzzyRegex.test(query.notesMarkdown) || fuzzyRegex.test(query.description);
+            return fuzzyRegex.test(query.notesMarkdown) || fuzzyRegex.test(query.description) || fuzzyRegex.test(query.title);
         });
         }
         const sortedNotes = queryChapters.sort((a, b) => a.chapterNumber - b.chapterNumber);
-        res.render("books/notes/index", {title: book.title, bookId: book.id, chapters: sortedNotes , searchOptions: req.query, ownerName: user.username});
+        res.render("notes/index", {title: book.title, bookId: book.id, chapters: sortedNotes , searchOptions: req.query, ownerName: user.username});
     } catch(err) {
         console.log(err);
         res.redirect('/')
@@ -445,167 +446,21 @@ router.get('/:id/notes/new', isAuth, async (req, res) => {
             res.redirect('/')
             return
         }
-        const largestChapterNumber = book.chapterNotes.reduce((maxChapterNumber, chapter) => {
+        // Find chapters related to the book based on parentId
+        let queryChapters = await Chapter.find({ parentId: book.id });
+
+        const largestChapterNumber = queryChapters.reduce((maxChapterNumber, chapter) => {
             return chapter.chapterNumber > maxChapterNumber ? chapter.chapterNumber : maxChapterNumber;
         }, 0);
         // console.log(largestChapterNumber);
-        res.render("books/notes/new", {bookId: req.params.id, chapter: new Chapter({chapterNumber: largestChapterNumber+1})});
+        res.render("notes/new", {bookId: req.params.id, chapter: new Chapter({chapterNumber: largestChapterNumber+1, subChapterNumber: 1, parentType: 'book', parentId: book.id})});
 
     } catch (err) {
         console.log(err);
         res.redirect('/')
     }
 });
-//show notes
-router.get('/:bookId/notes/:chapterId/show', isAuth, async (req, res) => {
-    try {
-        const book = await Book.findById(req.params.bookId)
-        const user = await User.findById(book.user)
-        if (req.session.email != user.email) {
-            res.redirect('/')
-            return
-        }
-        let chapterObj = {}
-        book.chapterNotes.forEach(chapter => {
-            if (chapter.id === req.params.chapterId){
-                // console.log(chapter);
-                chapterObj = chapter;
-                return 
-            }
-        });
 
-        if(chapterObj === null)
-            return res.render("books/notes/index", {title: book.title, bookId: req.params.bookId , chapters: book.chapterNotes, errorMessage: "Notes not found"});
-
-        return res.render("books/notes/show", {title: book.title, bookId: req.params.bookId , chapter: chapterObj , ownerName: user.username});
-
-
-    } catch (err) {
-        console.log(err);
-        res.redirect('/')
-    }
-});
-//chatgpt integration
-// router.post("/:bookId/notes/:chapterId/show/generate-prompt", async (req, res) => {
-//     const prompt = req.body.prompt;
-//     console.log(prompt);
-//     try {
-//         const completion = await openai.createCompletion({
-//             prompt: prompt,
-//             model: "text-davinci-003",
-//             max_tokens: 100000,
-//             n: 1,
-//             stop: null,
-//             temperature: 0,
-//         });
-//         const generatedText = completion.data.choices[0].text.trim();
-//         console.log(generatedText);
-//         res.json({ generatedText });
-
-//         } catch (error) {
-//             console.error(error);
-//             res.status(500).json({ error: "Failed to generate prompt." });
-//         }
-//     });
-//edit notes
-router.get('/:bookId/notes/:chapterId/edit', isAuth, async (req, res) => {
-    try {
-        const book = await Book.findById(req.params.bookId)
-        const user = await User.findById(book.user)
-        if (req.session.email != user.email) {
-            res.redirect('/')
-            return
-        }
-        let chapterObj = {}
-        book.chapterNotes.forEach(chapter => {
-            if (chapter.id === req.params.chapterId){
-                // console.log(chapter);
-                chapterObj = chapter
-                return
-            }
-        });
-        
-        if(chapterObj === null)
-            return res.render("books/notes/index", { title: book.title, bookId: req.params.bookId , chapters: book.chapterNotes, errorMessage: "Notes not found"});
-        
-        return res.render("books/notes/edit", {bookId: req.params.bookId, chapterId: req.params.chapterId , chapter: chapterObj});
-        
-
-    } catch (err) {
-        console.log(err);
-        res.redirect('/')
-    }
-});
-// // generate MCQs page
-// router.get('/:bookId/notes/:chapterId/mcqTest', isAuth, async (req, res) => {
-//     try {
-//         const book = await Book.findById(req.params.bookId)
-//         const user = await User.findById(book.user)
-//         if (req.session.email != user.email) {
-//             res.redirect('/')
-//             return
-//         }
-//         let chapterObj = {}
-//         book.chapterNotes.forEach(chapter => {
-//             if (chapter.id === req.params.chapterId){
-//                 // console.log(chapter);
-//                 chapterObj = chapter
-//                 return
-//             }
-//         });
-        
-//         if(chapterObj === null)
-//             return res.render("books/notes/index", { title: book.title, bookId: req.params.bookId , chapters: book.chapterNotes, errorMessage: "Notes not found"});
-        
-//         console.log(generateMCQs(chapterObj.notesMarkdown , 10));
-//         return res.render("books/notes/mcqTest" , {MCQs: generateMCQs(chapterObj.notesMarkdown , 10)});
-        
-
-//     } catch (err) {
-//         console.log(err);
-//         res.redirect('/')
-//     }
-// });
-//update notes
-router.put('/:bookId/notes/:chapterId/edit', isAuth, async (req, res) => {
-    let book
-    try {
-        book = await Book.findById(req.params.bookId)
-        const user = await User.findById(book.user)
-        if (req.session.email != user.email) {
-            res.redirect('/')
-            return
-        }
-        let chapterObj = {}
-        book.chapterNotes.forEach(chapter => {
-            if (chapter.id === req.params.chapterId){
-                // console.log(chapter);
-                chapter.chapterNumber = req.body.chapterNumber;
-                chapter.title = req.body.title;
-                chapter.description = req.body.description
-                chapter.notesMarkdown = req.body.notesMarkdown
-                chapterObj = chapter
-                return
-            }
-        });
-        
-        if(chapterObj === null)
-            return res.render("books/notes/index", { title: book.title, bookId: req.params.bookId , chapters: book.chapterNotes, errorMessage: "Notes not found Please create New chapter"});
-        
-        book.lastModifiedAt = new Date();
-        book.version += 1;
-        await book.save()
-        res.redirect(`/files/books/${req.params.bookId}/notes/${req.params.chapterId}/show`)
-    }
-    catch (error) {
-        console.log(error)
-        if (book == null) {
-            res.redirect('/')
-        } else {
-            renderEditPage(req, res, book, true)
-        }
-    }
-})
 //Update book
 router.put('/:id', isAuth, async (req, res) => {
     let book
@@ -678,42 +533,14 @@ router.put('/:id', isAuth, async (req, res) => {
         }
     }
 })
-//delete notes
-router.delete('/:bookId/notes/:chapterId/delete', isAuth, async (req, res) => {
-    let book;
-    try {
-        book = await Book.findById(req.params.bookId);
-        const user = await User.findById(book.user);
-        if (req.session.email !== user.email) {
-            res.redirect('/');
-            return;
-        }
-        
-        const chapterIndex = book.chapterNotes.findIndex((chapter) => chapter.id === req.params.chapterId);
-        if (chapterIndex === -1) {
-            return res.render("books/notes/index", { title: book.title, bookId: req.params.bookId, chapters: book.chapterNotes, errorMessage: "Chapter not found" });
-        }
 
-        book.chapterNotes.splice(chapterIndex, 1); // Remove the chapter from the array
-        book.lastModifiedAt = new Date();
-        book.version += 1;
-        await book.save();
-        res.redirect(`/files/books/${req.params.bookId}/notes`);
-    } catch (error) {
-        console.log(error);
-        if (book == null) {
-            res.redirect('/');
-        } else {
-            renderEditPage(req, res, book, true);
-        }
-    }
-});
 // delete all books
 router.delete('/deleteAll', isAuth, async (req, res) => {
     const email = req.session.email;
     const user = await User.findOne({ email })
     let book
     try {
+        await Chapter.deleteMany({ user: user })
         await Book.deleteMany({ user: user })
         res.redirect('/files/books')
     }
@@ -746,7 +573,7 @@ router.delete('/:id', isAuth, async (req, res) => {
     } catch (error) {
         console.log(error);
         // Respond with an error message as JSON
-        res.status(500).json({ errorMessage: "Could not remove Book" });
+        res.status(500).json({ errorMessage: "Could not remove Book as \n"+ error });
     }
 });
 
@@ -845,33 +672,7 @@ router.post('/', isAuth, async (req, res) => {
         renderNewPage(req, res, book, true)
     }
 })
-//new notes post route
-router.post('/:id/newNotes', isAuth, async (req, res) => {
-    let book
-    try {
-        book = await Book.findById(req.params.id)
-        const user = await User.findById(book.user)
-        if (req.session.email != user.email) {
-            res.redirect('/')
-            return
-        }
-        let chapter = new Chapter({
-            chapterNumber: req.body.chapterNumber,
-            title: req.body.title,
-            description: req.body.description,
-            notesMarkdown: req.body.notesMarkdown
-        })
-        book.chapterNotes.push(chapter);
-        book.lastModifiedAt = new Date();
-        book.version += 1;
-        await book.save()
-        res.redirect('notes')
-    }
-    catch (error) {
-        console.log(error)
-        res.render("books/notes/index", { title: book.title, bookId: book.id, chapters: book.chapterNotes, errorMessage: "Error creating notes"})
-    }
-})
+
 //add to favorites
 router.post('/:id/addOrRemoveFav', isAuth, async (req, res) => {
     try {

@@ -37,9 +37,9 @@
         </div>
         <br>
         <div class="btn-group">
-          <a href="notes/<%= chapter.id %>/show" class="btn btn-primary">Read More</a>
-          <a href="notes/<%= chapter.id %>/edit" class="btn btn-primary">Edit</a>
-          <form action="notes/<%= chapter.id %>/delete?_method=DELETE" method="POST" class="d-inline">
+          <a href="/files/notes/<%= chapter.id %>" class="btn btn-primary">Read More</a>
+          <a href="/files/notes/<%= chapter.id %>/edit" class="btn btn-primary">Edit</a>
+          <form action="/files/notes/<%= chapter.id %>/delete?_method=DELETE" method="POST" class="d-inline">
             <button type="submit" class="btn btn-danger">Delete</button>
           </form>
         </div>
