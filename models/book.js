@@ -117,17 +117,6 @@ const bookSchema = mongoose.Schema({
         type: Date,
         required: true
     },
-    // chapterNotes: {
-    //     type: [chapterSchema],
-    //     default : [],
-    //     // required: true,
-    // },
-    // chapterNotes: [
-    //     {
-    //         type: mongoose.Schema.Types.ObjectId,
-    //         ref: 'Chapter',
-    //     },
-    // ],
     pageCount: {
         type: Number,
         required: true,
