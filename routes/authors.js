@@ -3,7 +3,7 @@ const isAuth = require("../middleware/is-auth");
 const routes = express.Router();
 const Author = require('../models/author');
 const User = require('../models/user');
-const {Book} = require('../models/book');
+const Book = require('../models/book');
 //All authors
 
 // Function to convert a string to title case

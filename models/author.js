@@ -25,7 +25,13 @@ const authorSchema = mongoose.Schema({
     version: {
         type: Number,
         required: true
-    }
+    },
+    access: {
+        type: String, 
+        enum: ['private', 'public', 'network'],
+        default: 'private',
+        required: true
+    },
 })
 
 authorSchema.pre('deleteOne', { document: true }, function(next)  {

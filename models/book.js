@@ -204,6 +204,12 @@ const bookSchema = mongoose.Schema({
         default: 'yetToStart',
         required: true
     },
+    access: {
+        type: String, 
+        enum: ['private', 'public', 'network'],
+        default: 'private',
+        required: true
+    },
     isFavourite: {
         type: Boolean,
         default: false

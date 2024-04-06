@@ -55,7 +55,13 @@ const userSchema = new Schema({
   },
   coverImageType: {
       type: String
-  }
+  },
+  access: {
+    type: String, 
+    enum: ['private', 'public', 'network'],
+    default: 'private',
+    required: true
+},
 });
 
 userSchema.pre('deleteOne', { document: true }, function(next)  {

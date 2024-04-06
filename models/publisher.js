@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const {Book} = require("./book")
+const Book = require("./book")
 const publisherSchema = mongoose.Schema({
     name: {
         type: String,
@@ -25,7 +25,13 @@ const publisherSchema = mongoose.Schema({
     version: {
         type: Number,
         required: true
-    }
+    },
+    access: {
+        type: String, 
+        enum: ['private', 'public', 'network'],
+        default: 'private',
+        required: true
+    },
 })
 
 publisherSchema.pre('deleteOne', { document: true }, function(next)  {

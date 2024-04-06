@@ -78,7 +78,19 @@ const chapterSchema = new mongoose.Schema({
         enum: ['book', 'thread', 'self'],
         default: 'book',
         required: true
-    }
+    },
+    progress: {
+        type: String, 
+        enum: ['completed', 'inProgress', 'yetToStart'],
+        default: 'yetToStart',
+        required: true
+    },
+    access: {
+        type: String, 
+        enum: ['private', 'public', 'network'],
+        default: 'private',
+        required: true
+    },
 });
 
 chapterSchema.pre('validate' , function (next) {
