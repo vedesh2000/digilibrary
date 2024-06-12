@@ -69,7 +69,7 @@ app.listen(process.env.PORT || 3000)
 //code to hit digilibrary for every 10mins 
 function hitURL() {
   // Replace 'YOUR_URL_HERE' with the URL you want to hit
-  const url = 'https://digilibrary.onrender.com/';
+  const url = 'https://digilibrary-vwcf.onrender.com/';
   // Replace this with your code to make the HTTP request to the URL (e.g., using fetch, XMLHttpRequest, etc.)
   // For simplicity, I'll use fetch in this example.
   fetch(url)
